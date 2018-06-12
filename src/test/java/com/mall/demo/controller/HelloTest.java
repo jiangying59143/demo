@@ -20,7 +20,7 @@ public class HelloTest {
 
     @Before
     public void setUp() throws Exception {
-        mvc = MockMvcBuilders.standaloneSetup(new HelloWorldController()).build();
+        mvc = MockMvcBuilders.standaloneSetup(new RestfulController()).build();
     }
 
     @Test

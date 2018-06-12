@@ -1,10 +1,14 @@
 package com.mall.demo.model;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
 
+/**
+ * 必须要实现序列化，不然redis缓存时候会有问题
+ */
 @MappedSuperclass
-public class BaseTO {
+public class BaseTO implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     protected Long id;
