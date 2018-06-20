@@ -78,5 +78,22 @@ public class User extends BaseTO implements Serializable {
     public void setRegTime(String regTime) {
         this.regTime = regTime;
     }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "userName='" + userName + '\'' +
+                ", passWord='" + passWord + '\'' +
+                ", email='" + email + '\'' +
+                ", nickName='" + nickName + '\'' +
+                ", regTime='" + regTime + '\'' +
+                ", id=" + id +
+                ", createDate=" + createDate +
+                ", updateDate=" + updateDate +
+                ", createBy=" + createBy +
+                ", updateBy=" + updateBy +
+                ", version=" + version +
+                '}';
+    }
 }
 

@@ -50,9 +50,14 @@ public class RestfulController {
         return ResponseEntity.ok(r);
     }
 
-    @ApiIgnore//使用该注解忽略这个API
+    @RequestMapping(value = "/user/save", method = RequestMethod.POST)
+    public User createUser(User user){
+        return userRepository.save(user);
+    }
+
+    @ApiIgnore//使用该注解忽略这个API swagger
     @RequestMapping("/getUsers")
-    @Cacheable(value = "users",keyGenerator = "keyGenerator")
+    @Cacheable(value = "users",keyGenerator = "keyGenerator") //redis注解
     public List<User> getUsers() {
         List<User> users=userRepository.findAll();
         System.out.println("若下面没出现“无缓存的时候调用”字样且能打印出数据表示测试成功");

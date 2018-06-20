@@ -7,6 +7,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Example;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.text.DateFormat;
@@ -29,6 +30,10 @@ public class UserRepositoryTest {
         Assert.assertEquals(3, userRepository.findAll().size());
         Assert.assertEquals("bb123456", userRepository.findByUserNameOrEmail("bb2", "bb@126.com").getNickName());
         Assert.assertEquals("bb123456", userRepository.findByUserName("bb2").getNickName());
+        User user = new User();
+        user.setId(2L);
+        Assert.assertEquals("bb123456", userRepository.findOne(Example.of(user)).get().getNickName());
+        System.out.println(userRepository.findOne(Example.of(user)).get());
 //        userRepository.delete(userRepository.findByUserName("aa1"));
     }
 }
