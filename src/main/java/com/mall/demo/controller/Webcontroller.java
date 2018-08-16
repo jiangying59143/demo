@@ -30,4 +30,10 @@ public class Webcontroller {
         return "test";
     }
 
+    @ApiIgnore
+    @RequestMapping("/exception")
+    public void exeption(Model model) throws Exception {
+        throw new Exception("xxx");
+    }
+
 }
