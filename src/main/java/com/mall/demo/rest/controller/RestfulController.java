@@ -1,4 +1,4 @@
-package com.mall.demo.controller;
+package com.mall.demo.rest.controller;
 
 import com.mall.demo.dao.UserRepository;
 import com.mall.demo.model.JsonResult;
@@ -48,11 +48,6 @@ public class RestfulController {
             e.printStackTrace();
         }
         return ResponseEntity.ok(r);
-    }
-
-    @RequestMapping(value = "/user/save", method = RequestMethod.POST)
-    public User createUser(User user){
-        return userRepository.save(user);
     }
 
     @ApiIgnore//使用该注解忽略这个API swagger

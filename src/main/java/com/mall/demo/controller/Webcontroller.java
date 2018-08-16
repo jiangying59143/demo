@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import springfox.documentation.annotations.ApiIgnore;
 
 /**
@@ -23,14 +24,17 @@ public class Webcontroller {
     @Autowired
     private UserRepository userRepository;
 
-    @ApiIgnore
     @RequestMapping("/")
     public String test(Model model){
         model.addAttribute("user", new User());
         return "test";
     }
 
-    @ApiIgnore
+    @RequestMapping(value = "/user/save", method = RequestMethod.POST)
+    public User createUser(User user){
+        return userRepository.save(user);
+    }
+
     @RequestMapping("/exception")
     public void exeption(Model model) throws Exception {
         throw new Exception("xxx");

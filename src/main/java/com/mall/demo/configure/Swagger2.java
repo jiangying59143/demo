@@ -10,10 +10,7 @@ import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 
 /**
- * @author zh
- * @ClassName cn.saytime.Swgger2
- * @Description
- * @date 2017-07-10 22:12:31
+ * @author jy
  */
 @Configuration
 public class Swagger2 {
@@ -23,7 +20,7 @@ public class Swagger2 {
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(apiInfo())
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("com.mall.demo.controller"))
+                .apis(RequestHandlerSelectors.basePackage("com.mall.demo.rest.controller"))
                 .paths(PathSelectors.any())
                 .build();
     }

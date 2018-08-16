@@ -1,4 +1,4 @@
-package com.mall.demo.controller;
+package com.mall.demo.rest.controller;
 
 import org.junit.Before;
 import org.junit.Test;
