@@ -22,6 +22,9 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
+		<shiro.version>1.4.0</shiro.version>
+		<alibaba.fastjson.version>1.2.8</alibaba.fastjson.version>
+		<swagger.version>2.6.1</swagger.version>
 	</properties>
 
 	<dependencies>
@@ -86,28 +89,28 @@
 		<dependency>
 			<groupId>com.alibaba</groupId>
 			<artifactId>fastjson</artifactId>
-			<version>1.2.8</version>
+			<version>${alibaba.fastjson.version}</version>
 		</dependency>
 
 		<!--管理公用接口-->
 		<dependency>
 			<groupId>io.springfox</groupId>
 			<artifactId>springfox-swagger2</artifactId>
-			<version>2.6.1</version>
+			<version>${swagger.version}</version>
 		</dependency>
 
 		<!--管理公用接口的图形化界面-->
 		<dependency>
 			<groupId>io.springfox</groupId>
 			<artifactId>springfox-swagger-ui</artifactId>
-			<version>2.6.1</version>
+			<version>${swagger.version}</version>
 		</dependency>
 
 		<!--权限控制shiro-->
 		<dependency>
 			<groupId>org.apache.shiro</groupId>
 			<artifactId>shiro-spring</artifactId>
-			<version>1.4.0</version>
+			<version>${shiro.version}</version>
 		</dependency>
 
 		<!--该模块在完整的打包环境下运行的时候会被禁用。如果你使用java -jar启动应用或者用一个特定的classloader启动，它会认为这是一个“生产环境”-->
