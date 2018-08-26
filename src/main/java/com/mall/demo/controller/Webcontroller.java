@@ -1,7 +1,5 @@
 package com.mall.demo.controller;
 
-import com.mall.demo.dao.UserRepository;
-import com.mall.demo.model.User;
 import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.UnknownAccountException;
 import org.springframework.stereotype.Controller;
@@ -29,14 +27,7 @@ import java.util.Map;
 public class Webcontroller {
     private static String UPLOADED_FOLDER = "D://temp//";
 
-    @Resource
-    private UserRepository userRepository;
 
-//    @RequestMapping("/")
-//    public String test(Model model){
-//        model.addAttribute("user", new User());
-//        return "test";
-//    }
 
     @RequestMapping({"/","/index"})
     public String index(){
@@ -77,13 +68,10 @@ public class Webcontroller {
         return "uploadStatus";
     }
 
-    @RequestMapping("/login")
+    @RequestMapping("/webLogin")
     public String login(HttpServletRequest request, Map<String, Object> map){
-        System.out.println("HomeController.login()");
-        // 登录失败从request中获取shiro处理的异常信息。
         // shiroLoginFailure:就是shiro异常类的全类名.
         String exception = (String) request.getAttribute("shiroLoginFailure");
-        System.out.println("exception=" + exception);
         String msg = "";
         if (exception != null) {
             if (UnknownAccountException.class.getName().equals(exception)) {
@@ -109,11 +97,6 @@ public class Webcontroller {
     public String unauthorizedRole(){
         System.out.println("------没有权限-------");
         return "403";
-    }
-
-    @RequestMapping(value = "/user/save", method = RequestMethod.POST)
-    public User createUser(User user){
-        return userRepository.save(user);
     }
 
     @RequestMapping("/exception")

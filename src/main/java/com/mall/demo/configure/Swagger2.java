@@ -29,7 +29,7 @@ public class Swagger2 {
         return new ApiInfoBuilder()
                 .title("springboot利用swagger构建api文档")
                 .description("简单优雅的restfun风格")
-                .termsOfServiceUrl("")
+                .termsOfServiceUrl("http://blog.csdn.net/saytime")
                 .version("1.0")
                 .build();
     }

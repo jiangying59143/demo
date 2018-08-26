@@ -1,9 +1,10 @@
 package com.mall.demo.model;
 
+import java.io.Serializable;
 import java.util.Map;
 
-public class ResponseBodyData {
-    private Map<String, Object> data;
+public class ResponseBodyData implements Serializable {
+    private Object data;
 
     private String message;
 
@@ -14,11 +15,11 @@ public class ResponseBodyData {
         this.message = message;
     }
 
-    public Map<String, Object> getData() {
+    public Object getData() {
         return data;
     }
 
-    public void setData(Map<String, Object> data) {
+    public void setData(Object data) {
         this.data = data;
     }
 

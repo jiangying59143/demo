@@ -1,4 +1,7 @@
-package com.mall.demo.model;
+package com.mall.demo.model.privilege;
+
+import com.mall.demo.model.base.BaseTO;
+import com.mall.demo.model.privilege.SysRole;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -8,26 +11,26 @@ import java.util.List;
 public class UserInfo implements Serializable {
 
     @Id
-    @GeneratedValue
-    private Integer uid;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    protected Long id;
     @Column(unique =true)
     private String username;//帐号
     private String name;//名称（昵称或者真实姓名，不同系统不同定义）
     private String password; //密码;
     private String salt;//加密密码的盐
+    private String avatar;
+    /**
+     * 是否是管理员
+     */
+    private Boolean admin = false;
+    /**
+     * 逻辑删除flag
+     */
+    private Boolean deleted = Boolean.FALSE;
     private byte state;//用户状态,0:创建未认证（比如没有激活，没有输入验证码等等）--等待验证的用户 , 1:正常状态,2：用户被锁定.
     @ManyToMany(fetch= FetchType.EAGER)//立即从数据库中进行加载数据;
-    @JoinTable(name = "SysUserRole", joinColumns = { @JoinColumn(name = "uid") }, inverseJoinColumns ={@JoinColumn(name = "roleId") })
+    @JoinTable(name = "SysUserRole", joinColumns = { @JoinColumn(name = "id") }, inverseJoinColumns ={@JoinColumn(name = "roleId") })
     private List<SysRole> roleList;// 一个用户具有多个角色
-
-
-    public Integer getUid() {
-        return uid;
-    }
-
-    public void setUid(Integer uid) {
-        this.uid = uid;
-    }
 
     public String getUsername() {
         return username;
@@ -84,5 +87,37 @@ public class UserInfo implements Serializable {
      */
     public String getCredentialsSalt(){
         return this.username+this.salt;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+
+    public Boolean getAdmin() {
+        return admin;
+    }
+
+    public void setAdmin(Boolean admin) {
+        this.admin = admin;
+    }
+
+    public Boolean getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(Boolean deleted) {
+        this.deleted = deleted;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 }

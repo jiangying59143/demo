@@ -1,16 +1,15 @@
 package com.mall.demo.configure;
 
-import com.mall.demo.model.SysPermission;
-import com.mall.demo.model.SysRole;
-import com.mall.demo.model.UserInfo;
+import com.mall.demo.model.privilege.SysPermission;
+import com.mall.demo.model.privilege.SysRole;
+import com.mall.demo.model.privilege.UserInfo;
 import com.mall.demo.service.UserInfoService;
-import org.apache.shiro.authc.AuthenticationException;
-import org.apache.shiro.authc.AuthenticationInfo;
-import org.apache.shiro.authc.AuthenticationToken;
-import org.apache.shiro.authc.SimpleAuthenticationInfo;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
+import org.apache.shiro.session.mgt.SessionKey;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.util.ByteSource;
 
@@ -24,6 +23,7 @@ public class MyShiroRealm extends AuthorizingRealm {
         System.out.println("权限配置-->MyShiroRealm.doGetAuthorizationInfo()");
         SimpleAuthorizationInfo authorizationInfo = new SimpleAuthorizationInfo();
         UserInfo userInfo  = (UserInfo)principals.getPrimaryPrincipal();
+
         for(SysRole role:userInfo.getRoleList()){
             authorizationInfo.addRole(role.getRole());
             for(SysPermission p:role.getPermissions()){
@@ -40,13 +40,15 @@ public class MyShiroRealm extends AuthorizingRealm {
         System.out.println("MyShiroRealm.doGetAuthenticationInfo()");
         //获取用户的输入的账号.
         String username = (String)token.getPrincipal();
-        System.out.println(token.getCredentials());
         //通过username从数据库中查找 User对象，如果找到，没找到.
         //实际项目中，这里可以根据实际情况做缓存，如果不做，Shiro自己也是有时间间隔机制，2分钟内不会重复执行该方法
         UserInfo userInfo = userInfoService.findByUsername(username);
         System.out.println("----->>userInfo="+userInfo);
-        if(userInfo == null){
+        if (userInfo == null) {
             return null;
+        }
+        if (userInfo.getState() == 2) { //账户冻结
+            throw new LockedAccountException();
         }
         SimpleAuthenticationInfo authenticationInfo = new SimpleAuthenticationInfo(
                 userInfo, //用户名
@@ -55,6 +57,32 @@ public class MyShiroRealm extends AuthorizingRealm {
                 getName()  //realm name
         );
         return authenticationInfo;
+    }
+
+    @Override
+    protected void doClearCache(PrincipalCollection principals) {
+        // TODO Auto-generated method stub
+        super.doClearCache(principals);
+        clearCachedAuthenticationInfo(principals);
+        clearCachedAuthorizationInfo(principals);
+    }
+   @Override
+    protected void clearCachedAuthenticationInfo(PrincipalCollection principals) {
+        // TODO Auto-generated method stub
+        super.clearCachedAuthenticationInfo(principals);
+        Object key = principals.getPrimaryPrincipal();
+        getAuthenticationCache().remove(key);
+    }
+    @Override
+    protected void clearCachedAuthorizationInfo(PrincipalCollection principals) {
+        // TODO Auto-generated method stub
+        super.clearCachedAuthorizationInfo(principals);
+        Object key = getAuthorizationCacheKey(principals);
+        getAuthorizationCache().remove(key);
+    }
+
+    protected Object getAuthorizationCacheKey(PrincipalCollection principals) {
+        return principals.getPrimaryPrincipal();
     }
 
 }

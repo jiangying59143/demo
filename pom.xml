@@ -25,6 +25,7 @@
 		<shiro.version>1.4.0</shiro.version>
 		<alibaba.fastjson.version>1.2.8</alibaba.fastjson.version>
 		<swagger.version>2.6.1</swagger.version>
+		<shiro.redis.version>2.4.2.1-RELEASE</shiro.redis.version>
 	</properties>
 
 	<dependencies>
@@ -111,6 +112,19 @@
 			<groupId>org.apache.shiro</groupId>
 			<artifactId>shiro-spring</artifactId>
 			<version>${shiro.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.shiro</groupId>
+			<artifactId>shiro-ehcache</artifactId>
+			<version>${shiro.version}</version>
+		</dependency>
+
+		<!-- shiro+redis缓存插件 -->
+		<dependency>
+			<groupId>org.crazycake</groupId>
+			<artifactId>shiro-redis</artifactId>
+			<version>${shiro.redis.version}</version>
 		</dependency>
 
 		<!--该模块在完整的打包环境下运行的时候会被禁用。如果你使用java -jar启动应用或者用一个特定的classloader启动，它会认为这是一个“生产环境”-->

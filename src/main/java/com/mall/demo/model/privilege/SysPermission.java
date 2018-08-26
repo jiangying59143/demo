@@ -1,15 +1,14 @@
-package com.mall.demo.model;
+package com.mall.demo.model.privilege;
+
+import com.mall.demo.model.base.BaseTO;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
 
 @Entity
-public class SysPermission implements Serializable {
+public class SysPermission extends BaseTO implements Serializable {
 
-    @Id
-    @GeneratedValue
-    private Integer id;//主键.
     private String name;//名称.
     @Column(columnDefinition="enum('menu','button')")
     private String resourceType;//资源类型，[menu|button]
@@ -21,14 +20,6 @@ public class SysPermission implements Serializable {
     @ManyToMany
     @JoinTable(name="SysRolePermission",joinColumns={@JoinColumn(name="permissionId")},inverseJoinColumns={@JoinColumn(name="roleId")})
     private List<SysRole> roles;
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
 
     public String getName() {
         return name;
