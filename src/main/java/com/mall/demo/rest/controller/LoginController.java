@@ -56,6 +56,7 @@ public class LoginController {
         try {
             subject.login(token);
             map.put("token", subject.getSession().getId());
+            SecurityUtils.getSubject().getSession().setAttribute(Base.CURRENT_USER, subject.getPrincipal());
             responseBodyData.setMessage("登录成功");
         } catch (IncorrectCredentialsException e) {
             responseBodyData.setMessage("密码错误");
