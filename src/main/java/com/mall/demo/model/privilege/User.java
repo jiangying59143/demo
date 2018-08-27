@@ -1,18 +1,14 @@
 package com.mall.demo.model.privilege;
 
 import com.mall.demo.model.base.BaseTO;
-import com.mall.demo.model.privilege.SysRole;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
 
 @Entity
-public class User implements Serializable {
+public class User extends BaseTO implements Serializable {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    protected Long id;
     @Column(unique =true)
     private String account;//帐号
     private String nickname;//名称（昵称或者真实姓名，不同系统不同定义）
@@ -103,14 +99,6 @@ public class User implements Serializable {
 
     public void setDeleted(Boolean deleted) {
         this.deleted = deleted;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getAccount() {
