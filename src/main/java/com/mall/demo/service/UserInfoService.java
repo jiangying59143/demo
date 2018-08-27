@@ -1,20 +1,20 @@
 package com.mall.demo.service;
 
-import com.mall.demo.model.privilege.UserInfo;
+import com.mall.demo.model.privilege.User;
 
 import java.util.Optional;
 
 public interface UserInfoService {
     /**通过username查找用户信息;*/
-    public UserInfo findByUsername(String username);
+    public User findByAccount(String account);
 
-    Iterable<UserInfo> findAll();
+    Iterable<User> findAll();
 
-    Optional<UserInfo> getUserById(Long id);
+    Optional<User> getUserById(Long id);
 
-    Long saveUser(UserInfo user);
+    Long saveUser(User user);
 
-    Long updateUser(UserInfo user);
+    Long updateUser(User user);
 
     void deleteUserById(Long id);
 }

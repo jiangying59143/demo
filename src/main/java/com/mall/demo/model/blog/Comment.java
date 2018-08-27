@@ -2,7 +2,7 @@ package com.mall.demo.model.blog;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import com.mall.demo.model.base.BaseTO;
-import com.mall.demo.model.privilege.UserInfo;
+import com.mall.demo.model.privilege.User;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
@@ -18,7 +18,7 @@ public class Comment extends BaseTO {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "author_user_id")
-    private UserInfo author;
+    private User author;
 
     /**
      * 类型 0 文章的评论 1 评论的评论 2 评论的回复 @
@@ -51,7 +51,7 @@ public class Comment extends BaseTO {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "to_uid")
-    private UserInfo toUser;
+    private User toUser;
 
     public String getContent() {
         return content;
@@ -104,19 +104,19 @@ public class Comment extends BaseTO {
         this.level = level;
     }
 
-    public UserInfo getAuthor() {
+    public User getAuthor() {
         return author;
     }
 
-    public void setAuthor(UserInfo author) {
+    public void setAuthor(User author) {
         this.author = author;
     }
 
-    public UserInfo getToUser() {
+    public User getToUser() {
         return toUser;
     }
 
-    public void setToUser(UserInfo toUser) {
+    public void setToUser(User toUser) {
         this.toUser = toUser;
     }
 }

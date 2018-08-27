@@ -1,23 +1,23 @@
 package com.mall.demo.rest.controller;
 
+import com.alibaba.fastjson.support.spring.annotation.FastJsonFilter;
+import com.alibaba.fastjson.support.spring.annotation.FastJsonView;
 import com.mall.demo.common.annotation.LogAnnotation;
-import com.mall.demo.constants.Base;
-import com.mall.demo.constants.ResultCode;
-import com.mall.demo.model.privilege.UserInfo;
-import com.mall.demo.model.rest.Result;
+import com.mall.demo.common.constants.Base;
+import com.mall.demo.common.constants.ResultCode;
+import com.mall.demo.common.utils.UserUtils;
+import com.mall.demo.model.privilege.User;
+import com.mall.demo.common.result.Result;
 import com.mall.demo.service.UserInfoService;
-import com.mall.demo.util.UserUtils;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -38,7 +38,7 @@ public class UserController {
     @LogAnnotation(module = "用户", operation = "获取所有用户")
     @RequiresRoles(Base.ROLE_ADMIN)
     public Result listUsers() {
-        Iterable<UserInfo> users = userInfoService.findAll();
+        Iterable<User> users = userInfoService.findAll();
         return Result.success(users);
     }
 
@@ -48,9 +48,8 @@ public class UserController {
             @ApiImplicitParam(name = "Authorization", value = "令牌", required = true, dataType = "String", paramType = "header")
     })
     @GetMapping("/{id}")
-//    @LogAnnotation(module = "用户", operation = "根据id获取用户")
-//    @RequiresRoles(Base.ROLE_ADMIN)
-//    @RequiresPermissions("userInfo:get")//权限管理;
+    @LogAnnotation(module = "用户", operation = "根据id获取用户")
+    @RequiresRoles(Base.ROLE_ADMIN)
     public Result getUserById(@PathVariable("id") Long id) {
 
         Result r = new Result();
@@ -60,23 +59,23 @@ public class UserController {
             return r;
         }
 
-        Optional<UserInfo> user = userInfoService.getUserById(id);
+        Optional<User> user = userInfoService.getUserById(id);
 
-        UserInfo userInfo = user.get();
+        User userInfo = user.get();
         r.setResultCode(ResultCode.SUCCESS);
-        r.setData(userInfo);
+        r.setData(userInfo.getNickname());
         return r;
     }
 
     @GetMapping("/currentUser")
-//    @FastJsonView(
-//            include = {@FastJsonFilter(clazz = User.class, props = {"id", "account", "nickname", "avatar"})})
+    @FastJsonView(
+            include = {@FastJsonFilter(clazz = User.class, props = {"id", "account", "nickname", "avatar"})})
     @LogAnnotation(module = "用户", operation = "获取当前登录用户")
     public Result getCurrentUser(HttpServletRequest request) {
 
         Result r = new Result();
 
-        UserInfo currentUser = UserUtils.getCurrentUser();
+        User currentUser = UserUtils.getCurrentUser();
 
         r.setResultCode(ResultCode.SUCCESS);
         r.setData(currentUser);
@@ -86,7 +85,7 @@ public class UserController {
     @PostMapping("/create")
     @RequiresRoles(Base.ROLE_ADMIN)
     @LogAnnotation(module = "用户", operation = "添加用户")
-    public Result saveUser(@Validated @RequestBody UserInfo user) {
+    public Result saveUser(@Validated @RequestBody User user) {
 
         Long userId = userInfoService.saveUser(user);
 
@@ -98,7 +97,7 @@ public class UserController {
     @PostMapping("/update")
     @RequiresRoles(Base.ROLE_ADMIN)
     @LogAnnotation(module = "用户", operation = "修改用户")
-    public Result updateUser(@RequestBody UserInfo user) {
+    public Result updateUser(@RequestBody User user) {
         Result r = new Result();
 
         if (null == user.getId()) {

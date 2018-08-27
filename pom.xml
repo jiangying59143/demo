@@ -23,7 +23,7 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
 		<shiro.version>1.4.0</shiro.version>
-		<alibaba.fastjson.version>1.2.8</alibaba.fastjson.version>
+		<alibaba.fastjson.version>1.2.49</alibaba.fastjson.version>
 		<swagger.version>2.6.1</swagger.version>
 		<shiro.redis.version>2.4.2.1-RELEASE</shiro.redis.version>
 	</properties>

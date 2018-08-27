@@ -1,9 +1,9 @@
 package com.mall.demo.service.impl;
 
+import com.mall.demo.model.privilege.User;
 import com.mall.demo.repository.UserRepository;
-import com.mall.demo.model.privilege.UserInfo;
 import com.mall.demo.service.UserInfoService;
-import com.mall.demo.util.PasswordHelper;
+import com.mall.demo.common.utils.PasswordHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,24 +17,24 @@ public class UserInfoServiceImpl implements UserInfoService {
     private UserRepository userRepository;
 
     @Override
-    public UserInfo findByUsername(String username) {
+    public User findByAccount(String username) {
         System.out.println("UserInfoServiceImpl.findByUsername()");
-        return userRepository.findByUsername(username);
+        return userRepository.findByAccount(username);
     }
 
     @Override
-    public Iterable<UserInfo> findAll() {
+    public Iterable<User> findAll() {
         return userRepository.findAll();
     }
 
     @Override
-    public Optional<UserInfo> getUserById(Long id) {
+    public Optional<User> getUserById(Long id) {
         return userRepository.findById(id);
     }
 
     @Override
     @Transactional
-    public Long saveUser(UserInfo user) {
+    public Long saveUser(User user) {
 
         PasswordHelper.encryptPassword(user);
         int index = new Random().nextInt(6) + 1;
@@ -47,9 +47,9 @@ public class UserInfoServiceImpl implements UserInfoService {
 
     @Override
     @Transactional
-    public Long updateUser(UserInfo user) {
-        Optional<UserInfo> oldUser = userRepository.findById(user.getId());
-        oldUser.get().setName(user.getName());
+    public Long updateUser(User user) {
+        Optional<User> oldUser = userRepository.findById(user.getId());
+        oldUser.get().setNickname(user.getNickname());
 
         return oldUser.get().getId();
     }

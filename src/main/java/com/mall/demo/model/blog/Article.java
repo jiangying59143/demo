@@ -1,7 +1,7 @@
 package com.mall.demo.model.blog;
 
 import com.mall.demo.model.base.BaseTO;
-import com.mall.demo.model.privilege.UserInfo;
+import com.mall.demo.model.privilege.User;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -30,7 +30,7 @@ public class Article extends BaseTO {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "author_user_id")
-    private UserInfo author;
+    private User author;
 
     @OneToOne(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY, orphanRemoval = true)
     @JoinColumn(name = "body_id")
@@ -153,11 +153,11 @@ public class Article extends BaseTO {
         this.weight = weight;
     }
 
-    public UserInfo getAuthor() {
+    public User getAuthor() {
         return author;
     }
 
-    public void setAuthor(UserInfo author) {
+    public void setAuthor(User author) {
         this.author = author;
     }
 

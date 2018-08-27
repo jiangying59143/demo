@@ -2,12 +2,12 @@ package com.mall.demo.common.aspect;
 
 import com.alibaba.fastjson.JSON;
 import com.mall.demo.common.annotation.LogAnnotation;
-import com.mall.demo.model.privilege.UserInfo;
+import com.mall.demo.common.utils.UserUtils;
+import com.mall.demo.model.privilege.User;
 import com.mall.demo.model.sys.Log;
 import com.mall.demo.service.LogService;
-import com.mall.demo.util.HttpContextUtils;
-import com.mall.demo.util.IpUtils;
-import com.mall.demo.util.UserUtils;
+import com.mall.demo.common.utils.HttpContextUtils;
+import com.mall.demo.common.utils.IpUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -69,11 +69,11 @@ public class LogAspect {
         log.setIp(IpUtils.getIpAddr(request));
 
         //用户名
-        UserInfo user = UserUtils.getCurrentUser();
+        User user = UserUtils.getCurrentUser();
 
         if (null != user) {
             log.setUserId(user.getId());
-            log.setNickname(user.getName());
+            log.setNickname(user.getNickname());
         } else {
             log.setUserId(-1L);
             log.setNickname("获取用户信息为空");
