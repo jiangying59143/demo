@@ -9,6 +9,7 @@ import com.mall.demo.common.utils.UserUtils;
 import com.mall.demo.model.privilege.User;
 import com.mall.demo.common.result.Result;
 import com.mall.demo.service.UserInfoService;
+import com.mall.demo.vo.UserVO;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
@@ -74,17 +75,26 @@ public class UserController {
             @ApiImplicitParam(name = "Authorization", value = "令牌", required = true, dataType = "String", paramType = "header")
     })
     @GetMapping("/currentUser")
-    @FastJsonView(
-            include = {@FastJsonFilter(clazz = User.class, props = {"id", "account", "nickname", "avatar"})})
-    @LogAnnotation(module = "用户", operation = "获取当前登录用户")
+//    @FastJsonView(
+//            include = {@FastJsonFilter(clazz = User.class, props = {"id", "account", "nickname", "avatar"})})
+//    @LogAnnotation(module = "用户", operation = "获取当前登录用户")
     public Result getCurrentUser(HttpServletRequest request) {
 
         Result r = new Result();
 
         User currentUser = UserUtils.getCurrentUser();
 
+        UserVO userVO = null;
+        if(currentUser != null) {
+            userVO = new UserVO();
+            userVO.setAccount(currentUser.getAccount());
+            userVO.setNickname(currentUser.getNickname());
+            userVO.setId(currentUser.getId());
+            userVO.setAvatar(currentUser.getAvatar());
+        }
+
         r.setResultCode(ResultCode.SUCCESS);
-        r.setData(currentUser);
+        r.setData(userVO);
         return r;
     }
 

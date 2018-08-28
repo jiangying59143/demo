@@ -45,7 +45,8 @@ public class ShiroConfig {
         //<!-- authc:所有url都必须认证通过才可以访问; anon:所有url都都可以匿名访问-->
         filterChainDefinitionMap.put("/**", "authc");
         // 如果不设置默认会自动寻找Web工程根目录下的"/login.jsp"页面
-        shiroFilterFactoryBean.setLoginUrl("/webLogin");
+        shiroFilterFactoryBean.setLoginUrl("/unauth");
+        shiroFilterFactoryBean.setUnauthorizedUrl("/forbidden");
         // 登录成功后要跳转的链接
         shiroFilterFactoryBean.setSuccessUrl("/index");
 
@@ -81,7 +82,7 @@ public class ShiroConfig {
         DefaultWebSecurityManager securityManager =  new DefaultWebSecurityManager();
         securityManager.setRealm(myShiroRealm(redisTemplate));
         securityManager.setSessionManager(sessionManager(redisTemplate));
-//        securityManager.setCacheManager(cacheManager());
+        securityManager.setCacheManager(cacheManager());
         return securityManager;
     }
 
@@ -89,7 +90,7 @@ public class ShiroConfig {
     @Bean
     public SessionManager sessionManager(RedisTemplate redisTemplate) {
         MySessionManager mySessionManager = new MySessionManager();
-//        mySessionManager.setSessionDAO(redisSessionDAO());
+        mySessionManager.setSessionDAO(redisSessionDAO());
         return mySessionManager;
     }
 
@@ -124,9 +125,9 @@ public class ShiroConfig {
         redisManager.setHost(host);
         redisManager.setPort(port);
         redisManager.setPassword(password);
-//        redisManager.setExpire(1800);// 配置缓存过期时间
+        redisManager.setExpire(1800);// 配置缓存过期时间
         redisManager.setTimeout(0);
-        // redisManager.setPassword(password);
+        redisManager.setPassword(password);
         return redisManager;
     }
 

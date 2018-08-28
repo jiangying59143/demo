@@ -1,6 +1,7 @@
 package com.mall.demo.service;
 
 import com.mall.demo.model.privilege.User;
+import org.springframework.cache.annotation.Cacheable;
 
 import java.util.Optional;
 
@@ -10,6 +11,7 @@ public interface UserInfoService {
 
     Iterable<User> findAll();
 
+    @Cacheable(value="andCache",key="#id + 'getUserById'")
     Optional<User> getUserById(Long id);
 
     Long saveUser(User user);

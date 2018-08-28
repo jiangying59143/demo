@@ -31,17 +31,17 @@ public class LoginController {
     @Autowired
     private UserInfoService userInfoService;
 
-    @ApiOperation(value="获取登录令牌", notes="根据用户名密码获取令牌")
+    /*@ApiOperation(value="获取登录令牌", notes="根据用户名密码获取令牌")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "loginName", value = "登录名", required = true, dataType = "String", paramType = "query"),
             @ApiImplicitParam(name = "password", value = "密码", required = true, dataType = "String", paramType = "query")
     })
     @RequestMapping(value = "/login", method = RequestMethod.POST)
-    @LogAnnotation(module = "登录", operation = "登录")
-    public Result ajaxLogin(@RequestParam String loginName, @RequestParam String password) {
+    @LogAnnotation(module = "登录", operation = "登录")*/
+    public Result ajaxLogin(@RequestParam String account, @RequestParam String password) {
         Result r = new Result();
         Subject subject = SecurityUtils.getSubject();
-        UsernamePasswordToken token = new UsernamePasswordToken(loginName, password);
+        UsernamePasswordToken token = new UsernamePasswordToken(account, password);
         Map<String, Object> map = new HashMap<>();
         r.setResultCode(ResultCode.SUCCESS);
         r.setData(map);
@@ -90,11 +90,25 @@ public class LoginController {
         return r;
     }
 
-//    @PostMapping("/login")
+    @PostMapping("/login")
 //    @LogAnnotation(module = "登录", operation = "登录")
-    public Result login(@RequestBody User user) {
+    public Result login(@RequestBody UserVO user) {
         Result r = new Result();
         executeLogin(user.getAccount(), user.getPassword(), r);
+        return r;
+    }
+
+    @GetMapping(value = "/unauth")
+    public Result unauth() {
+        Result r = new Result();
+        r.setResultCode(ResultCode.USER_NOT_LOGGED_IN);
+        return r;
+    }
+
+    @GetMapping(value = "forbidden")
+    public Result forbidden() {
+        Result r = new Result();
+        r.setResultCode(ResultCode.USER_NO_PRIVI);
         return r;
     }
 
