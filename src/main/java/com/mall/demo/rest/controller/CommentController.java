@@ -12,6 +12,7 @@ import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.List;
 
@@ -38,6 +39,7 @@ public class CommentController {
         return Result.success(comments);
     }
 
+    @ApiIgnore
     @GetMapping("/{id}")
     @LogAnnotation(module = "评论", operation = "根据id获取评论")
     public Result getCommentById(@PathVariable("id") Long id) {
@@ -56,6 +58,7 @@ public class CommentController {
         return r;
     }
 
+    @ApiIgnore
     @GetMapping("/article/{id}")
     @FastJsonView(
             exclude = {
@@ -109,6 +112,7 @@ public class CommentController {
         return r;
     }
 
+    @ApiIgnore
     @PostMapping("/create/change")
     @FastJsonView(
             exclude = {

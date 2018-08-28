@@ -19,6 +19,7 @@ import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.List;
 
@@ -33,6 +34,7 @@ public class ArticleController {
     @Autowired
     private TagService tagService;
 
+    @ApiIgnore
     @GetMapping
     @FastJsonView(
             exclude = {
@@ -47,6 +49,7 @@ public class ArticleController {
         return Result.success(articles);
     }
 
+    @ApiIgnore
     @GetMapping("/hot")
     @FastJsonView(include = {@FastJsonFilter(clazz = Article.class, props = {"id", "title"})})
     @LogAnnotation(module = "文章", operation = "获取最热文章")
@@ -57,6 +60,7 @@ public class ArticleController {
         return Result.success(articles);
     }
 
+    @ApiIgnore
     @GetMapping("/new")
     @FastJsonView(include = {@FastJsonFilter(clazz = Article.class, props = {"id", "title"})})
     @LogAnnotation(module = "文章", operation = "获取最新文章")
@@ -68,6 +72,7 @@ public class ArticleController {
     }
 
 
+    @ApiIgnore
     @GetMapping("/{id}")
     @FastJsonView(
             exclude = {
@@ -90,6 +95,7 @@ public class ArticleController {
         return r;
     }
 
+    @ApiIgnore
     @GetMapping("/view/{id}")
     @FastJsonView(
             exclude = {
@@ -114,6 +120,7 @@ public class ArticleController {
         return r;
     }
 
+    @ApiIgnore
     @GetMapping("/tag/{id}")
     @FastJsonView(
             exclude = {
@@ -128,6 +135,7 @@ public class ArticleController {
     }
 
 
+    @ApiIgnore
     @GetMapping("/category/{id}")
     @FastJsonView(
             exclude = {

@@ -16,6 +16,7 @@ import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
@@ -34,6 +35,7 @@ public class UserController {
     @Autowired
     private UserInfoService userInfoService;
 
+    @ApiIgnore
     @GetMapping
     @LogAnnotation(module = "用户", operation = "获取所有用户")
     @RequiresRoles(Base.ROLE_ADMIN)
@@ -67,6 +69,10 @@ public class UserController {
         return r;
     }
 
+    @ApiOperation(value="获取当前用户", notes="根据token获取用户")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization", value = "令牌", required = true, dataType = "String", paramType = "header")
+    })
     @GetMapping("/currentUser")
     @FastJsonView(
             include = {@FastJsonFilter(clazz = User.class, props = {"id", "account", "nickname", "avatar"})})

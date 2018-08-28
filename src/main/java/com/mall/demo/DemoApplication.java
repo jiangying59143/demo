@@ -13,7 +13,7 @@ import javax.servlet.MultipartConfigElement;
 
 
 @SpringBootApplication
-//@EnableSwagger2
+@EnableSwagger2
 public class DemoApplication {
 
 	public static void main(String[] args) {

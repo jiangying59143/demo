@@ -7,6 +7,7 @@ import com.mall.demo.common.result.Result;
 import com.mall.demo.configure.MySessionManager;
 import com.mall.demo.model.privilege.User;
 import com.mall.demo.service.UserInfoService;
+import com.mall.demo.vo.UserVO;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
@@ -30,12 +31,13 @@ public class LoginController {
     @Autowired
     private UserInfoService userInfoService;
 
-//    @ApiOperation(value="获取登录令牌", notes="根据用户名密码获取令牌")
-//    @ApiImplicitParams({
-//            @ApiImplicitParam(name = "loginName", value = "登录名", required = true, dataType = "String", paramType = "query"),
-//            @ApiImplicitParam(name = "password", value = "密码", required = true, dataType = "String", paramType = "query")
-//    })
-//    @RequestMapping(value = "/login", method = RequestMethod.POST)
+    @ApiOperation(value="获取登录令牌", notes="根据用户名密码获取令牌")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "loginName", value = "登录名", required = true, dataType = "String", paramType = "query"),
+            @ApiImplicitParam(name = "password", value = "密码", required = true, dataType = "String", paramType = "query")
+    })
+    @RequestMapping(value = "/login", method = RequestMethod.POST)
+    @LogAnnotation(module = "登录", operation = "登录")
     public Result ajaxLogin(@RequestParam String loginName, @RequestParam String password) {
         Result r = new Result();
         Subject subject = SecurityUtils.getSubject();
@@ -59,8 +61,37 @@ public class LoginController {
         return r;
     }
 
-    @PostMapping("/login")
-    @LogAnnotation(module = "登录", operation = "登录")
+    @PostMapping("/register")
+    @LogAnnotation(module = "注册", operation = "用户注册")
+    public Result register(@RequestBody UserVO user) {
+
+        Result r = new Result();
+
+        User temp = userInfoService.findByAccount(user.getAccount());
+        if (null != temp) {
+            r.setResultCode(ResultCode.USER_HAS_EXISTED);
+            return r;
+        }
+
+        String account = user.getAccount();
+        String password = user.getPassword();
+        User user1 = new User();
+        user1.setAccount(account);
+        user1.setPassword(password);
+        user1.setNickname(user.getNickname());
+
+        Long userId = userInfoService.saveUser(user1);
+
+        if (userId > 0) {
+            executeLogin(account, password, r);
+        } else {
+            r.setResultCode(ResultCode.USER_Register_ERROR);
+        }
+        return r;
+    }
+
+//    @PostMapping("/login")
+//    @LogAnnotation(module = "登录", operation = "登录")
     public Result login(@RequestBody User user) {
         Result r = new Result();
         executeLogin(user.getAccount(), user.getPassword(), r);
