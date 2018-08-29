@@ -45,6 +45,7 @@ public enum ResultCode {
     PERMISSION_NO_ACCESS(70001, "无访问权限"),
 
     /* 文件上传 */
+    UPLOAD_FILE_NULL(80000, "上传文件为空"),
     UPLOAD_ERROR(80001, "上传失败"),
 
     SESSION_TIME_OUT(90001, "Session超时");

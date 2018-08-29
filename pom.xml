@@ -26,6 +26,8 @@
 		<alibaba.fastjson.version>1.2.49</alibaba.fastjson.version>
 		<swagger.version>2.6.1</swagger.version>
 		<shiro.redis.version>2.4.2.1-RELEASE</shiro.redis.version>
+		<page.helper.version>1.2.5</page.helper.version>
+		<common.io.version>2.6</common.io.version>
 	</properties>
 
 	<dependencies>
@@ -44,6 +46,14 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+
+		<!-- springboot分页插件 -->
+		<dependency>
+			<groupId>com.github.pagehelper</groupId>
+			<artifactId>pagehelper-spring-boot-starter</artifactId>
+			<!-- 特别注意版本问题, 看到评论以后得以纠正 -->
+			<version>${page.helper.version}</version>
 		</dependency>
 
 		<dependency>
@@ -125,6 +135,12 @@
 			<groupId>org.crazycake</groupId>
 			<artifactId>shiro-redis</artifactId>
 			<version>${shiro.redis.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>${common.io.version}</version>
 		</dependency>
 
 		<!--该模块在完整的打包环境下运行的时候会被禁用。如果你使用java -jar启动应用或者用一个特定的classloader启动，它会认为这是一个“生产环境”-->
