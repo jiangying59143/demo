@@ -57,7 +57,7 @@ public class MyShiroRealm extends AuthorizingRealm {
         return authenticationInfo;
     }
 
-    @Override
+    /*@Override
     protected void doClearCache(PrincipalCollection principals) {
         // TODO Auto-generated method stub
         super.doClearCache(principals);
@@ -81,6 +81,6 @@ public class MyShiroRealm extends AuthorizingRealm {
 
     protected Object getAuthorizationCacheKey(PrincipalCollection principals) {
         return principals.getPrimaryPrincipal();
-    }
+    }*/
 
 }

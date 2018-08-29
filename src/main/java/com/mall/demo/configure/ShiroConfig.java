@@ -4,15 +4,20 @@ import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.session.mgt.SessionManager;
 import org.apache.shiro.session.mgt.eis.EnterpriseCacheSessionDAO;
+import org.apache.shiro.session.mgt.eis.JavaUuidSessionIdGenerator;
+import org.apache.shiro.spring.LifecycleBeanPostProcessor;
 import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
+import org.apache.shiro.web.servlet.SimpleCookie;
+import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.crazycake.shiro.RedisCacheManager;
 import org.crazycake.shiro.RedisManager;
 import org.crazycake.shiro.RedisSessionDAO;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.servlet.handler.SimpleMappingExceptionResolver;
 
@@ -82,10 +87,14 @@ public class ShiroConfig {
         DefaultWebSecurityManager securityManager =  new DefaultWebSecurityManager();
         securityManager.setRealm(myShiroRealm(redisTemplate));
         securityManager.setSessionManager(sessionManager(redisTemplate));
-        securityManager.setCacheManager(cacheManager());
+//        securityManager.setCacheManager(cacheManager());
         return securityManager;
     }
 
+    @Bean
+    public JavaUuidSessionIdGenerator sessionIdGenerator(){
+        return new JavaUuidSessionIdGenerator();
+    }
     //自定义sessionManager
     @Bean
     public SessionManager sessionManager(RedisTemplate redisTemplate) {
@@ -114,6 +123,15 @@ public class ShiroConfig {
 
     @Value("${spring.redis.port}")
     private Integer port;
+
+    @Value("${spring.redis.expire}")
+    private Integer expireTime;
+
+    @Override
+    public String toString() {
+        return super.toString();
+    }
+
     /**
      * 配置shiro redisManager
      * 使用的是shiro-redis开源插件
@@ -125,7 +143,7 @@ public class ShiroConfig {
         redisManager.setHost(host);
         redisManager.setPort(port);
         redisManager.setPassword(password);
-        redisManager.setExpire(1800);// 配置缓存过期时间
+        redisManager.setExpire(expireTime);// 配置缓存过期时间
         redisManager.setTimeout(0);
         redisManager.setPassword(password);
         return redisManager;
@@ -135,9 +153,29 @@ public class ShiroConfig {
     public RedisSessionDAO redisSessionDAO() {
         RedisSessionDAO redisSessionDAO = new RedisSessionDAO();
         redisSessionDAO.setRedisManager(redisManager());
+        redisSessionDAO.setSessionIdGenerator(sessionIdGenerator());
         return redisSessionDAO;
     }
 
+
+    /**
+     * 4. 配置LifecycleBeanPostProcessor，可以来自动的调用配置在Spring IOC容器中 Shiro Bean 的生命周期方法
+     * @return
+     */
+//    @Bean
+//    public LifecycleBeanPostProcessor lifecycleBeanPostProcessor(){
+//        return new LifecycleBeanPostProcessor();
+//    }
+
+    /**
+     * 5. 启用IOC容器中使用Shiro的注解，但是必须配置第四步才可以使用
+     * @return
+     */
+//    @Bean
+//    @DependsOn("lifecycleBeanPostProcessor")
+//    public DefaultAdvisorAutoProxyCreator defaultAdvisorAutoProxyCreator(){
+//        return new DefaultAdvisorAutoProxyCreator();
+//    }
     /**
      *  开启shiro aop注解支持.
      *  使用代理方式;所以需要开启代码支持;
@@ -149,6 +187,12 @@ public class ShiroConfig {
         AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor = new AuthorizationAttributeSourceAdvisor();
         authorizationAttributeSourceAdvisor.setSecurityManager(securityManager);
         return authorizationAttributeSourceAdvisor;
+    }
+
+    @Bean
+    public SimpleCookie simpleCookie() {
+        SimpleCookie simpleCookie = new SimpleCookie("REDIS-SHIRO-SESSION");
+        return simpleCookie;
     }
 
     /*@Bean(name="simpleMappingExceptionResolver")

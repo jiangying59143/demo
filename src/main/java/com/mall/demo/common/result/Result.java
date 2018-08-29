@@ -1,19 +1,25 @@
 package com.mall.demo.common.result;
 
 import com.mall.demo.common.constants.ResultCode;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+@ApiModel(value="响应返回对象",description="响应返回对象")
 public class Result implements Serializable {
 
     private static final long serialVersionUID = -4762928619495260423L;
 
+    @ApiModelProperty(value="状态码",name="code",example="0")
     private Integer code;
 
+    @ApiModelProperty(value="返回信息",name="msg",example="成功")
     private String msg;
 
+    @ApiModelProperty(value="返回数据",name="data",example="null")
     private Object data;
 
     public Result() {
