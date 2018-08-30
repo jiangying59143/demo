@@ -2,10 +2,13 @@ package com.mall.demo.rest.controller;
 
 import com.alibaba.fastjson.support.spring.annotation.FastJsonFilter;
 import com.alibaba.fastjson.support.spring.annotation.FastJsonView;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.mall.demo.common.annotation.LogAnnotation;
 import com.mall.demo.common.constants.Base;
 import com.mall.demo.common.constants.ResultCode;
 import com.mall.demo.common.utils.UserUtils;
+import com.mall.demo.model.blog.Article;
+import com.mall.demo.model.blog.Tag;
 import com.mall.demo.model.privilege.User;
 import com.mall.demo.common.result.Result;
 import com.mall.demo.service.UserInfoService;
@@ -52,6 +55,10 @@ public class UserController {
     })
     @GetMapping("/{id}")
     @LogAnnotation(module = "用户", operation = "根据id获取用户")
+    @FastJsonView(
+            exclude = {
+                    @FastJsonFilter(clazz = User.class, props = {"roleList"}),
+                    @FastJsonFilter(clazz = User.class, props = {"password"})})
     @RequiresRoles(Base.ROLE_ADMIN)
     public Result getUserById(@PathVariable("id") Long id) {
 
@@ -66,7 +73,7 @@ public class UserController {
 
         User userInfo = user.get();
         r.setResultCode(ResultCode.SUCCESS);
-        r.setData(userInfo.getNickname());
+        r.setData(userInfo);
         return r;
     }
 

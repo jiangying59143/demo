@@ -159,10 +159,11 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-				<!--热部署 因为影响redis-shiro的集成，报user can not cast user，所以去掉-->
-				<!--<configuration>
-					<fork>true</fork>
-				</configuration>-->
+				<configuration>
+					<!--热部署 因为影响redis-shiro的集成，报user can not cast user，所以去掉-->
+					<!--<fork>true</fork>-->
+					<mainClass>com.mall.demo.DemoApplication</mainClass>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>

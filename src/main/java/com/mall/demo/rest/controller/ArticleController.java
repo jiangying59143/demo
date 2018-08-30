@@ -14,6 +14,9 @@ import com.mall.demo.service.ArticleService;
 import com.mall.demo.service.TagService;
 import com.mall.demo.vo.ArticleVo;
 import com.mall.demo.vo.PageVo;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,12 +38,10 @@ public class ArticleController {
     private TagService tagService;
 
     @ApiIgnore
-    @GetMapping
+    @GetMapping("/recommend")
     @FastJsonView(
             exclude = {
-                    @FastJsonFilter(clazz = Article.class, props = {"body", "category", "comments"}),
-                    @FastJsonFilter(clazz = Tag.class, props = {"id", "avatar"})},
-            include = {@FastJsonFilter(clazz = User.class, props = {"name"})})
+                    @FastJsonFilter(clazz = Article.class, props = {"body", "category", "comments", "author", "location"})})
     @LogAnnotation(module = "文章", operation = "获取所有文章")
     public Result listArticles(ArticleVo article, PageVo page) {
         System.out.println(article);
@@ -72,12 +73,17 @@ public class ArticleController {
     }
 
 
-    @ApiIgnore
+//    @ApiIgnore
+    @ApiOperation(value="获取一篇文章", notes="根据id获取文章")
     @GetMapping("/{id}")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id", value = "主键", required = true, dataType = "Long", paramType = "path"),
+            @ApiImplicitParam(name = "Authorization", value = "令牌", required = true, dataType = "String", paramType = "header")
+    })
     @FastJsonView(
             exclude = {
-                    @FastJsonFilter(clazz = Article.class, props = {"comments"}),
-                    @FastJsonFilter(clazz = ArticleBody.class, props = {"contentHtml"})})
+                    @FastJsonFilter(clazz = Article.class, props = {"comments","location","tags","author"})
+            })
     @LogAnnotation(module = "文章", operation = "根据id获取文章")
     public Result getArticleById(@PathVariable("id") Long id) {
 

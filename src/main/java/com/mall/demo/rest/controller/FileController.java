@@ -58,7 +58,7 @@ public class FileController {
         r.setData(fileName);
         try {
             byte[] bytes = file.getBytes();
-            log.info("开始上传文件【{}】...", fileName);
+            log.info("开始上传文件【{}】...", fileName, file.getContentType());
             FileUtils.writeByteArrayToFile(new File(baseFolderPath + fileName), bytes);
             r.setResultCode(ResultCode.SUCCESS);
             log.info("文件【{}】上传成功...", fileName);
@@ -148,7 +148,7 @@ public class FileController {
         Result r = new Result();
         r.setResultCode(ResultCode.SUCCESS);
         // 设置强制下载不打开
-        response.setContentType("application/force-download");
+        response.setContentType("application/octet-stream");
         response.setHeader("Content-Disposition", "attachment;filename=" + new String(fileName.getBytes("utf-8"),"ISO-8859-1"));
 //        byte[] buff = new byte[1024];
         BufferedInputStream bis = null;

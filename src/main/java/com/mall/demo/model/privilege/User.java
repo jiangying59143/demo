@@ -1,5 +1,6 @@
 package com.mall.demo.model.privilege;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.mall.demo.model.base.BaseTO;
 
 import javax.persistence.*;
@@ -24,6 +25,8 @@ public class User extends BaseTO implements Serializable {
      */
     private Boolean deleted = Boolean.FALSE;
     private byte state;//用户状态,0:创建未认证（比如没有激活，没有输入验证码等等）--等待验证的用户 , 1:正常状态,2：用户被锁定.
+
+//    @JsonIgnore
     @ManyToMany(fetch= FetchType.EAGER)//立即从数据库中进行加载数据;
     @JoinTable(name = "SysUserRole", joinColumns = { @JoinColumn(name = "id") }, inverseJoinColumns ={@JoinColumn(name = "roleId") })
     private List<SysRole> roleList;// 一个用户具有多个角色

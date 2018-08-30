@@ -64,6 +64,19 @@ public class Article extends BaseTO {
      */
     private int weight = Article_Common;
 
+    /**
+     * 1. 公开
+     * 2. 私人
+     */
+    private short privilege;
+
+    /**
+     * 1. 普通
+     * 2. 图文
+     * 3. 视频
+     */
+    private short type;
+
 
     public String getTitle() {
         return title;
@@ -167,5 +180,21 @@ public class Article extends BaseTO {
 
     public void setLocation(Location location) {
         this.location = location;
+    }
+
+    public short getPrivilege() {
+        return privilege;
+    }
+
+    public void setPrivilege(short privilege) {
+        this.privilege = privilege;
+    }
+
+    public short getType() {
+        return type;
+    }
+
+    public void setType(short type) {
+        this.type = type;
     }
 }
