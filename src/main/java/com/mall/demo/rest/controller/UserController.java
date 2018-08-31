@@ -2,13 +2,10 @@ package com.mall.demo.rest.controller;
 
 import com.alibaba.fastjson.support.spring.annotation.FastJsonFilter;
 import com.alibaba.fastjson.support.spring.annotation.FastJsonView;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.mall.demo.common.annotation.LogAnnotation;
 import com.mall.demo.common.constants.Base;
 import com.mall.demo.common.constants.ResultCode;
 import com.mall.demo.common.utils.UserUtils;
-import com.mall.demo.model.blog.Article;
-import com.mall.demo.model.blog.Tag;
 import com.mall.demo.model.privilege.User;
 import com.mall.demo.common.result.Result;
 import com.mall.demo.service.UserInfoService;
@@ -82,26 +79,16 @@ public class UserController {
             @ApiImplicitParam(name = "Authorization", value = "令牌", required = true, dataType = "String", paramType = "header")
     })
     @GetMapping("/currentUser")
-//    @FastJsonView(
-//            include = {@FastJsonFilter(clazz = User.class, props = {"id", "account", "nickname", "avatar"})})
-//    @LogAnnotation(module = "用户", operation = "获取当前登录用户")
+    @FastJsonView(
+            include = {@FastJsonFilter(clazz = User.class, props = {"id", "account", "nickname", "avatar"})})
+    @LogAnnotation(module = "用户", operation = "获取当前登录用户")
     public Result getCurrentUser(HttpServletRequest request) {
 
         Result r = new Result();
-
         User currentUser = UserUtils.getCurrentUser();
-
-        UserVO userVO = null;
-        if(currentUser != null) {
-            userVO = new UserVO();
-            userVO.setAccount(currentUser.getAccount());
-            userVO.setNickname(currentUser.getNickname());
-            userVO.setId(currentUser.getId());
-            userVO.setAvatar(currentUser.getAvatar());
-        }
-
         r.setResultCode(ResultCode.SUCCESS);
-        r.setData(userVO);
+        r.setResultCode(ResultCode.SUCCESS);
+        r.setData(currentUser);
         return r;
     }
 
@@ -109,9 +96,7 @@ public class UserController {
     @RequiresRoles(Base.ROLE_ADMIN)
     @LogAnnotation(module = "用户", operation = "添加用户")
     public Result saveUser(@Validated @RequestBody User user) {
-
         Long userId = userInfoService.saveUser(user);
-
         Result r = Result.success();
         r.simple().put("userId", userId);
         return r;
@@ -122,14 +107,11 @@ public class UserController {
     @LogAnnotation(module = "用户", operation = "修改用户")
     public Result updateUser(@RequestBody User user) {
         Result r = new Result();
-
         if (null == user.getId()) {
             r.setResultCode(ResultCode.USER_NOT_EXIST);
             return r;
         }
-
         Long userId = userInfoService.updateUser(user);
-
         r.setResultCode(ResultCode.SUCCESS);
         r.simple().put("userId", userId);
         return r;
@@ -140,14 +122,11 @@ public class UserController {
     @LogAnnotation(module = "用户", operation = "删除用户")
     public Result deleteUserById(@PathVariable("id") Long id) {
         Result r = new Result();
-
         if (null == id) {
             r.setResultCode(ResultCode.PARAM_IS_BLANK);
             return r;
         }
-
         userInfoService.deleteUserById(id);
-
         r.setResultCode(ResultCode.SUCCESS);
         return r;
     }

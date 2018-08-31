@@ -3,7 +3,6 @@ package com.mall.demo.service.impl;
 import com.mall.demo.common.utils.UserUtils;
 import com.mall.demo.model.blog.Article;
 import com.mall.demo.model.blog.Category;
-import com.mall.demo.model.blog.Tag;
 import com.mall.demo.model.privilege.User;
 import com.mall.demo.repository.ArticleRepository;
 import com.mall.demo.service.ArticleService;
@@ -22,19 +21,6 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Autowired
     private ArticleRepository articleRepository;
-
-
-    @Override
-    public List<Article> listArticles(PageVo page) {
-
-        return articleRepository.listArticles(page);
-    }
-
-    @Override
-    public List<Article> listArticles(ArticleVo article, PageVo page) {
-
-        return articleRepository.listArticles(article, page);
-    }
 
     @Override
     public List<Article> findAll() {
@@ -80,9 +66,8 @@ public class ArticleServiceImpl implements ArticleService {
 
         oldArticle.setTitle(article.getTitle());
         oldArticle.setSummary(article.getSummary());
-        oldArticle.setBody(article.getBody());
+        oldArticle.setBodys(article.getBodys());
         oldArticle.setCategory(article.getCategory());
-        oldArticle.setTags(article.getTags());
 
         return oldArticle.getId();
     }
@@ -91,13 +76,6 @@ public class ArticleServiceImpl implements ArticleService {
     @Transactional
     public void deleteArticleById(Long id) {
         articleRepository.deleteById(id);
-    }
-
-    @Override
-    public List<Article> listArticlesByTag(Integer id) {
-        Tag t = new Tag();
-        t.setId(id);
-        return articleRepository.findByTags(t);
     }
 
     @Override
@@ -114,7 +92,6 @@ public class ArticleServiceImpl implements ArticleService {
         int count = 1;
         Optional<Article> optionalArticle = articleRepository.findById(id);
         Article article =  optionalArticle.get();
-        article.setViewCounts(article.getViewCounts() + count);
         return article;
     }
 
@@ -130,9 +107,4 @@ public class ArticleServiceImpl implements ArticleService {
         return articleRepository.findOrderByCreateDateAndLimit(limit);
     }
 
-    @Override
-    public List<ArticleVo> listArchives() {
-
-        return articleRepository.listArchives();
-    }
 }

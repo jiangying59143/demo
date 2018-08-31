@@ -18,8 +18,4 @@ public interface CategoryService {
 
     void deleteCategoryById(Long id);
 
-    List<CategoryVO> findAllDetail();
-
-    CategoryVO getCategoryDetail(Long categoryId);
-
 }

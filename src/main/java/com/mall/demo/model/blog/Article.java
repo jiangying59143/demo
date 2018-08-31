@@ -2,6 +2,7 @@ package com.mall.demo.model.blog;
 
 import com.mall.demo.model.base.BaseTO;
 import com.mall.demo.model.privilege.User;
+import io.swagger.annotations.ApiModelProperty;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -10,159 +11,162 @@ import java.util.List;
 @Entity
 public class Article extends BaseTO {
 
-    public static final int Article_TOP = 1;
+    //置顶
+    public static final short Article_TOP = 1;
 
-    public static final int Article_Common = 0;
+    //不置顶
+    public static final short Article_Common = 2;
+
+    //文章公开
+    public static final short ARTICLE_PULIC = 1;
+
+    //文章不公开
+    public static final short ARTICLE_PPRIVATE = 2;
+
+    //普通 返回文章+图片URL List
+    public static final short ARTICLE_TYPE_COMMON = 1;
+
+    //图文 返回html
+    public static final short ARTICLE_TYPE_IMAGE_ARTICLE = 2;
+
+    //视频 返回视频url
+    public static final short ARTICLE_TYPE_VEDIO = 3;
+
+    //置顶
+    @ApiModelProperty(value="置顶 0:否 1:是",name="weight")
+    private short weight = Article_Common;
+
+    //文章权限
+    @ApiModelProperty(value="权限 1:公开 2: 个人",name="privilege")
+    private short privilege = ARTICLE_PULIC;
 
     /**
-     *
+     * 1. 普通 返回文章+图片URL List
+     * 2. 图文 返回html
+     * 3. 视频 返回视频url
      */
-    private static final long serialVersionUID = -4470366380115322213L;
+    @ApiModelProperty(value="文章类型",name="articleType")
+    private short articleType = ARTICLE_TYPE_COMMON;
 
+    @ApiModelProperty(value="标题",name="title")
     @NotBlank
     @Column(name = "title", length = 40)
     private String title;
 
+    @ApiModelProperty(value="摘要",name="summary")
     @NotBlank
     @Column(name = "summary", length = 100)
     private String summary;
 
+    @ApiModelProperty(value="文章内容数组",name="body")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "article", orphanRemoval = true)
+    private List<ArticleBody> bodys;
 
+    @ApiModelProperty(value="作者(用户)",name="author")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "author_user_id")
     private User author;
 
-    @OneToOne(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY, orphanRemoval = true)
-    @JoinColumn(name = "body_id")
-    private ArticleBody body;
-
-    @OneToOne(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY, orphanRemoval = true)
-    @JoinColumn(name = "location_id")
-    private Location location;
-
+    @ApiModelProperty(value="类别",name="category")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
     private Category category;
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "article_tag",
-            joinColumns = {@JoinColumn(name = "article_id")},
-            inverseJoinColumns = {@JoinColumn(name = "tag_id")})
-    private List<Tag> tags;
+    @ApiModelProperty(value="位置信息",name="location")
+    //如果orphanRemoval = true 删除对象，false只删除关系
+    @OneToOne(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY, orphanRemoval = true)
+    @JoinColumn(name = "location_id")
+    private Location location;
 
+    @ApiModelProperty(value="评论",name="comments")
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "article", orphanRemoval = true)
     private List<Comment> comments;
 
-    @Column(name = "comment_counts")
-    private int commentCounts;
+    //赞
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "article", orphanRemoval = true)
+    private List<ArticleThumbsUp> articleThumbsUps;
 
-    @Column(name = "view_counts")
-    private int viewCounts;
+    //踩
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "article", orphanRemoval = true)
+    private List<ArticleThumbsDown> articleThumbsDowns;
 
-    /**
-     * 置顶
-     */
-    private int weight = Article_Common;
+    @OneToOne(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY, orphanRemoval = true)
+    @JoinColumn(name = "viewCount_id")
+    private ArticleViewCount articleViewCount;
 
-    /**
-     * 1. 公开
-     * 2. 私人
-     */
-    private short privilege;
+    @OneToOne(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY, orphanRemoval = true)
+    @JoinColumn(name = "thumbsUpCount_id")
+    private ArticleThumbsUpCount articleThumbsUpCount;
 
-    /**
-     * 1. 普通
-     * 2. 图文
-     * 3. 视频
-     */
-    private short type;
+    @OneToOne(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY, orphanRemoval = true)
+    @JoinColumn(name = "thumbsDownCount_id")
+    private ArticleThumbsUpCount articleThumbsDownCount;
 
+    @OneToOne(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY, orphanRemoval = true)
+    @JoinColumn(name = "commentsCount_id")
+    private CommentCount articleCommentCount;
+
+    @ApiModelProperty(value="阅读量",name="viewCount")
+    @Transient
+    private long viewCount;
+
+    @ApiModelProperty(value="评论数",name="commentCount")
+    @Transient
+    private long commentCount;
+
+    @ApiModelProperty(value="赞数",name="ThumbsUpCount")
+    @Transient
+    private long ThumbsUpCount;
+
+    @ApiModelProperty(value="踩数",name="ThumbsDownCount")
+    @Transient
+    private long ThumbsDownCount;
 
     public String getTitle() {
         return title;
     }
 
-
     public void setTitle(String title) {
         this.title = title;
     }
-
 
     public String getSummary() {
         return summary;
     }
 
-
     public void setSummary(String summary) {
         this.summary = summary;
     }
 
-    public ArticleBody getBody() {
-        return body;
+    public List<ArticleBody> getBodys() {
+        return bodys;
     }
 
-
-    public void setBody(ArticleBody body) {
-        this.body = body;
+    public void setBodys(List<ArticleBody> bodys) {
+        this.bodys = bodys;
     }
-
 
     public Category getCategory() {
         return category;
     }
 
-
     public void setCategory(Category category) {
         this.category = category;
     }
-
-
-    public List<Tag> getTags() {
-        return tags;
-    }
-
-
-    public void setTags(List<Tag> tags) {
-        this.tags = tags;
-    }
-
 
     public List<Comment> getComments() {
         return comments;
     }
 
-
     public void setComments(List<Comment> comments) {
         this.comments = comments;
     }
 
-
-    public int getCommentCounts() {
-        return commentCounts;
-    }
-
-
-    public void setCommentCounts(int commentCounts) {
-        this.commentCounts = commentCounts;
-    }
-
-
-    public int getViewCounts() {
-        return viewCounts;
-    }
-
-
-    public void setViewCounts(int viewCounts) {
-        this.viewCounts = viewCounts;
-    }
-
-
-    public int getWeight() {
+    public short getWeight() {
         return weight;
     }
 
-
-    public void setWeight(int weight) {
+    public void setWeight(short weight) {
         this.weight = weight;
     }
 
@@ -190,11 +194,87 @@ public class Article extends BaseTO {
         this.privilege = privilege;
     }
 
-    public short getType() {
-        return type;
+    public short getArticleType() {
+        return articleType;
     }
 
-    public void setType(short type) {
-        this.type = type;
+    public void setArticleType(short articleType) {
+        this.articleType = articleType;
+    }
+
+    public ArticleViewCount getArticleViewCount() {
+        return articleViewCount;
+    }
+
+    public void setArticleViewCount(ArticleViewCount articleViewCount) {
+        this.articleViewCount = articleViewCount;
+    }
+
+    public ArticleThumbsUpCount getArticleThumbsUpCount() {
+        return articleThumbsUpCount;
+    }
+
+    public void setArticleThumbsUpCount(ArticleThumbsUpCount articleThumbsUpCount) {
+        this.articleThumbsUpCount = articleThumbsUpCount;
+    }
+
+    public ArticleThumbsUpCount getArticleThumbsDownCount() {
+        return articleThumbsDownCount;
+    }
+
+    public void setArticleThumbsDownCount(ArticleThumbsUpCount articleThumbsDownCount) {
+        this.articleThumbsDownCount = articleThumbsDownCount;
+    }
+
+    public List<ArticleThumbsUp> getArticleThumbsUps() {
+        return articleThumbsUps;
+    }
+
+    public void setArticleThumbsUps(List<ArticleThumbsUp> articleThumbsUps) {
+        this.articleThumbsUps = articleThumbsUps;
+    }
+
+    public List<ArticleThumbsDown> getArticleThumbsDowns() {
+        return articleThumbsDowns;
+    }
+
+    public void setArticleThumbsDowns(List<ArticleThumbsDown> articleThumbsDowns) {
+        this.articleThumbsDowns = articleThumbsDowns;
+    }
+
+    public CommentCount getArticleCommentCount() {
+        return articleCommentCount;
+    }
+
+    public void setArticleCommentCount(CommentCount articleCommentCount) {
+        this.articleCommentCount = articleCommentCount;
+    }
+
+    public long getViewCount() {
+        if(articleViewCount != null){
+            viewCount = articleViewCount.getViewCount();
+        }
+        return viewCount;
+    }
+
+    public long getCommentCount() {
+        if(articleCommentCount != null){
+            commentCount = articleCommentCount.getCommentCount();
+        }
+        return commentCount;
+    }
+
+    public long getThumbsUpCount() {
+        if(articleThumbsUpCount != null){
+            commentCount = articleThumbsUpCount.getThumbsUpCount();
+        }
+        return ThumbsUpCount;
+    }
+
+    public long getThumbsDownCount() {
+        if(articleThumbsDownCount != null){
+            commentCount = articleThumbsDownCount.getThumbsUpCount();
+        }
+        return ThumbsDownCount;
     }
 }

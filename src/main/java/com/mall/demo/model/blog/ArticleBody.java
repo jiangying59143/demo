@@ -4,39 +4,45 @@ import com.mall.demo.model.base.BaseEntity;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 public class ArticleBody extends BaseEntity<Long> {
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "article_id")
+    private Article article;
 
     @Lob
     @Basic(fetch = FetchType.LAZY)
     @Type(type = "text")
     private String content; // 内容
 
-    @Lob
-    @Basic(fetch = FetchType.LAZY)
-    @Type(type = "text")
-    private String contentHtml;
-
+    //mappedBy必须是ArticleBodyImageVedio中的变量名
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "articleBody", orphanRemoval = true)
+    private List<ArticleBodyImageVedio> articleBodyImageVedios;
 
     public String getContent() {
         return content;
     }
 
-
     public void setContent(String content) {
         this.content = content;
     }
 
-
-    public String getContentHtml() {
-        return contentHtml;
+    public Article getArticle() {
+        return article;
     }
 
-
-    public void setContentHtml(String contentHtml) {
-        this.contentHtml = contentHtml;
+    public void setArticle(Article article) {
+        this.article = article;
     }
 
+    public List<ArticleBodyImageVedio> getArticleBodyImageVedios() {
+        return articleBodyImageVedios;
+    }
 
+    public void setArticleBodyImageVedios(List<ArticleBodyImageVedio> articleBodyImageVedios) {
+        this.articleBodyImageVedios = articleBodyImageVedios;
+    }
 }

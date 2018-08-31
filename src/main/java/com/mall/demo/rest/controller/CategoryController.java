@@ -37,44 +37,15 @@ public class CategoryController {
         return Result.success(categorys);
     }
 
-    @GetMapping("detail")
-    @LogAnnotation(module = "文章分类", operation = "获取所有文章分类，详细")
-    public Result listCategorysDetail() {
-        List<CategoryVO> categorys = categoryService.findAllDetail();
-        return Result.success(categorys);
-    }
-
     @GetMapping("/{id}")
     @LogAnnotation(module = "文章分类", operation = "根据id获取文章分类")
     public Result getCategoryById(@PathVariable("id") Long id) {
-
         Result r = new Result();
-
         if (null == id) {
             r.setResultCode(ResultCode.PARAM_IS_BLANK);
             return r;
         }
-
         Category category = categoryService.getCategoryById(id);
-
-        r.setResultCode(ResultCode.SUCCESS);
-        r.setData(category);
-        return r;
-    }
-
-    @GetMapping("/detail/{id}")
-    @LogAnnotation(module = "文章分类", operation = "根据id获取详细文章分类，文章数")
-    public Result getCategoryDetail(@PathVariable("id") Long id) {
-
-        Result r = new Result();
-
-        if (null == id) {
-            r.setResultCode(ResultCode.PARAM_IS_BLANK);
-            return r;
-        }
-
-        CategoryVO category = categoryService.getCategoryDetail(id);
-
         r.setResultCode(ResultCode.SUCCESS);
         r.setData(category);
         return r;
@@ -84,9 +55,7 @@ public class CategoryController {
     @RequiresRoles(Base.ROLE_ADMIN)
     @LogAnnotation(module = "文章分类", operation = "添加文章分类")
     public Result saveCategory(@Validated @RequestBody Category category) {
-
         Long categoryId = categoryService.saveCategory(category);
-
         Result r = Result.success();
         r.simple().put("categoryId", categoryId);
         return r;
@@ -97,14 +66,11 @@ public class CategoryController {
     @LogAnnotation(module = "文章分类", operation = "修改文章分类")
     public Result updateCategory(@RequestBody Category category) {
         Result r = new Result();
-
         if (null == category.getId()) {
             r.setResultCode(ResultCode.USER_NOT_EXIST);
             return r;
         }
-
         Long categoryId = categoryService.updateCategory(category);
-
         r.setResultCode(ResultCode.SUCCESS);
         r.simple().put("categoryId", categoryId);
         return r;

@@ -13,12 +13,11 @@ import java.util.List;
 
 @Entity
 public class Comment extends BaseTO {
-    @NotBlank
-    private String content;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "author_user_id")
-    private User author;
+
+    @NotBlank
+    //内容
+    private String content;
 
     /**
      * 类型 0 文章的评论 1 评论的评论 2 评论的回复 @
@@ -26,14 +25,9 @@ public class Comment extends BaseTO {
     @Column(name = "level",length = 1)
     private String level;
 
-    /**
-     * 创建时间
-     */
-    @JSONField(format = "yyyy.MM.dd HH:mm")
-    @Column(name = "create_date")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date createDate;
-
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "author_user_id")
+    private User author;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "article_id")
@@ -41,13 +35,12 @@ public class Comment extends BaseTO {
 
     @OneToMany
     @JoinColumn(name = "parent_id",nullable = true)
-    private List<Comment> childrens;
+    private List<Comment> children;
 
     @ManyToOne
     @JoinColumn(name = "parent_id")
     @NotFound(action= NotFoundAction.IGNORE)
     private Comment parent;
-
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "to_uid")
@@ -80,12 +73,12 @@ public class Comment extends BaseTO {
         this.article = article;
     }
 
-    public List<Comment> getChildrens() {
-        return childrens;
+    public List<Comment> getChildren() {
+        return children;
     }
 
-    public void setChildrens(List<Comment> childrens) {
-        this.childrens = childrens;
+    public void setChildren(List<Comment> children) {
+        this.children = children;
     }
 
     public Comment getParent() {

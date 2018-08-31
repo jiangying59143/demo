@@ -49,14 +49,4 @@ public class CategoryServiceImpl implements CategoryService {
         categoryRepository.deleteById(id);
     }
 
-    @Override
-    public List<CategoryVO> findAllDetail() {
-        return categoryRepository.findAllDetail();
-    }
-
-    @Override
-    public CategoryVO getCategoryDetail(Long categoryId) {
-        return categoryRepository.getCategoryDetail(categoryId);
-    }
-
 }

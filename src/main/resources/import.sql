@@ -1,52 +1,21 @@
 INSERT INTO `user` (`id`, `create_by`, `create_date`, `update_by`, `update_date`, `version`, `account`, `admin`, `avatar`, `deleted`, `nickname`, `password`, `salt`, `state`) VALUES (1, NULL, '2018-08-28 20:09:46', NULL, '2018-08-28 20:09:46', 1, 'admin', b'1', '/static/user/admin.png', b'0', '管理员', '0739a3369c10164836bbda99788b621d', 'db56539e2484c7e9fc518e3d9a7b8e4e', 1);
 INSERT INTO `user` (`id`, `create_by`, `create_date`, `update_by`, `update_date`, `version`, `account`, `admin`, `avatar`, `deleted`, `nickname`, `password`, `salt`, `state`) VALUES (15, NULL, NULL, NULL, NULL, 1, 'jy', b'0', '/static/user/user_6.png', b'0', 'jiangying', 'c70d21461e3f303e8242fd2cba4fc659', 'a7f78fbe787b99e7bb6c32f9168f28fb', 1);
 
-delete from article_body;
-INSERT INTO `article_body` (`id`, `content`, `content_html`) VALUES (1, null ,'<p>又有一省份出现省级组织部部长调整。</p><p>据川报观察客户端8月30日消息，近日，经中共中央批准：王正谱同志任中共四川省委委员、常委。</p><img src="http://localhost:8888/image/1/1/1/1.jpg" img_width="550" img_height="338" alt="7月以来6省份党委组织部长调整：辽宁王正谱任四川省委常委" inline="0"><p>王正谱 资料图</p><p>王正谱，男，汉族，1963年8月生，山东烟台人。1987年7月参加工作，1987年4月加入中国共产党，大学学历，学士学位，高级经济师。 </p><p>王正谱是中组部2010年组织央地交流官员时，66名下派的京官之一。他曾任原农业部办公厅副主任、巡视员，农业部新闻发言人，原农业部财务司司长等职，2010年10月出任辽宁省辽阳市委副书记，市政府副市长、代市长 ，之后历任辽阳市长、辽阳市委书记，2015年10月任辽宁省委组织部副部长，2016年6月任省委组织部常务副部长，并于当年10月出任辽宁省委常委、组织部部长。</p><p>今年7月以来，接连6个省份出现省级组织部部长调整。</p><p>7月2日，十九届中央候补委员、湖北省委常委、组织部部长于绍良转任上海市委常委、组织部部长，填补履新吉林省委常委、常务副省长的吴靖平留下的职缺。</p><p>7月3日，2010年下派“京官”之一、四川省委常委、组织部部长黄建发转任浙江省委常委、组织部部长，接替任振鹤转任浙江省委常委、省纪委书记后留下的职缺。</p><p>7月6日，据安徽日报客户端消息，日前中央决定：严植婵同志不再担任安徽省委常委、委员职务，另有任用。严植婵此前担任安徽省委常委、组织部部长，现已出任广西壮族自治区党委常委、副主席。</p><p>此外，8月28日，中共广西壮族自治区委员会发布的王可同志免职的通知显示，经中共中央组织部同意，自治区党委研究决定：免去王可同志的自治区党委组织部部长职务。 </p>');
-INSERT INTO `article_body` (`id`, `content`, `content_html`) VALUES (20, 'Vue (读音 /vjuː/，类似于 view) 是一套用于构建用户界面的渐进式框架。与其它大型框架不同的是，Vue 被设计为可以自底向上逐层应用。Vue 的核心库只关注视图层，不仅易于上手，还便于与第三方库或既有项目整合。另一方面，当与现代化的工具链以及各种支持类库结合使用时，Vue 也完全能够为复杂的单页应用提供驱动。\n\n如果你想在深入学习 Vue 之前对它有更多了解，我们制作了一个视频，带您了解其核心概念和一个示例工程。\n如果你已经是有经验的前端开发者，想知道 Vue 与其它库/框架有哪些区别，请查看对比其它框架。\n\n# 起步\n\n> 官方指南假设你已了解关于 HTML、CSS 和 JavaScript 的中级知识。如果你刚开始学习前端开发，将框架作为你的第一步可能不是最好的主意——掌握好基础知识再来吧！之前有其它框架的使用经验会有帮助，但这不是必需的。\n\n尝试 Vue.js 最简单的方法是使用 JSFiddle 上的 Hello World 例子。你可以在浏览器新标签页中打开它，跟着例子学习一些基础用法。或者你也可以创建一个 .html 文件，然后通过如下方式引入 Vue：\n\n```javascript\n<script src="https://cdn.jsdelivr.net/npm/vue"></script>\n\n```\n安装教程给出了更多安装 Vue 的方式。请注意我们不推荐新手直接使用 vue-cli，尤其是在你还不熟悉基于 Node.js 的构建工具时。\n\n# 声明式渲染\nVue.js 的核心是一个允许采用简洁的模板语法来声明式地将数据渲染进 DOM 的系统：\n```javascript\n<div id="app">\n  {{ message }}\n</div>\n\n```\n```javascript\nvar app = new Vue({\n  el: \'#app\',\n  data: {\n    message: \'Hello Vue!\'\n  }\n})\n\n```\n我们已经成功创建了第一个 Vue 应用！看起来这跟渲染一个字符串模板非常类似，但是 Vue 在背后做了大量工作。现在数据和 DOM 已经被建立了关联，所有东西都是响应式的。我们要怎么确认呢？打开你的浏览器的 JavaScript 控制台 (就在这个页面打开)，并修改 app.message 的值，你将看到上例相应地更新。\n\n除了文本插值，我们还可以像这样来绑定元素特性：\n\n\n\n\n\n\n', '<p>Vue (读音 /vjuː/，类似于 view) 是一套用于构建用户界面的渐进式框架。与其它大型框架不同的是，Vue 被设计为可以自底向上逐层应用。Vue 的核心库只关注视图层，不仅易于上手，还便于与第三方库或既有项目整合。另一方面，当与现代化的工具链以及各种支持类库结合使用时，Vue 也完全能够为复杂的单页应用提供驱动。</p>\n<p>如果你想在深入学习 Vue 之前对它有更多了解，我们制作了一个视频，带您了解其核心概念和一个示例工程。<br />\n如果你已经是有经验的前端开发者，想知道 Vue 与其它库/框架有哪些区别，请查看对比其它框架。</p>\n<h1>起步</h1>\n<blockquote>\n<p>官方指南假设你已了解关于 HTML、CSS 和 JavaScript 的中级知识。如果你刚开始学习前端开发，将框架作为你的第一步可能不是最好的主意——掌握好基础知识再来吧！之前有其它框架的使用经验会有帮助，但这不是必需的。</p>\n</blockquote>\n<p>尝试 Vue.js 最简单的方法是使用 JSFiddle 上的 Hello World 例子。你可以在浏览器新标签页中打开它，跟着例子学习一些基础用法。或者你也可以创建一个 .html 文件，然后通过如下方式引入 Vue：</p>\n<pre><div class="hljs"><code class="lang-javascript">&lt;script src=<span class="hljs-string">"https://cdn.jsdelivr.net/npm/vue"</span>&gt;<span class="xml"><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span></span>\n\n</code></div></pre>\n<p>安装教程给出了更多安装 Vue 的方式。请注意我们不推荐新手直接使用 vue-cli，尤其是在你还不熟悉基于 Node.js 的构建工具时。</p>\n<h1>声明式渲染</h1>\n<p>Vue.js 的核心是一个允许采用简洁的模板语法来声明式地将数据渲染进 DOM 的系统：</p>\n<pre><div class="hljs"><code class="lang-javascript">&lt;div id=<span class="hljs-string">"app"</span>&gt;\n  {{ message }}\n&lt;<span class="hljs-regexp">/div&gt;\n\n</span></code></div></pre>\n<pre><div class="hljs"><code class="lang-javascript"><span class="hljs-keyword">var</span> app = <span class="hljs-keyword">new</span> Vue({\n  <span class="hljs-attr">el</span>: <span class="hljs-string">\'#app\'</span>,\n  <span class="hljs-attr">data</span>: {\n    <span class="hljs-attr">message</span>: <span class="hljs-string">\'Hello Vue!\'</span>\n  }\n})\n\n</code></div></pre>\n<p>我们已经成功创建了第一个 Vue 应用！看起来这跟渲染一个字符串模板非常类似，但是 Vue 在背后做了大量工作。现在数据和 DOM 已经被建立了关联，所有东西都是响应式的。我们要怎么确认呢？打开你的浏览器的 JavaScript 控制台 (就在这个页面打开)，并修改 app.message 的值，你将看到上例相应地更新。</p>\n<p>除了文本插值，我们还可以像这样来绑定元素特性：</p>\n');
-INSERT INTO `article_body` (`id`, `content`, `content_html`) VALUES (21, '## 快速上手\n\n本节将介绍如何在项目中使用 Element。\n\n### 使用 Starter Kit\n我们提供了通用的项目模板，你可以直接使用。对于 Laravel 用户，我们也准备了相应的模板，同样可以直接下载使用。\n\n如果不希望使用我们提供的模板，请继续阅读。\n\n### 使用 vue-cli\n\n我们还可以使用 vue-cli 初始化项目，命令如下：\n\n```language\n> npm i -g vue-cli\n> mkdir my-project && cd my-project\n> vue init webpack\n> npm i && npm i element-ui\n```\n\n### 引入 Element\n你可以引入整个 Element，或是根据需要仅引入部分组件。我们先介绍如何引入完整的 Element。\n\n#### 完整引入\n在 main.js 中写入以下内容：\n```javascript\nimport Vue from \'vue\'\nimport ElementUI from \'element-ui\'\nimport \'element-ui/lib/theme-chalk/index.css\'\nimport App from \'./App.vue\'\n\nVue.use(ElementUI)\n\nnew Vue({\n  el: \'#app\',\n  render: h => h(App)\n})\n\n```\n以上代码便完成了 Element 的引入。需要注意的是，样式文件需要单独引入。\n\n#### 按需引入\n借助 babel-plugin-component，我们可以只引入需要的组件，以达到减小项目体积的目的。\n\n首先，安装 babel-plugin-component：\n\n', '<h2>快速上手</h2>\n<p>本节将介绍如何在项目中使用 Element。</p>\n<h3>使用 Starter Kit</h3>\n<p>我们提供了通用的项目模板，你可以直接使用。对于 Laravel 用户，我们也准备了相应的模板，同样可以直接下载使用。</p>\n<p>如果不希望使用我们提供的模板，请继续阅读。</p>\n<h3>使用 vue-cli</h3>\n<p>我们还可以使用 vue-cli 初始化项目，命令如下：</p>\n<pre><code class="lang-language">&gt; npm i -g vue-cli\n&gt; mkdir my-project &amp;&amp; cd my-project\n&gt; vue init webpack\n&gt; npm i &amp;&amp; npm i element-ui\n</code></pre>\n<h3>引入 Element</h3>\n<p>你可以引入整个 Element，或是根据需要仅引入部分组件。我们先介绍如何引入完整的 Element。</p>\n<h4>完整引入</h4>\n<p>在 main.js 中写入以下内容：</p>\n<pre><div class="hljs"><code class="lang-javascript"><span class="hljs-keyword">import</span> Vue <span class="hljs-keyword">from</span> <span class="hljs-string">\'vue\'</span>\n<span class="hljs-keyword">import</span> ElementUI <span class="hljs-keyword">from</span> <span class="hljs-string">\'element-ui\'</span>\n<span class="hljs-keyword">import</span> <span class="hljs-string">\'element-ui/lib/theme-chalk/index.css\'</span>\n<span class="hljs-keyword">import</span> App <span class="hljs-keyword">from</span> <span class="hljs-string">\'./App.vue\'</span>\n\nVue.use(ElementUI)\n\n<span class="hljs-keyword">new</span> Vue({\n  <span class="hljs-attr">el</span>: <span class="hljs-string">\'#app\'</span>,\n  <span class="hljs-attr">render</span>: <span class="hljs-function"><span class="hljs-params">h</span> =&gt;</span> h(App)\n})\n\n</code></div></pre>\n<p>以上代码便完成了 Element 的引入。需要注意的是，样式文件需要单独引入。</p>\n<h4>按需引入</h4>\n<p>借助 babel-plugin-component，我们可以只引入需要的组件，以达到减小项目体积的目的。</p>\n<p>首先，安装 babel-plugin-component：</p>\n');
-
-delete from article_tag;
-INSERT INTO `category` (`id`, `avatar`, `categoryname`, `description`) VALUES (1, '/category/front.png', '前端', NULL);
-INSERT INTO `category` (`id`, `avatar`, `categoryname`, `description`) VALUES (2, '/category/back.png', '后端', NULL);
-INSERT INTO `category` (`id`, `avatar`, `categoryname`, `description`) VALUES (3, '/category/lift.jpg', '生活', NULL);
-INSERT INTO `category` (`id`, `avatar`, `categoryname`, `description`) VALUES (4, '/category/database.png', '数据库', NULL);
-INSERT INTO `category` (`id`, `avatar`, `categoryname`, `description`) VALUES (5, '/category/language.png', '编程语言', NULL);
-
-delete from tag;
-INSERT INTO `tag` (`id`, `avatar`, `tagname`) VALUES (1, '/tag/java.png', 'Java');
-INSERT INTO `tag` (`id`, `avatar`, `tagname`) VALUES (2, '/tag/', 'Spring');
-INSERT INTO `tag` (`id`, `avatar`, `tagname`) VALUES (3, '/tag/hibernate.svg', 'Hibernate');
-INSERT INTO `tag` (`id`, `avatar`, `tagname`) VALUES (4, '/tag/maven.png', 'Maven');
-INSERT INTO `tag` (`id`, `avatar`, `tagname`) VALUES (5, '/tag/html.png', 'Html');
-INSERT INTO `tag` (`id`, `avatar`, `tagname`) VALUES (6, '/tag/js.png', 'JavaScript');
-INSERT INTO `tag` (`id`, `avatar`, `tagname`) VALUES (7, '/tag/vue.png', 'Vue');
-INSERT INTO `tag` (`id`, `avatar`, `tagname`) VALUES (8, '/tag/css.png', 'Css');
-
-delete from article;
-INSERT INTO `article` (`id`, `comment_counts`, `create_date`, `summary`, `title`, `view_counts`, `weight`, `author_user_id`, `body_id`, `category_id`, privilege, type) VALUES (1, 0, '2018-01-31 13:16:16', '7月以来6省份党委组织部长调整：辽宁王正谱任四川省委常委', '7月以来6省份党委组织部长调整：辽宁王正谱任四川省委常委', 54, 0, 1, 1, 1, 1, 2);
-INSERT INTO `article` (`id`, `comment_counts`, `create_date`, `summary`, `title`, `view_counts`, `weight`, `author_user_id`, `body_id`, `category_id`) VALUES (9, 0, '2018-02-01 14:37:23', 'Vue (读音 /vjuː/，类似于 view) 是一套用于构建用户界面的渐进式框架。', 'Vue.js 是什么', 3, 0, 1, 20, 1);
-INSERT INTO `article` (`id`, `comment_counts`, `create_date`, `summary`, `title`, `view_counts`, `weight`, `author_user_id`, `body_id`, `category_id`) VALUES (10, 0, '2018-02-01 14:47:19', '本节将介绍如何在项目中使用 Element。', 'Element相关', 3, 0, 1, 21, 1);
-
-delete from article_tag;
-INSERT INTO `article_tag` (`article_id`, `tag_id`) VALUES (1, 7);
-INSERT INTO `article_tag` (`article_id`, `tag_id`) VALUES (1, 5);
-INSERT INTO `article_tag` (`article_id`, `tag_id`) VALUES (1, 8);
-INSERT INTO `article_tag` (`article_id`, `tag_id`) VALUES (9, 7);
-INSERT INTO `article_tag` (`article_id`, `tag_id`) VALUES (10, 7);
-INSERT INTO `article_tag` (`article_id`, `tag_id`) VALUES (10, 8);
-INSERT INTO `article_tag` (`article_id`, `tag_id`) VALUES (10, 5);
-INSERT INTO `article_tag` (`article_id`, `tag_id`) VALUES (10, 6);
-
-INSERT INTO `sys_permission` (`id`,`available`,`name`,`parent_id`,`parent_ids`,`permission`,`resource_type`,`url`) VALUES (1,0,'用户管理',0,'0/','user:view','menu','user/userList');
-INSERT INTO `sys_permission` (`id`,`available`,`name`,`parent_id`,`parent_ids`,`permission`,`resource_type`,`url`) VALUES (2,0,'用户添加',1,'0/1','user:add','button','user/userAdd');
-INSERT INTO `sys_permission` (`id`,`available`,`name`,`parent_id`,`parent_ids`,`permission`,`resource_type`,`url`) VALUES (3,0,'用户删除',1,'0/1','user:del','button','user/userDel');
-INSERT INTO `sys_permission` (`id`,`available`,`name`,`parent_id`,`parent_ids`,`permission`,`resource_type`,`url`) VALUES (4,0,'用户详情',1,'0/1','user:get','button','users');
 INSERT INTO `sys_role` (`id`,`available`,`description`,`role`) VALUES (1,0,'管理员','admin');
-INSERT INTO `sys_role` (`id`,`available`,`description`,`role`) VALUES (2,0,'VIP会员','vip');
-INSERT INTO `sys_role` (`id`,`available`,`description`,`role`) VALUES (3,1,'test','test');
-INSERT INTO `sys_role_permission` (`permission_id`,`role_id`) VALUES (1,1);
-INSERT INTO `sys_role_permission` (`permission_id`,`role_id`) VALUES (2,1);
-INSERT INTO `sys_role_permission` (`permission_id`,`role_id`) VALUES (4,1);
-INSERT INTO `sys_role_permission` (`permission_id`,`role_id`) VALUES (3,2);
+INSERT INTO `sys_role` (`id`,`available`,`description`,`role`) VALUES (2,1,'普通会员','ordinary');
+
 INSERT INTO `sys_user_role` (`role_id`,`id`) VALUES (1,1);
+
+INSERT INTO `category` (`id`, `categoryname`, `description`) VALUES (1, '前端', NULL);
+INSERT INTO `category` (`id`, `categoryname`, `description`) VALUES (2, '后端', NULL);
+INSERT INTO `category` (`id`, `categoryname`, `description`) VALUES (3, '生活', NULL);
+INSERT INTO `category` (`id`, `categoryname`, `description`) VALUES (4, '数据库', NULL);
+INSERT INTO `category` (`id`, `categoryname`, `description`) VALUES (5, '编程语言', NULL);
+
+INSERT INTO `article` (`id`, privilege, article_type, `create_date`, `weight`, `author_user_id`,  `category_id`, `summary`, `title`) VALUES (1, 1, 2, sysdate(), 0, 1, 1, '7月以来6省份党委组织部长调整：辽宁王正谱任四川省委常委', '7月以来6省份党委组织部长调整：辽宁王正谱任四川省委常委');
+INSERT INTO `article` (`id`, privilege, article_type, `create_date`, `weight`, `author_user_id`,  `category_id`, `summary`, `title`) VALUES (2, 1, 2, sysdate(), 0, 1, 2, 'summary2', 'title2');
+INSERT INTO `article` (`id`, privilege, article_type, `create_date`, `weight`, `author_user_id`,  `category_id`, `summary`, `title`) VALUES (3, 1, 2, sysdate(), 0, 1, 3, 'summary3', 'title3');
+
+INSERT INTO `article_body` (`id`, `article_id`, `content`) VALUES (1, 1, '<p>又有一省份出现省级组织部部长调整。</p><p>据川报观察客户端8月30日消息，近日，经中共中央批准：王正谱同志任中共四川省委委员、常委。</p><img src="http://localhost:8888/image/1/1/1/1.jpg" img_width="550" img_height="338" alt="7月以来6省份党委组织部长调整：辽宁王正谱任四川省委常委" inline="0"><p>王正谱 资料图</p><p>王正谱，男，汉族，1963年8月生，山东烟台人。1987年7月参加工作，1987年4月加入中国共产党，大学学历，学士学位，高级经济师。 </p><p>王正谱是中组部2010年组织央地交流官员时，66名下派的京官之一。他曾任原农业部办公厅副主任、巡视员，农业部新闻发言人，原农业部财务司司长等职，2010年10月出任辽宁省辽阳市委副书记，市政府副市长、代市长 ，之后历任辽阳市长、辽阳市委书记，2015年10月任辽宁省委组织部副部长，2016年6月任省委组织部常务副部长，并于当年10月出任辽宁省委常委、组织部部长。</p><p>今年7月以来，接连6个省份出现省级组织部部长调整。</p><p>7月2日，十九届中央候补委员、湖北省委常委、组织部部长于绍良转任上海市委常委、组织部部长，填补履新吉林省委常委、常务副省长的吴靖平留下的职缺。</p><p>7月3日，2010年下派“京官”之一、四川省委常委、组织部部长黄建发转任浙江省委常委、组织部部长，接替任振鹤转任浙江省委常委、省纪委书记后留下的职缺。</p><p>7月6日，据安徽日报客户端消息，日前中央决定：严植婵同志不再担任安徽省委常委、委员职务，另有任用。严植婵此前担任安徽省委常委、组织部部长，现已出任广西壮族自治区党委常委、副主席。</p><p>此外，8月28日，中共广西壮族自治区委员会发布的王可同志免职的通知显示，经中共中央组织部同意，自治区党委研究决定：免去王可同志的自治区党委组织部部长职务。 </p>');
+INSERT INTO `article_body` (`id`, `article_id`, `content`) VALUES (2, 2, 'content2');
+INSERT INTO `article_body` (`id`, `article_id`, `content`) VALUES (3, 3, 'content3');

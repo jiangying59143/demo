@@ -1,5 +1,7 @@
 package com.mall.demo.model.base;
 
+import com.alibaba.fastjson.annotation.JSONField;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
@@ -13,11 +15,13 @@ public class BaseTO implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     protected Long id;
 
+    @JSONField(format = "yyyy.MM.dd HH:mm")
     @Temporal(TemporalType.TIMESTAMP)
     @Column(updatable = false)
     @org.hibernate.annotations.CreationTimestamp
     protected Date createDate;
 
+    @JSONField(format = "yyyy.MM.dd HH:mm")
     @Temporal(TemporalType.TIMESTAMP)
     @org.hibernate.annotations.UpdateTimestamp
     protected Date updateDate;

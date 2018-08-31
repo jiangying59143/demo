@@ -63,8 +63,6 @@ public class CommentServiceImpl implements CommentService {
 
         int count = 1;
         Article a = articleRepository.getOne(comment.getArticle().getId());
-        a.setCommentCounts(a.getCommentCounts() + count);
-
         comment.setAuthor(UserUtils.getCurrentUser());
         comment.setCreateDate(new Date());
 
@@ -89,9 +87,6 @@ public class CommentServiceImpl implements CommentService {
         int count = 1;
         Comment c = commentRepository.getOne(id);
         Article a = c.getArticle();
-
-        a.setCommentCounts(a.getCommentCounts() - count);
-
         commentRepository.delete(c);
     }
 
