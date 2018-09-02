@@ -28,6 +28,7 @@
 		<shiro.redis.version>2.4.2.1-RELEASE</shiro.redis.version>
 		<page.helper.version>1.2.5</page.helper.version>
 		<common.io.version>2.6</common.io.version>
+		<ikanalyzer.version>2012_u6</ikanalyzer.version>
 	</properties>
 
 	<dependencies>
@@ -49,12 +50,12 @@
 		</dependency>
 
 		<!-- springboot分页插件 -->
-		<dependency>
+		<!--<dependency>
 			<groupId>com.github.pagehelper</groupId>
 			<artifactId>pagehelper-spring-boot-starter</artifactId>
-			<!-- 特别注意版本问题, 看到评论以后得以纠正 -->
+			&lt;!&ndash; 特别注意版本问题, 看到评论以后得以纠正 &ndash;&gt;
 			<version>${page.helper.version}</version>
-		</dependency>
+		</dependency>-->
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -141,6 +142,13 @@
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
 			<version>${common.io.version}</version>
+		</dependency>
+
+		<!-- ik.中文分词器依赖-->
+		<dependency>
+			<groupId>com.janeluo</groupId>
+			<artifactId>ikanalyzer</artifactId>
+			<version>${ikanalyzer.version}</version>
 		</dependency>
 
 		<!--该模块在完整的打包环境下运行的时候会被禁用。如果你使用java -jar启动应用或者用一个特定的classloader启动，它会认为这是一个“生产环境”-->

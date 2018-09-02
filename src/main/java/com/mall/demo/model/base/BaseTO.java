@@ -12,7 +12,7 @@ import java.util.Date;
 @MappedSuperclass
 public class BaseTO implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     protected Long id;
 
     @JSONField(format = "yyyy.MM.dd HH:mm")

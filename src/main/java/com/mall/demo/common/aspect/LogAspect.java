@@ -61,6 +61,9 @@ public class LogAspect {
 
         //请求的参数
         Object[] args = joinPoint.getArgs();
+        if(args.length == 0){
+            args = new Object[1];
+        }
         String params = JSON.toJSONString(args[0]);
         log.setParams(params);
 

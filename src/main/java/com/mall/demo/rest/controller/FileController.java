@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.MultipartRequest;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
@@ -70,6 +71,7 @@ public class FileController {
         return ResponseEntity.ok(r);
     }
 
+    @ApiIgnore
     @ApiOperation("多文件上传")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "Authorization", value = "令牌", required = true, dataType = "String", paramType = "header"),
@@ -103,6 +105,7 @@ public class FileController {
         return ResponseEntity.ok(r);
     }
 
+    @ApiIgnore
     @ApiOperation("多文件上传")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "Authorization", value = "令牌", required = true, dataType = "String", paramType = "header"),
@@ -135,6 +138,7 @@ public class FileController {
         return ResponseEntity.ok(r);
     }
 
+    @ApiIgnore
     @ApiOperation("文件下载")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "Authorization", value = "令牌", required = true, dataType = "String", paramType = "header")

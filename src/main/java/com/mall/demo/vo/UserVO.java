@@ -5,8 +5,6 @@ import io.swagger.annotations.ApiModelProperty;
 
 @ApiModel(value="user对象",description="用户对象user")
 public class UserVO {
-    private Long id;
-
     @ApiModelProperty(value="用户登录账号",name="account",example="zhangsan")
     private String account;
 
@@ -15,17 +13,6 @@ public class UserVO {
 
     @ApiModelProperty(value="用户名",name="nickname",example="张三")
     private String nickname;
-
-    @ApiModelProperty(value="用户头像",name="avatar",example="/static/user/zhangsan.png")
-    private String avatar;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getAccount() {
         return account;
@@ -49,13 +36,5 @@ public class UserVO {
 
     public void setNickname(String nickname) {
         this.nickname = nickname;
-    }
-
-    public String getAvatar() {
-        return avatar;
-    }
-
-    public void setAvatar(String avatar) {
-        this.avatar = avatar;
     }
 }

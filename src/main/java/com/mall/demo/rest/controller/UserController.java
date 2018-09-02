@@ -10,6 +10,7 @@ import com.mall.demo.model.privilege.User;
 import com.mall.demo.common.result.Result;
 import com.mall.demo.service.UserInfoService;
 import com.mall.demo.vo.UserVO;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
@@ -22,13 +23,7 @@ import springfox.documentation.annotations.ApiIgnore;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 
-/**
- * 用户api
- *
- * @author shimh
- * <p>
- * 2018年1月23日
- */
+@Api(value = "用户", description = "用户")
 @RestController
 @RequestMapping(value = "/users")
 public class UserController {
@@ -36,7 +31,17 @@ public class UserController {
     @Autowired
     private UserInfoService userInfoService;
 
-    @ApiIgnore
+    @ApiOperation(value="获取所有用户", notes="获取所有用户")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization", value = "令牌", required = true, dataType = "String", paramType = "header")
+    })
+    @FastJsonView(
+            exclude = {
+                    @FastJsonFilter(clazz = User.class, props = {"roleList"}),
+                    @FastJsonFilter(clazz = User.class, props = {"password"})},
+            include = {
+                    @FastJsonFilter(clazz = User.class, props = {"nickname","account"})}
+            )
     @GetMapping
     @LogAnnotation(module = "用户", operation = "获取所有用户")
     @RequiresRoles(Base.ROLE_ADMIN)
@@ -92,6 +97,7 @@ public class UserController {
         return r;
     }
 
+    @ApiIgnore
     @PostMapping("/create")
     @RequiresRoles(Base.ROLE_ADMIN)
     @LogAnnotation(module = "用户", operation = "添加用户")
@@ -102,6 +108,7 @@ public class UserController {
         return r;
     }
 
+    @ApiIgnore
     @PostMapping("/update")
     @RequiresRoles(Base.ROLE_ADMIN)
     @LogAnnotation(module = "用户", operation = "修改用户")
@@ -117,6 +124,7 @@ public class UserController {
         return r;
     }
 
+    @ApiIgnore
     @GetMapping("/delete/{id}")
     @RequiresRoles(Base.ROLE_ADMIN)
     @LogAnnotation(module = "用户", operation = "删除用户")

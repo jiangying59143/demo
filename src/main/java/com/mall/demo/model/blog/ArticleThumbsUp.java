@@ -16,7 +16,7 @@ public class ArticleThumbsUp extends BaseTO {
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "thumb_up_article_id")
+    @JoinColumn(name = "article_id")
     private Article article;
 
     private int orderCount;

@@ -1,4 +1,4 @@
-package com.mall.demo.rest.controller;
+package com.mall.demo.controller;
 
 import com.mall.demo.common.annotation.LogAnnotation;
 import com.mall.demo.common.constants.ResultCode;

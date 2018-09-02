@@ -10,6 +10,9 @@ import java.util.List;
 @Entity
 public class User extends BaseTO implements Serializable {
 
+    public static final byte USER_STATE_COMMON = 1;
+    public static final byte USER_STATE_LOCKED = 2;
+
     @Column(unique =true)
     private String account;//帐号
     private String nickname;//名称（昵称或者真实姓名，不同系统不同定义）
@@ -24,11 +27,18 @@ public class User extends BaseTO implements Serializable {
      * 逻辑删除flag
      */
     private Boolean deleted = Boolean.FALSE;
-    private byte state;//用户状态,0:创建未认证（比如没有激活，没有输入验证码等等）--等待验证的用户 , 1:正常状态,2：用户被锁定.
+    private byte state = USER_STATE_COMMON;//1:正常状态,2：用户被锁定.
 
     @ManyToMany(fetch= FetchType.EAGER)//立即从数据库中进行加载数据;
     @JoinTable(name = "SysUserRole", joinColumns = { @JoinColumn(name = "id") }, inverseJoinColumns ={@JoinColumn(name = "roleId") })
     private List<SysRole> roleList;// 一个用户具有多个角色
+
+    public User() {
+    }
+
+    public User(Long id) {
+        this.id = id;
+    }
 
     public String getNickname() {
         return nickname;

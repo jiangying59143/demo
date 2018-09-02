@@ -4,6 +4,8 @@ import com.mall.demo.model.base.BaseTO;
 
 import javax.persistence.Entity;
 import javax.validation.constraints.NotBlank;
+import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * 文章分类
@@ -13,44 +15,40 @@ import javax.validation.constraints.NotBlank;
  * 2018年1月23日
  */
 @Entity
-public class Category extends BaseTO {
+public class Category extends BaseTO implements Serializable {
 
-    /**
-     *
-     */
-    private static final long serialVersionUID = 5025313969040054182L;
+    public Category() {
+    }
+
+    public Category(String categoryName) {
+        this.categoryName = categoryName;
+    }
+
+    public Category(Long id) {
+        this.id = id;
+    }
 
     @NotBlank
-    private String categoryname;
+    private String categoryName;
 
-    private String description;
-
-    @NotBlank
-    private String avatar;
-
-
-    public String getCategoryname() {
-        return categoryname;
+    public String getCategoryName() {
+        return categoryName;
     }
 
-    public void setCategoryname(String categoryname) {
-        this.categoryname = categoryname;
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
     }
 
-    public String getDescription() {
-        return description;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Category category = (Category) o;
+        return Objects.equals(categoryName, category.categoryName);
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    @Override
+    public int hashCode() {
+        return Objects.hash(categoryName);
     }
-
-    public String getAvatar() {
-        return avatar;
-    }
-
-    public void setAvatar(String avatar) {
-        this.avatar = avatar;
-    }
-
 }

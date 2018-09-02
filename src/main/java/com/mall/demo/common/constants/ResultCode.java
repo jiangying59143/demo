@@ -6,6 +6,9 @@ public enum ResultCode {
     SUCCESS(0, "成功"),
     ERROR(1, "失败"),
 
+    DATA_NOT_EXIST(20004, "此数据不存在"),
+    DATA_EXIST(20005, "已存在"),
+
     /* 参数错误：10001-19999 */
     PARAM_IS_INVALID(10001, "参数无效"),
     PARAM_IS_BLANK(10002, "参数为空"),

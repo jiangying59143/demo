@@ -1,26 +1,41 @@
 package com.mall.demo.service.impl;
 
+import com.google.common.collect.Lists;
+import com.mall.demo.common.utils.IKAnalyzerUtil;
 import com.mall.demo.common.utils.UserUtils;
 import com.mall.demo.model.blog.Article;
 import com.mall.demo.model.blog.Category;
+import com.mall.demo.model.blog.SearchKeyWord;
+import com.mall.demo.model.blog.UserSearchHistory;
 import com.mall.demo.model.privilege.User;
 import com.mall.demo.repository.ArticleRepository;
+import com.mall.demo.repository.SearchKeyWordsRepository;
+import com.mall.demo.repository.UserSearchHisRepository;
 import com.mall.demo.service.ArticleService;
 import com.mall.demo.vo.ArticleVo;
 import com.mall.demo.vo.PageVo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class ArticleServiceImpl implements ArticleService {
 
     @Autowired
     private ArticleRepository articleRepository;
+
+    @Autowired
+    private UserSearchHisRepository userSearchHisRepository;
+
+    @Autowired
+    private SearchKeyWordsRepository searchKeyWordsRepository;
 
     @Override
     public List<Article> findAll() {
@@ -103,8 +118,58 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public List<Article> listNewArticles(int limit) {
-
         return articleRepository.findOrderByCreateDateAndLimit(limit);
+    }
+
+    @Override
+    @Transactional
+    public void addSearchHistory(User user, String searchContent){
+        UserSearchHistory userSearchHistory = userSearchHisRepository.getUserSearchHistoryByUserAndContent(user, searchContent);
+        if(userSearchHistory == null) {
+            userSearchHistory = new UserSearchHistory();
+            userSearchHistory.setUser(user);
+            userSearchHistory.setContent(searchContent);
+            userSearchHistory = userSearchHisRepository.save(userSearchHistory);
+        }
+        List<String> keywords = IKAnalyzerUtil.getSplitWords(searchContent);
+        keywords = IKAnalyzerUtil.filter(keywords);
+        for (String keyword : keywords) {
+            List<SearchKeyWord> searchKeyWords = searchKeyWordsRepository
+                    .getSearchKeyWordsByWord(keyword);
+            if(searchKeyWords != null && searchKeyWords.size() > 0){
+                SearchKeyWord searchKeyWord = searchKeyWords.get(0);
+                searchKeyWord.setCount(searchKeyWord.getCount()+1);
+            }else {
+                SearchKeyWord searchKeyWord = new SearchKeyWord();
+                searchKeyWord.setWord(keyword);
+                searchKeyWord.setCount(1);
+                searchKeyWord.setUserSearchHistoryList(Arrays.asList(userSearchHistory));
+                searchKeyWordsRepository.save(searchKeyWord);
+            }
+        }
+    }
+
+    @Override
+    public Page<UserSearchHistory> listSearchHistory(Long userId, int pageNo, int pageCount) {
+        Pageable pageable = PageRequest.of(pageNo,pageCount, Sort.Direction.DESC,"createDate");
+        Page<UserSearchHistory> page = userSearchHisRepository
+                .getUserSearchHistoriesByUser(new User(userId), pageable);
+        return page;
+    }
+
+    @Override
+    public List<UserSearchHistory> listSearchGuess(int pageNo, int pageCount) {
+        Pageable pageable = PageRequest.of(pageNo,pageCount, Sort.Direction.DESC,"count");
+        Page<SearchKeyWord> page = searchKeyWordsRepository.findAll(pageable);
+        List<SearchKeyWord> list = Lists.newArrayList(page.iterator());
+        List<UserSearchHistory> userSearchHistories = list.stream().map(skw-> {
+            if(skw.getUserSearchHistoryList() != null && skw.getUserSearchHistoryList().size() > 0){
+                return skw.getUserSearchHistoryList().get(0);
+            }
+            return null;
+        }).collect(Collectors.toList());
+        userSearchHistories = userSearchHistories.stream().filter(ush-> ush != null).distinct().collect(Collectors.toList());
+        return userSearchHistories;
     }
 
 }

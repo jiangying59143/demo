@@ -1,5 +1,6 @@
 package com.mall.demo.service.impl;
 
+import com.mall.demo.model.privilege.SysRole;
 import com.mall.demo.model.privilege.User;
 import com.mall.demo.repository.UserRepository;
 import com.mall.demo.service.UserInfoService;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.Arrays;
 import java.util.Optional;
 import java.util.Random;
 
@@ -35,12 +37,11 @@ public class UserInfoServiceImpl implements UserInfoService {
     @Override
     @Transactional
     public Long saveUser(User user) {
-
         PasswordHelper.encryptPassword(user);
         int index = new Random().nextInt(6) + 1;
         String avatar = "/static/user/user_" + index + ".png";
-
         user.setAvatar(avatar);
+        user.setRoleList(Arrays.asList(new SysRole(2L)));
         return userRepository.save(user).getId();
     }
 

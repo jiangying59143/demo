@@ -8,6 +8,7 @@ import com.mall.demo.common.result.Result;
 import com.mall.demo.model.blog.Comment;
 import com.mall.demo.model.privilege.User;
 import com.mall.demo.service.CommentService;
+import io.swagger.annotations.Api;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -16,13 +17,7 @@ import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.List;
 
-/**
- * 评论api
- *
- * @author shimh
- * <p>
- * 2018年1月25日
- */
+@Api(value = "评论", description = "评论")
 @RestController
 @RequestMapping(value = "/comments")
 public class CommentController {
@@ -31,6 +26,7 @@ public class CommentController {
     @Autowired
     private CommentService commentService;
 
+    @ApiIgnore
     @GetMapping
     @LogAnnotation(module = "评论", operation = "获取所有评论")
     public Result listComments() {
@@ -81,7 +77,7 @@ public class CommentController {
         return r;
     }
 
-
+    @ApiIgnore
     @PostMapping("/create")
     @RequiresAuthentication
     @LogAnnotation(module = "评论", operation = "添加评论")
@@ -94,7 +90,7 @@ public class CommentController {
         return r;
     }
 
-
+    @ApiIgnore
     @GetMapping("/delete/{id}")
     @RequiresAuthentication
     @LogAnnotation(module = "评论", operation = "删除评论")
@@ -128,7 +124,7 @@ public class CommentController {
         return r;
     }
 
-
+    @ApiIgnore
     @GetMapping("/delete/change/{id}")
     @RequiresAuthentication
     @LogAnnotation(module = "评论", operation = "删除评论，减少评论数")

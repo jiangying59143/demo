@@ -13,6 +13,13 @@ public class SysRole extends BaseTO implements Serializable {
     private String description; // 角色描述,UI界面显示使用
     private Boolean available = Boolean.FALSE; // 是否可用,如果不可用将不会添加给用户
 
+    public SysRole() {
+    }
+
+    public SysRole(Long id) {
+        this.id = id;
+    }
+
     //角色 -- 权限关系：多对多关系;
     @ManyToMany(fetch= FetchType.EAGER)
     @JoinTable(name="SysRolePermission",joinColumns={@JoinColumn(name="roleId")},inverseJoinColumns={@JoinColumn(name="permissionId")})

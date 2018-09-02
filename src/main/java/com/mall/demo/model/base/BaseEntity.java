@@ -17,7 +17,7 @@ import java.io.Serializable;
 public abstract class BaseEntity<ID extends Serializable> implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private ID id;
 
     public ID getId() {

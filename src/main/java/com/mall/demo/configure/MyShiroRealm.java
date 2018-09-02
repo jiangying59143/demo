@@ -24,8 +24,10 @@ public class MyShiroRealm extends AuthorizingRealm {
 
         for(SysRole role: user.getRoleList()){
             authorizationInfo.addRole(role.getRole());
-            for(SysPermission p:role.getPermissions()){
-                authorizationInfo.addStringPermission(p.getPermission());
+            if(role.getPermissions() != null) {
+                for (SysPermission p : role.getPermissions()) {
+                    authorizationInfo.addStringPermission(p.getPermission());
+                }
             }
         }
         return authorizationInfo;
@@ -45,7 +47,7 @@ public class MyShiroRealm extends AuthorizingRealm {
         if (user == null) {
             return null;
         }
-        if (user.getState() == 2) { //账户冻结
+        if (user.getState() == user.USER_STATE_LOCKED) { //账户冻结
             throw new LockedAccountException();
         }
         SimpleAuthenticationInfo authenticationInfo = new SimpleAuthenticationInfo(
