@@ -170,8 +170,15 @@
 				<configuration>
 					<!--热部署 因为影响redis-shiro的集成，报user can not cast user，所以去掉-->
 					<!--<fork>true</fork>-->
-					<mainClass>com.mall.demo.DemoApplication</mainClass>
+					<!--<mainClass>com.mall.demo.DemoApplication</mainClass>-->
 				</configuration>
+				<!--<executions>
+					<execution>
+						<goals>
+							<goal>repackage</goal>
+						</goals>
+					</execution>
+				</executions>-->
 			</plugin>
 		</plugins>
 	</build>

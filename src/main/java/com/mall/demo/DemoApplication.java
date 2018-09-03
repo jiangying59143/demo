@@ -1,6 +1,8 @@
 package com.mall.demo;
 
 import org.apache.coyote.http11.AbstractHttp11Protocol;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.embedded.tomcat.TomcatConnectorCustomizer;
@@ -15,8 +17,9 @@ import javax.servlet.MultipartConfigElement;
 @SpringBootApplication
 @EnableSwagger2
 public class DemoApplication {
-
+    private final static Logger logger = LoggerFactory.getLogger(DemoApplication.class);
 	public static void main(String[] args) {
+        logger.debug("----------------------------start--------------------------------");
 		SpringApplication.run(DemoApplication.class, args);
 	}
 
