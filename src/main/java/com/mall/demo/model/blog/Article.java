@@ -18,7 +18,7 @@ public class Article extends BaseTO {
     public static final short Article_Common = 2;
 
     //文章公开
-    public static final short ARTICLE_PULIC = 1;
+    public static final short ARTICLE_PUBLIC = 1;
 
     //文章不公开
     public static final short ARTICLE_PPRIVATE = 2;
@@ -38,14 +38,14 @@ public class Article extends BaseTO {
 
     //文章权限
     @ApiModelProperty(value="权限 1:公开 2: 个人",name="privilege")
-    private short privilege = ARTICLE_PULIC;
+    private short privilege = ARTICLE_PUBLIC;
 
     /**
      * 1. 普通 返回文章+图片URL List
      * 2. 图文 返回html
      * 3. 视频 返回视频url
      */
-    @ApiModelProperty(value="文章类型",name="articleType")
+    @ApiModelProperty(value="文章类型 1:内容+图片 2: html 图文 3. 标题+视频地址, 2:",name="articleType")
     private short articleType = ARTICLE_TYPE_COMMON;
 
     @ApiModelProperty(value="标题",name="title")
@@ -90,18 +90,22 @@ public class Article extends BaseTO {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "article", orphanRemoval = true)
     private List<ArticleThumbsDown> articleThumbsDowns;
 
+    //阅读量表
     @OneToOne(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY, orphanRemoval = true)
     @JoinColumn(name = "viewCount_id")
     private ArticleViewCount articleViewCount;
 
+    //赞数表
     @OneToOne(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY, orphanRemoval = true)
     @JoinColumn(name = "thumbsUpCount_id")
     private ArticleThumbsUpCount articleThumbsUpCount;
 
+    //踩数表
     @OneToOne(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY, orphanRemoval = true)
     @JoinColumn(name = "thumbsDownCount_id")
-    private ArticleThumbsUpCount articleThumbsDownCount;
+    private ArticleThumbsDownCount articleThumbsDownCount;
 
+    //评论数表
     @OneToOne(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY, orphanRemoval = true)
     @JoinColumn(name = "commentsCount_id")
     private CommentCount articleCommentCount;
@@ -116,11 +120,11 @@ public class Article extends BaseTO {
 
     @ApiModelProperty(value="赞数",name="ThumbsUpCount")
     @Transient
-    private long ThumbsUpCount;
+    private long thumbsUpCount;
 
     @ApiModelProperty(value="踩数",name="ThumbsDownCount")
     @Transient
-    private long ThumbsDownCount;
+    private long thumbsDownCount;
 
     public String getTitle() {
         return title;
@@ -218,11 +222,11 @@ public class Article extends BaseTO {
         this.articleThumbsUpCount = articleThumbsUpCount;
     }
 
-    public ArticleThumbsUpCount getArticleThumbsDownCount() {
+    public ArticleThumbsDownCount getArticleThumbsDownCount() {
         return articleThumbsDownCount;
     }
 
-    public void setArticleThumbsDownCount(ArticleThumbsUpCount articleThumbsDownCount) {
+    public void setArticleThumbsDownCount(ArticleThumbsDownCount articleThumbsDownCount) {
         this.articleThumbsDownCount = articleThumbsDownCount;
     }
 
@@ -266,15 +270,17 @@ public class Article extends BaseTO {
 
     public long getThumbsUpCount() {
         if(articleThumbsUpCount != null){
-            commentCount = articleThumbsUpCount.getThumbsUpCount();
+            thumbsUpCount = articleThumbsUpCount.getThumbsUpCount();
         }
-        return ThumbsUpCount;
+        return thumbsUpCount;
     }
 
     public long getThumbsDownCount() {
         if(articleThumbsDownCount != null){
-            commentCount = articleThumbsDownCount.getThumbsUpCount();
+            thumbsDownCount = articleThumbsDownCount.getThumbsDownCount();
         }
-        return ThumbsDownCount;
+        return thumbsDownCount;
     }
+
+
 }
