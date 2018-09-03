@@ -16,9 +16,8 @@ public class ArticleBody extends BaseEntity<Long> {
     @Lob
     @Basic(fetch = FetchType.LAZY)
     @Type(type = "text")
-    private String content; // 内容
+    private String content;
 
-    //mappedBy必须是ArticleBodyImageVedio中的变量名
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "articleBody", orphanRemoval = true)
     private List<ArticleBodyImageVedio> articleBodyImageVedios;
 

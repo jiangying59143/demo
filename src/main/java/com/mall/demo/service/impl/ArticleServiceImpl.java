@@ -76,12 +76,9 @@ public class ArticleServiceImpl implements ArticleService {
     @Transactional
     public Long updateArticle(Article article) {
         Article oldArticle = articleRepository.getOne(article.getId());
-
         oldArticle.setTitle(article.getTitle());
-        oldArticle.setSummary(article.getSummary());
         oldArticle.setBodys(article.getBodys());
         oldArticle.setCategory(article.getCategory());
-
         return oldArticle.getId();
     }
 

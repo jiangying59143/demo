@@ -53,10 +53,6 @@ public class Article extends BaseTO {
     @Column(name = "title", length = 40)
     private String title;
 
-    @ApiModelProperty(value="摘要",name="summary")
-    @NotBlank
-    @Column(name = "summary", length = 100)
-    private String summary;
 
     @ApiModelProperty(value="文章内容数组",name="body")
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "article", orphanRemoval = true)
@@ -132,14 +128,6 @@ public class Article extends BaseTO {
 
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    public String getSummary() {
-        return summary;
-    }
-
-    public void setSummary(String summary) {
-        this.summary = summary;
     }
 
     public List<ArticleBody> getBodys() {
