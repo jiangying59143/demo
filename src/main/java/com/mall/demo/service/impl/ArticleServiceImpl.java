@@ -12,8 +12,6 @@ import com.mall.demo.repository.ArticleRepository;
 import com.mall.demo.repository.SearchKeyWordsRepository;
 import com.mall.demo.repository.UserSearchHisRepository;
 import com.mall.demo.service.ArticleService;
-import com.mall.demo.vo.ArticleVo;
-import com.mall.demo.vo.PageVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
