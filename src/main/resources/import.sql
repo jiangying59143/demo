@@ -42,9 +42,9 @@ INSERT INTO `category` (`id`, `category_name`, `create_by`, `create_date`) VALUE
 
 INSERT INTO `user_category` (`id`, `create_by`, `create_date`, `update_by`, `update_date`, `version`, `category_id`, `user_id`) VALUES (1, NULL, '2018-09-02 11:45:11', NULL, '2018-09-02 11:45:11', 1, 1, 1);
 
-INSERT INTO `article` (`id`, `author_user_id`, privilege, article_type, `create_date`, `weight`, `author_user_id`,  `category_id`, `title`) VALUES (1, 2, 1, 2, sysdate(), 0, 1, '7月以来6省份党委组织部长调整：辽宁王正谱任四川省委常委');
-INSERT INTO `article` (`id`, `author_user_id`, privilege, article_type, `create_date`, `weight`, `author_user_id`,  `category_id`, `title`) VALUES (2, 2, 1, 2, sysdate(), 0, 2, 'title2');
-INSERT INTO `article` (`id`, `author_user_id`, privilege, article_type, `create_date`, `weight`, `author_user_id`,  `category_id`, `title`) VALUES (3, 2, 1, 2, sysdate(), 0, 3, 'title3');
+INSERT INTO `article` (`id`, `author_user_id`, privilege, article_type, `create_date`, `weight`, `category_id`, `title`) VALUES (1, 2, 1, 2, sysdate(), 0, 1, '7月以来6省份党委组织部长调整：辽宁王正谱任四川省委常委');
+INSERT INTO `article` (`id`, `author_user_id`, privilege, article_type, `create_date`, `weight`, `category_id`, `title`) VALUES (2, 2, 1, 2, sysdate(), 0, 2, 'title2');
+INSERT INTO `article` (`id`, `author_user_id`, privilege, article_type, `create_date`, `weight`, `category_id`, `title`) VALUES (3, 2, 1, 2, sysdate(), 0, 3, 'title3');
 
 INSERT INTO `article_body` (`id`, `article_id`, `content`) VALUES (1, 1, '<p>又有一省份出现省级组织部部长调整。</p><p>据川报观察客户端8月30日消息，近日，经中共中央批准：王正谱同志任中共四川省委委员、常委。</p><img src="http://localhost:8888/image/1/1/1/1.jpg" img_width="550" img_height="338" alt="7月以来6省份党委组织部长调整：辽宁王正谱任四川省委常委" inline="0"><p>王正谱 资料图</p><p>王正谱，男，汉族，1963年8月生，山东烟台人。1987年7月参加工作，1987年4月加入中国共产党，大学学历，学士学位，高级经济师。 </p><p>王正谱是中组部2010年组织央地交流官员时，66名下派的京官之一。他曾任原农业部办公厅副主任、巡视员，农业部新闻发言人，原农业部财务司司长等职，2010年10月出任辽宁省辽阳市委副书记，市政府副市长、代市长 ，之后历任辽阳市长、辽阳市委书记，2015年10月任辽宁省委组织部副部长，2016年6月任省委组织部常务副部长，并于当年10月出任辽宁省委常委、组织部部长。</p><p>今年7月以来，接连6个省份出现省级组织部部长调整。</p><p>7月2日，十九届中央候补委员、湖北省委常委、组织部部长于绍良转任上海市委常委、组织部部长，填补履新吉林省委常委、常务副省长的吴靖平留下的职缺。</p><p>7月3日，2010年下派“京官”之一、四川省委常委、组织部部长黄建发转任浙江省委常委、组织部部长，接替任振鹤转任浙江省委常委、省纪委书记后留下的职缺。</p><p>7月6日，据安徽日报客户端消息，日前中央决定：严植婵同志不再担任安徽省委常委、委员职务，另有任用。严植婵此前担任安徽省委常委、组织部部长，现已出任广西壮族自治区党委常委、副主席。</p><p>此外，8月28日，中共广西壮族自治区委员会发布的王可同志免职的通知显示，经中共中央组织部同意，自治区党委研究决定：免去王可同志的自治区党委组织部部长职务。 </p>');
 INSERT INTO `article_body` (`id`, `article_id`, `content`) VALUES (2, 2, 'content2');
