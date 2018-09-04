@@ -7,33 +7,33 @@ import javax.persistence.Entity;
 @Entity
 public class Location extends BaseTO {
 
-    private String Location;
+    private String location;
 
-    private Long latitude; //纬度 南北
+    private Double latitude; //纬度 南北
 
-    private Long longitude; //经度 东西
+    private Double longitude; //经度 东西
 
     public String getLocation() {
-        return Location;
+        return location;
     }
 
     public void setLocation(String location) {
-        Location = location;
+        this.location = location;
     }
 
-    public Long getLatitude() {
+    public Double getLatitude() {
         return latitude;
     }
 
-    public void setLatitude(Long latitude) {
+    public void setLatitude(Double latitude) {
         this.latitude = latitude;
     }
 
-    public Long getLongitude() {
+    public Double getLongitude() {
         return longitude;
     }
 
-    public void setLongitude(Long longitude) {
+    public void setLongitude(Double longitude) {
         this.longitude = longitude;
     }
 }

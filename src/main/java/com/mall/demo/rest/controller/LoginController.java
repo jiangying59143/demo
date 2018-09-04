@@ -1,6 +1,5 @@
 package com.mall.demo.rest.controller;
 
-import com.alibaba.fastjson.JSON;
 import com.mall.demo.common.annotation.LogAnnotation;
 import com.mall.demo.common.constants.Base;
 import com.mall.demo.common.constants.ResultCode;
@@ -8,7 +7,7 @@ import com.mall.demo.common.result.Result;
 import com.mall.demo.configure.MySessionManager;
 import com.mall.demo.model.privilege.User;
 import com.mall.demo.service.UserInfoService;
-import com.mall.demo.vo.UserVO;
+import com.mall.demo.vo.UserTO;
 import io.swagger.annotations.*;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.*;
@@ -20,9 +19,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @Api(value = "用户登录注册", description = "用户登录注册")
 @RestController
@@ -57,7 +53,7 @@ public class LoginController {
             @ApiResponse(code = 201, message = "1:失败")})
     @PostMapping("/register")
     @LogAnnotation(module = "注册", operation = "用户注册")
-    public ResponseEntity<Result> register(@RequestBody UserVO user) {
+    public ResponseEntity<Result> register(@RequestBody UserTO user) {
         Result r = new Result();
         User temp = userInfoService.findByAccount(user.getAccount());
         if (null != temp) {
@@ -108,7 +104,7 @@ public class LoginController {
 
 //    @PostMapping("/login")
 //    @LogAnnotation(module = "登录", operation = "登录")
-    public Result login(@RequestBody UserVO user) {
+    public Result login(@RequestBody UserTO user) {
         Result r = new Result();
         executeLogin(user.getAccount(), user.getPassword(), r);
         return r;

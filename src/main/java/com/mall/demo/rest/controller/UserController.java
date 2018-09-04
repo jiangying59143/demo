@@ -9,7 +9,6 @@ import com.mall.demo.common.utils.UserUtils;
 import com.mall.demo.model.privilege.User;
 import com.mall.demo.common.result.Result;
 import com.mall.demo.service.UserInfoService;
-import com.mall.demo.vo.UserVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;

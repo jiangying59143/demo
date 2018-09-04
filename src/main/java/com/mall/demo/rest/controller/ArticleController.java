@@ -13,7 +13,7 @@ import com.mall.demo.common.utils.UserUtils;
 import com.mall.demo.model.blog.*;
 import com.mall.demo.model.privilege.User;
 import com.mall.demo.service.ArticleService;
-import com.mall.demo.vo.ArticleAddVO;
+import com.mall.demo.vo.ArticleAddTO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -29,7 +29,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import springfox.documentation.annotations.ApiIgnore;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -87,17 +86,17 @@ public class ArticleController {
             @ApiImplicitParam(name = "Authorization", value = "令牌", required = true, dataType = "String", paramType = "header"),
             @ApiImplicitParam(name = "files", value = "图片文件list", required = true, dataType = "file", paramType = "form")
     })
-    @PostMapping("/addContentAndImages")
+    @PostMapping("/create")
     @LogAnnotation(module = "添加内容和图片", operation = "添加内容和图片")
-    public Result addContentAndImages(@RequestBody ArticleAddVO articleAddVO, @RequestParam("files") MultipartFile[] files){
+    public Result addContentAndImages(@RequestBody ArticleAddTO articleAddTO, @RequestParam("files") MultipartFile[] files){
         Result r = new Result();
-        String paramError = articleAddVO.checkParamsEmpty();
+        String paramError = articleAddTO.checkParamsEmpty();
         if (BooleanUtils.isFalse(StringUtils.isEmpty(paramError))) {
             r.setResultCode(ResultCode.PARAM_IS_INVALID);
             return r;
         }
         User currentUser = UserUtils.getCurrentUser();
-        Article article = articleAddVO.getArticle();
+        Article article = articleAddTO.achieveArticle();
         List<MultipartFile> fileList = Arrays.asList(files);
         if(!CollectionUtils.isEmpty(fileList)) {
             List<ArticleImage> articleImages = null;
@@ -124,14 +123,14 @@ public class ArticleController {
                         ArticleVideoBody articleVideoBody = new ArticleVideoBody(fileName);
                         article.setArticleVideoBody(articleVideoBody);
                     }else if (article.getArticleType() == Article.ARTICLE_TYPE_IMAG_CONTENT_LIST){
-                        if(BooleanUtils.and(new boolean[]{articleAddVO.getContentList() != null && articleAddVO.getContentList().size() <= files.length })) {
+                        if(BooleanUtils.and(new boolean[]{articleAddTO.getContentList() != null && articleAddTO.getContentList().size() <= files.length })) {
                             ArticleBody4 articleBody4 = new ArticleBody4();
                             ArticleImage articleImage = new ArticleImage();
                             articleImage.setArticle(article);
                             articleImage.setOrderCount(i);
                             articleImage.setUrl(fileName);
                             articleBody4.setArticleImage(articleImage);
-                            articleBody4.setContent(StringUtils.isEmpty(articleAddVO.getContentList().get(i)) ? "" : articleAddVO.getContentList().get(i));
+                            articleBody4.setContent(StringUtils.isEmpty(articleAddTO.getContentList().get(i)) ? "" : articleAddTO.getContentList().get(i));
                             articleBody4.setArticle(article);
                             articleBody4s.add(articleBody4);
                         }else{

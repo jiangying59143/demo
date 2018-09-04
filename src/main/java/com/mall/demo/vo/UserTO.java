@@ -4,7 +4,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 @ApiModel(value="user对象",description="用户对象user")
-public class UserVO {
+public class UserTO {
     @ApiModelProperty(value="用户登录账号",name="account",example="zhangsan")
     private String account;
 
