@@ -26,11 +26,11 @@ public class Article extends BaseTO {
     //普通 返回文章+图片URL List
     public static final short ARTICLE_TYPE_COMMON = 1;
 
-    //图文 返回html
-    public static final short ARTICLE_TYPE_IMAGE_ARTICLE = 2;
-
     //视频 返回视频url
-    public static final short ARTICLE_TYPE_VEDIO = 3;
+    public static final short ARTICLE_TYPE_VEDIO = 2;
+
+    //外部分享
+    public static final short ARTICLE_TYPE_IMAGE_ARTICLE = 3;
 
     //置顶
     @ApiModelProperty(value="置顶 0:否 1:是",name="weight")
@@ -45,7 +45,7 @@ public class Article extends BaseTO {
      * 2. 图文 返回html
      * 3. 视频 返回视频url
      */
-    @ApiModelProperty(value="文章类型 1:内容+图片 2: html 图文 3. 标题+视频地址, 2:",name="articleType")
+    @ApiModelProperty(value="文章类型 [1:内容+图片][2. 标题+视频地址][3: 外部转载]",name="articleType")
     private short articleType = ARTICLE_TYPE_COMMON;
 
     @ApiModelProperty(value="标题",name="title")
@@ -54,9 +54,10 @@ public class Article extends BaseTO {
     private String title;
 
 
-    @ApiModelProperty(value="文章内容数组",name="body")
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "article", orphanRemoval = true)
-    private List<ArticleBody> bodys;
+    @ApiModelProperty(value="文章内容",name="body")
+    @OneToOne(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY, orphanRemoval = true)
+    @JoinColumn(name = "articleBoyId")
+    private ArticleBody articleBody;
 
     @ApiModelProperty(value="作者(用户)",name="author")
     @ManyToOne(fetch = FetchType.LAZY)
@@ -130,12 +131,12 @@ public class Article extends BaseTO {
         this.title = title;
     }
 
-    public List<ArticleBody> getBodys() {
-        return bodys;
+    public ArticleBody getArticleBody() {
+        return articleBody;
     }
 
-    public void setBodys(List<ArticleBody> bodys) {
-        this.bodys = bodys;
+    public void setArticleBody(ArticleBody articleBody) {
+        this.articleBody = articleBody;
     }
 
     public Category getCategory() {

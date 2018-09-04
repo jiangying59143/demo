@@ -9,10 +9,6 @@ import java.util.List;
 @Entity
 public class ArticleBody extends BaseEntity<Long> {
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "article_id")
-    private Article article;
-
     @Lob
     @Basic(fetch = FetchType.LAZY)
     @Type(type = "text")
@@ -27,14 +23,6 @@ public class ArticleBody extends BaseEntity<Long> {
 
     public void setContent(String content) {
         this.content = content;
-    }
-
-    public Article getArticle() {
-        return article;
-    }
-
-    public void setArticle(Article article) {
-        this.article = article;
     }
 
     public List<ArticleBodyImageVedio> getArticleBodyImageVedios() {

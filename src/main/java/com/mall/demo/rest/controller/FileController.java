@@ -71,50 +71,16 @@ public class FileController {
         return ResponseEntity.ok(r);
     }
 
-    @ApiIgnore
+
     @ApiOperation("多文件上传")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "Authorization", value = "令牌", required = true, dataType = "String", paramType = "header"),
-            @ApiImplicitParam(name = "file", value = "文件", required = true, dataType = "File", paramType = "form"),
-            @ApiImplicitParam(name = "file", value = "文件", required = true, dataType = "File", paramType = "form"),
+            @ApiImplicitParam(name = "files", value = "文件", required = true, dataType = "file[]", allowMultiple = true, paramType = "form")
     })
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "0:成功"),
             @ApiResponse(code = 500, message = "1:失败")})
     @PostMapping("/batch")
-    public ResponseEntity<Result> batchFileUpload(HttpServletRequest request) throws IOException {
-        List<MultipartFile> fileList = ((MultipartRequest)request).getFiles("file");
-        boolean failFlag = false;
-        List<Result> list = new ArrayList<>();
-        for (int i = 0; i < fileList.size(); i++) {
-            MultipartFile file = fileList.get(i);
-            Result r = new Result();
-            ResponseEntity<Result> rer = singleFileUpload(file, r);
-            list.add(r);
-            if(rer.getStatusCode() != HttpStatus.OK){
-                failFlag = true;
-            }
-        }
-        Result r = new Result();
-        r.setData(list);
-        if(failFlag){
-            r.setResultCode(ResultCode.ERROR);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(r);
-        }
-        r.setResultCode(ResultCode.SUCCESS);
-        return ResponseEntity.ok(r);
-    }
-
-    @ApiIgnore
-    @ApiOperation("多文件上传")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "Authorization", value = "令牌", required = true, dataType = "String", paramType = "header"),
-            @ApiImplicitParam(name = "files", value = "文件", required = true, dataType = "File", allowMultiple = true, paramType = "form")
-    })
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "0:成功"),
-            @ApiResponse(code = 500, message = "1:失败")})
-    @PostMapping("/batch2")
     public ResponseEntity<Result> batchFileUpload2(@RequestParam("files") MultipartFile[] files) throws IOException {
         List<MultipartFile> fileList = Arrays.asList(files);
         boolean failFlag = false;
