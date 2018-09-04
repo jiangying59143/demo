@@ -21,6 +21,10 @@ public class ArticleThumbsDownCount extends BaseEntity<Long> {
     //踩数
     private Long thumbsDownCount;
 
+    public ArticleThumbsDownCount(long thumbsDownCount) {
+        this.thumbsDownCount = thumbsDownCount;
+    }
+
     public Article getArticle() {
         return article;
     }

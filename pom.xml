@@ -28,6 +28,7 @@
 		<shiro.redis.version>2.4.2.1-RELEASE</shiro.redis.version>
 		<page.helper.version>1.2.5</page.helper.version>
 		<common.io.version>2.6</common.io.version>
+		<common.lang.version>3.8</common.lang.version>
 		<ikanalyzer.version>2012_u6</ikanalyzer.version>
 	</properties>
 
@@ -142,6 +143,12 @@
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
 			<version>${common.io.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>${common.lang.version}</version>
 		</dependency>
 
 		<!-- ik.中文分词器依赖-->

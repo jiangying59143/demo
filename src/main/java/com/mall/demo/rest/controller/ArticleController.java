@@ -7,25 +7,33 @@ import com.mall.demo.common.annotation.LogAnnotation;
 import com.mall.demo.common.constants.Base;
 import com.mall.demo.common.constants.ResultCode;
 import com.mall.demo.common.result.Result;
+import com.mall.demo.common.utils.FileUtils;
+import com.mall.demo.common.utils.StringUtils;
 import com.mall.demo.common.utils.UserUtils;
-import com.mall.demo.model.blog.Article;
-import com.mall.demo.model.blog.ArticleBody;
-import com.mall.demo.model.blog.UserSearchHistory;
+import com.mall.demo.model.blog.*;
 import com.mall.demo.model.privilege.User;
 import com.mall.demo.service.ArticleService;
+import com.mall.demo.vo.ArticleAddVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresRoles;
+import org.apache.shiro.util.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import springfox.documentation.annotations.ApiIgnore;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 @Api(value = "文章", description = "文章")
 @RestController
@@ -74,6 +82,79 @@ public class ArticleController {
         return Result.success(list);
     }
 
+    @ApiOperation(value="添加文章", notes="添加文章")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization", value = "令牌", required = true, dataType = "String", paramType = "header"),
+            @ApiImplicitParam(name = "files", value = "图片文件list", required = true, dataType = "file", paramType = "form")
+    })
+    @PostMapping("/addContentAndImages")
+    @LogAnnotation(module = "添加内容和图片", operation = "添加内容和图片")
+    public Result addContentAndImages(@RequestBody ArticleAddVO articleAddVO, @RequestParam("files") MultipartFile[] files){
+        Result r = new Result();
+        String paramError = articleAddVO.checkParamsEmpty();
+        if (BooleanUtils.isFalse(StringUtils.isEmpty(paramError))) {
+            r.setResultCode(ResultCode.PARAM_IS_INVALID);
+            return r;
+        }
+        User currentUser = UserUtils.getCurrentUser();
+        Article article = articleAddVO.getArticle();
+        List<MultipartFile> fileList = Arrays.asList(files);
+        if(!CollectionUtils.isEmpty(fileList)) {
+            List<ArticleImage> articleImages = null;
+            List<ArticleBody4> articleBody4s = null;
+            for (int i=0; i< fileList.size(); i++) {
+                MultipartFile file = fileList.get(i);
+                if(file != null) {
+                    String fileName = UUID.randomUUID().toString();
+                    boolean flag = FileUtils.singleFileUpload(file, currentUser.getId(), fileName);
+                    if (!flag) {
+                        FileUtils.deleteArticleTempFolder(currentUser.getId());
+                        r.setMsg(file.getOriginalFilename());
+                        r.setResultCode(ResultCode.UPLOAD_ERROR);
+                        return r;
+                    }
+                    if(article.getArticleType() == Article.ARTICLE_TYPE_IMAGE_ARTICLE || article.getArticleType() == Article.ARTICLE_TYPE_HTML) {
+                        if(articleImages==null){articleImages = new ArrayList<>();}
+                        ArticleImage articleImage = new ArticleImage();
+                        articleImage.setArticle(article);
+                        articleImage.setOrderCount(i);
+                        articleImage.setUrl(fileName);
+                        articleImages.add(articleImage);
+                    }else if(article.getArticleType() == Article.ARTICLE_TYPE_VEDIO){
+                        ArticleVideoBody articleVideoBody = new ArticleVideoBody(fileName);
+                        article.setArticleVideoBody(articleVideoBody);
+                    }else if (article.getArticleType() == Article.ARTICLE_TYPE_IMAG_CONTENT_LIST){
+                        if(BooleanUtils.and(new boolean[]{articleAddVO.getContentList() != null && articleAddVO.getContentList().size() <= files.length })) {
+                            ArticleBody4 articleBody4 = new ArticleBody4();
+                            ArticleImage articleImage = new ArticleImage();
+                            articleImage.setArticle(article);
+                            articleImage.setOrderCount(i);
+                            articleImage.setUrl(fileName);
+                            articleBody4.setArticleImage(articleImage);
+                            articleBody4.setContent(StringUtils.isEmpty(articleAddVO.getContentList().get(i)) ? "" : articleAddVO.getContentList().get(i));
+                            articleBody4.setArticle(article);
+                            articleBody4s.add(articleBody4);
+                        }else{
+                            r.setResultCode(ResultCode.PARAM_IS_INVALID);
+                            return r;
+                        }
+                    }
+                }
+            }
+            article.setArticleImages(articleImages);
+            article.setArticleBody4(articleBody4s);
+        }
+        article.setAuthor(currentUser);
+        Long articleId = articleService.saveArticle(article);
+
+        if(!FileUtils.renameArticleTempFolder(currentUser.getId(), articleId)){
+            articleService.deleteArticleById(articleId);
+            r.setResultCode(ResultCode.UPLOAD_ERROR);
+            return r;
+        }
+        return Result.success();
+    }
+
     @ApiIgnore
     @ApiOperation(value="获取最热文章", notes="根据id获取文章")
     @GetMapping("/hot")
@@ -109,9 +190,7 @@ public class ArticleController {
             })
     @LogAnnotation(module = "文章", operation = "根据id获取文章")
     public Result getArticleById(@PathVariable("id") Long id) {
-
         Result r = new Result();
-
         if (null == id) {
             r.setResultCode(ResultCode.PARAM_IS_BLANK);
             return r;
@@ -128,7 +207,7 @@ public class ArticleController {
     @FastJsonView(
             exclude = {
                     @FastJsonFilter(clazz = Article.class, props = {"comments"}),
-                    @FastJsonFilter(clazz = ArticleBody.class, props = {"contentHtml"})},
+                    @FastJsonFilter(clazz = ArticleBody4.class, props = {"contentHtml"})},
             include = {@FastJsonFilter(clazz = User.class, props = {"id", "name", "avatar"})})
     @LogAnnotation(module = "文章", operation = "根据id获取文章，添加阅读数")
     public Result getArticleAndAddViews(@PathVariable("id") Long id) {

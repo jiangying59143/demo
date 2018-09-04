@@ -22,6 +22,10 @@ public class ArticleThumbsUpCount extends BaseEntity<Long> {
     //赞数
     private Long thumbsUpCount;
 
+    public ArticleThumbsUpCount(Long thumbsUpCount) {
+        thumbsUpCount = thumbsUpCount;
+    }
+
     public Article getArticle() {
         return article;
     }

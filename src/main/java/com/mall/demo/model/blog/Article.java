@@ -23,17 +23,19 @@ public class Article extends BaseTO {
     //文章不公开
     public static final short ARTICLE_PPRIVATE = 2;
 
-    //普通 返回文章+图片URL List
-    public static final short ARTICLE_TYPE_COMMON = 1;
+    //内容+图片
+    public static final short ARTICLE_TYPE_IMAGE_ARTICLE = 1;
 
     //视频 返回视频url
     public static final short ARTICLE_TYPE_VEDIO = 2;
 
-    //外部分享
-    public static final short ARTICLE_TYPE_IMAGE_ARTICLE = 3;
+    //普通 返回文章+图片URL List
+    public static final short ARTICLE_TYPE_HTML= 3;
+
+    public static final short ARTICLE_TYPE_IMAG_CONTENT_LIST= 4;
 
     //置顶
-    @ApiModelProperty(value="置顶 0:否 1:是",name="weight")
+    @ApiModelProperty(value="置顶 1:否 2:是",name="weight")
     private short weight = Article_Common;
 
     //文章权限
@@ -45,29 +47,47 @@ public class Article extends BaseTO {
      * 2. 图文 返回html
      * 3. 视频 返回视频url
      */
-    @ApiModelProperty(value="文章类型 [1:内容+图片][2. 标题+视频地址][3: 外部转载]",name="articleType")
-    private short articleType = ARTICLE_TYPE_COMMON;
+    @ApiModelProperty(value="文章类型 [1:内容+图片][2. 标题+视频地址][3: 图文html][4: 图+内容 list]",name="articleType")
+    private short articleType = ARTICLE_TYPE_IMAGE_ARTICLE;
 
     @ApiModelProperty(value="标题",name="title")
     @NotBlank
-    @Column(name = "title", length = 40)
+    @Column(name = "title", length = 2000)
     private String title;
 
 
-    @ApiModelProperty(value="文章内容",name="body")
+    @ApiModelProperty(value="[1:内容+图片]",name="articleBody1")
     @OneToOne(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY, orphanRemoval = true)
-    @JoinColumn(name = "articleBoyId")
-    private ArticleBody articleBody;
+    @JoinColumn(name = "article_Body1_Id")
+    private ArticleBody1 articleBody1;
+
+    @ApiModelProperty(value="[2. 标题+视频地址]",name="articleVideoBody")
+    @OneToOne(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY, orphanRemoval = true)
+    @JoinColumn(name = "article_video_body_Id")
+    private ArticleVideoBody articleVideoBody;
+
+    @ApiModelProperty(value="[3: 图文html]",name="articleBody3")
+    @OneToOne(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY, orphanRemoval = true)
+    @JoinColumn(name = "article_Body3_Id")
+    private ArticleBody3 articleBody3;
+
+    @ApiModelProperty(value="[4: 图+内容 list]",name="articleBody4")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "article", orphanRemoval = true)
+    private List<ArticleBody4> articleBody4;
+
+    @ApiModelProperty(value="文章图片",name="articleImages")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "article", orphanRemoval = true)
+    private List<ArticleImage> articleImages;
 
     @ApiModelProperty(value="作者(用户)",name="author")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
     @JoinColumn(name = "author_user_id")
     private User author;
 
     @ApiModelProperty(value="类别",name="category")
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id")
-    private Category category;
+    @ManyToMany(fetch= FetchType.EAGER)
+    @JoinTable(name = "articleCategory", joinColumns = { @JoinColumn(name = "articleId") }, inverseJoinColumns ={@JoinColumn(name = "categoryId") })
+    private List<Category> categoryList;
 
     @ApiModelProperty(value="位置信息",name="location")
     //如果orphanRemoval = true 删除对象，false只删除关系
@@ -123,6 +143,46 @@ public class Article extends BaseTO {
     @Transient
     private long thumbsDownCount;
 
+    public ArticleBody1 getArticleBody1() {
+        return articleBody1;
+    }
+
+    public void setArticleBody1(ArticleBody1 articleBody1) {
+        this.articleBody1 = articleBody1;
+    }
+
+    public ArticleVideoBody getArticleVideoBody() {
+        return articleVideoBody;
+    }
+
+    public void setArticleVideoBody(ArticleVideoBody articleVideoBody) {
+        this.articleVideoBody = articleVideoBody;
+    }
+
+    public ArticleBody3 getArticleBody3() {
+        return articleBody3;
+    }
+
+    public void setArticleBody3(ArticleBody3 articleBody3) {
+        this.articleBody3 = articleBody3;
+    }
+
+    public List<ArticleBody4> getArticleBody4() {
+        return articleBody4;
+    }
+
+    public void setArticleBody4(List<ArticleBody4> articleBody4) {
+        this.articleBody4 = articleBody4;
+    }
+
+    public List<ArticleImage> getArticleImages() {
+        return articleImages;
+    }
+
+    public void setArticleImages(List<ArticleImage> articleImages) {
+        this.articleImages = articleImages;
+    }
+
     public String getTitle() {
         return title;
     }
@@ -131,20 +191,12 @@ public class Article extends BaseTO {
         this.title = title;
     }
 
-    public ArticleBody getArticleBody() {
-        return articleBody;
+    public List<Category> getCategoryList() {
+        return categoryList;
     }
 
-    public void setArticleBody(ArticleBody articleBody) {
-        this.articleBody = articleBody;
-    }
-
-    public Category getCategory() {
-        return category;
-    }
-
-    public void setCategory(Category category) {
-        this.category = category;
+    public void setCategoryList(List<Category> categoryList) {
+        this.categoryList = categoryList;
     }
 
     public List<Comment> getComments() {

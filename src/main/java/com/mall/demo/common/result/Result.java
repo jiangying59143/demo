@@ -1,6 +1,7 @@
 package com.mall.demo.common.result;
 
 import com.mall.demo.common.constants.ResultCode;
+import com.mall.demo.common.utils.StringUtils;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -58,7 +59,7 @@ public class Result implements Serializable {
 
     public void setResultCode(ResultCode code) {
         this.code = code.code();
-        this.msg = code.message();
+        this.msg = StringUtils.isEmpty(msg)? code.message(): msg + code.message();
     }
 
 

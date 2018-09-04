@@ -11,7 +11,11 @@ import javax.persistence.Entity;
 @Entity
 public class CommentCount extends BaseEntity<Long> {
 
-     //阅读量
+    public CommentCount(Long commentCount) {
+        this.commentCount = commentCount;
+    }
+
+    //阅读量
     private Long commentCount;
 
     public Long getCommentCount() {

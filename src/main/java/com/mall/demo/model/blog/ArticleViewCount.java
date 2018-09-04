@@ -14,6 +14,14 @@ import javax.persistence.OneToOne;
  */
 @Entity
 public class ArticleViewCount extends BaseEntity<Long> {
+
+    public ArticleViewCount() {
+    }
+
+    public ArticleViewCount(Long viewCount) {
+        this.viewCount = viewCount;
+    }
+
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "article_id")
     private Article article;

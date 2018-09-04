@@ -8,22 +8,24 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 @Entity
-public class ArticleBodyImageVedio extends BaseEntity<Long> {
+public class ArticleImage extends BaseEntity<Long> {
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "article_body_id")
-    private ArticleBody articleBody;
+    @JoinColumn(name = "article_id")
+    private Article article;
 
     private String url;
 
     //排序号
     private int orderCount;
 
-    public ArticleBody getArticleBody() {
-        return articleBody;
+
+    public Article getArticle() {
+        return article;
     }
 
-    public void setArticleBody(ArticleBody articleBody) {
-        this.articleBody = articleBody;
+    public void setArticle(Article article) {
+        this.article = article;
     }
 
     public String getUrl() {

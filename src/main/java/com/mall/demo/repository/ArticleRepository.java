@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface ArticleRepository extends JpaRepository<Article, Long> {
 
-    List<Article> findByCategory(Category category);
+    List<Article> findByCategoryList(List<Category> categories);
 
     @Query(value = "select * from me_article order by view_counts desc limit :limit", nativeQuery = true)
     List<Article> findOrderByViewsAndLimit(@Param("limit") int limit);

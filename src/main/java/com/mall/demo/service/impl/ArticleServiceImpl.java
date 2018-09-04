@@ -12,6 +12,7 @@ import com.mall.demo.repository.ArticleRepository;
 import com.mall.demo.repository.SearchKeyWordsRepository;
 import com.mall.demo.repository.UserSearchHisRepository;
 import com.mall.demo.service.ArticleService;
+import com.mall.demo.vo.ArticleAddVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -48,7 +49,6 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     @Transactional
     public Long publishArticle(Article article) {
-
         if(null != article.getId()){
             return this.updateArticle(article);
         }else{
@@ -59,16 +59,11 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     @Transactional
     public Long saveArticle(Article article) {
-
         User currentUser = UserUtils.getCurrentUser();
-
         if (null != currentUser) {
             article.setAuthor(currentUser);
         }
-
-        article.setCreateDate(new Date());
         article.setWeight(Article.Article_Common);
-
         return articleRepository.save(article).getId();
     }
 
@@ -77,8 +72,7 @@ public class ArticleServiceImpl implements ArticleService {
     public Long updateArticle(Article article) {
         Article oldArticle = articleRepository.getOne(article.getId());
         oldArticle.setTitle(article.getTitle());
-        oldArticle.setBodys(article.getBodys());
-        oldArticle.setCategory(article.getCategory());
+        oldArticle.setCategoryList(article.getCategoryList());
         return oldArticle.getId();
     }
 
@@ -93,7 +87,7 @@ public class ArticleServiceImpl implements ArticleService {
         Category c = new Category();
         c.setId(id);
 
-        return articleRepository.findByCategory(c);
+        return articleRepository.findByCategoryList(Arrays.asList(c));
     }
 
     @Override
