@@ -202,7 +202,7 @@ public class ArticleController {
             include = {
                     @FastJsonFilter(clazz = Article.class, props = {"articleType","title","articleBody3", "categoryList", "articleImages", "author","viewCount", "commentCount", "thumbsUpCount", "thumbsDownCount"}),
                     @FastJsonFilter(clazz = Location.class, props = {"location","latitude","longitude"}),
-                    @FastJsonFilter(clazz = User.class, props = {"nickname"})
+                    @FastJsonFilter(clazz = User.class, props = {"id", "nickname"})
             })
     @LogAnnotation(module = "文章", operation = "根据id获取文章")
     public Result getArticleById(@PathVariable("id") Long id) {
