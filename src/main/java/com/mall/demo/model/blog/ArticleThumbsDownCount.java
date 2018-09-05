@@ -14,23 +14,15 @@ import javax.persistence.OneToOne;
 @Entity
 public class ArticleThumbsDownCount extends BaseEntity<Long> {
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "article_id")
-    private Article article;
-
     //踩数
     private Long thumbsDownCount;
 
+    public ArticleThumbsDownCount() {
+
+    }
+
     public ArticleThumbsDownCount(long thumbsDownCount) {
         this.thumbsDownCount = thumbsDownCount;
-    }
-
-    public Article getArticle() {
-        return article;
-    }
-
-    public void setArticle(Article article) {
-        this.article = article;
     }
 
     public Long getThumbsDownCount() {

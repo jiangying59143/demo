@@ -22,20 +22,8 @@ public class ArticleViewCount extends BaseEntity<Long> {
         this.viewCount = viewCount;
     }
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "article_id")
-    private Article article;
-
      //阅读量
     private Long viewCount;
-
-    public Article getArticle() {
-        return article;
-    }
-
-    public void setArticle(Article article) {
-        this.article = article;
-    }
 
     public Long getViewCount() {
         return viewCount;

@@ -157,7 +157,41 @@ public class ArticleController {
         return Result.success();
     }
 
-    @ApiIgnore
+    @ApiOperation(value="添加HTML文章", notes="添加HTML文章(支持postmanc测试)")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization", value = "令牌", required = true, dataType = "String", paramType = "header"),
+            @ApiImplicitParam(name = "categoryId", value = "主题ID", required = true, dataType = "String", paramType = "form"),
+            @ApiImplicitParam(name = "title", value = "文章标题", required = true, dataType = "String", paramType = "form"),
+            @ApiImplicitParam(name = "content", value = "文章内容", required = true, dataType = "String", paramType = "form"),
+    })
+    @PostMapping("/createHtml")
+    @LogAnnotation(module = "添加内容和图片", operation = "添加内容和图片")
+    public Result addHTML(@RequestParam Long categoryId, @RequestParam String title, @RequestParam String content){
+        Result r = new Result();
+        if (BooleanUtils.isTrue(StringUtils.isEmpty(content))) {
+            r.setResultCode(ResultCode.PARAM_IS_INVALID);
+            return r;
+        }
+        User currentUser = UserUtils.getCurrentUser();
+        Article article = new Article();
+        article.setWeight(Article.Article_Common);
+        article.setPrivilege(Article.ARTICLE_PUBLIC);
+        article.setTitle(title);
+        article.setArticleType(Article.ARTICLE_TYPE_IMAGE_ARTICLE);
+        article.setCategoryList(Arrays.asList(new Category(categoryId)));
+        article.setArticleBody3(new ArticleBody3(content));
+        article.setArticleViewCount(new ArticleViewCount(0L));
+        article.setArticleThumbsUpCount(new ArticleThumbsUpCount(0L));
+        article.setArticleThumbsDownCount(new ArticleThumbsDownCount(0L));
+        article.setArticleCommentCount(new CommentCount(0L));
+        //@TODO 位置
+        article.setAuthor(currentUser);
+        Long articleId = articleService.saveArticle(article);
+
+        return Result.success(articleId);
+    }
+
+
     @ApiOperation(value="获取一篇文章", notes="根据id获取文章")
     @GetMapping("/{id}")
     @ApiImplicitParams({
@@ -166,8 +200,9 @@ public class ArticleController {
     })
     @FastJsonView(
             include = {
-                    @FastJsonFilter(clazz = Article.class, props = {"articleType","title","articleBody3", "articleImages"}),
-                    @FastJsonFilter(clazz = Location.class, props = {"location","latitude","longitude"})
+                    @FastJsonFilter(clazz = Article.class, props = {"articleType","title","articleBody3", "articleImages", "author","viewCount", "commentCount", "thumbsUpCount", "thumbsDownCount"}),
+                    @FastJsonFilter(clazz = Location.class, props = {"location","latitude","longitude"}),
+                    @FastJsonFilter(clazz = User.class, props = {"nickname"})
             })
     @LogAnnotation(module = "文章", operation = "根据id获取文章")
     public Result getArticleById(@PathVariable("id") Long id) {
@@ -176,7 +211,6 @@ public class ArticleController {
             r.setResultCode(ResultCode.PARAM_IS_BLANK);
             return r;
         }
-
         Article article = articleService.getArticleById(id);
         r.setResultCode(ResultCode.SUCCESS);
         r.setData(article);

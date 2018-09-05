@@ -10,6 +10,10 @@ import javax.persistence.Lob;
 
 @Entity
 public class ArticleBody3 extends BaseEntity<Long> {
+
+    public ArticleBody3() {
+    }
+
     public ArticleBody3(String content) {
         this.content = content;
     }

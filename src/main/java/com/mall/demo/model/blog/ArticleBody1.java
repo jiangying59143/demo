@@ -7,6 +7,10 @@ import javax.persistence.*;
 
 @Entity
 public class ArticleBody1 extends BaseEntity<Long> {
+
+    public ArticleBody1() {
+    }
+
     public ArticleBody1(String content) {
         this.content = content;
     }

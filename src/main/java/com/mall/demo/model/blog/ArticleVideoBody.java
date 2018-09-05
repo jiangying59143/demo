@@ -14,6 +14,9 @@ public class ArticleVideoBody extends BaseEntity<Long> {
         this.url = url;
     }
 
+    public ArticleVideoBody() {
+    }
+
     @Lob
     @Basic(fetch = FetchType.LAZY)
     private String url;

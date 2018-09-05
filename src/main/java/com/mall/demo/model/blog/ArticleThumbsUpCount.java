@@ -15,23 +15,15 @@ import javax.persistence.OneToOne;
 @Entity
 public class ArticleThumbsUpCount extends BaseEntity<Long> {
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "article_id")
-    private Article article;
-
     //赞数
     private Long thumbsUpCount;
 
+    public ArticleThumbsUpCount() {
+
+    }
+
     public ArticleThumbsUpCount(Long thumbsUpCount) {
-        thumbsUpCount = thumbsUpCount;
-    }
-
-    public Article getArticle() {
-        return article;
-    }
-
-    public void setArticle(Article article) {
-        this.article = article;
+        this.thumbsUpCount = thumbsUpCount;
     }
 
     public Long getThumbsUpCount() {

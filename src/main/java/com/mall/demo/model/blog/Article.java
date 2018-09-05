@@ -57,17 +57,17 @@ public class Article extends BaseTO {
 
 
     @ApiModelProperty(value="[1:内容+图片]",name="articleBody1")
-    @OneToOne(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY, orphanRemoval = true)
+    @OneToOne(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER, orphanRemoval = true)
     @JoinColumn(name = "article_Body1_Id")
     private ArticleBody1 articleBody1;
 
     @ApiModelProperty(value="[2. 标题+视频地址]",name="articleVideoBody")
-    @OneToOne(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY, orphanRemoval = true)
+    @OneToOne(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER, orphanRemoval = true)
     @JoinColumn(name = "article_video_body_Id")
     private ArticleVideoBody articleVideoBody;
 
-    @ApiModelProperty(value="[3: 图文html]",name="articleBody3")
-    @OneToOne(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY, orphanRemoval = true)
+    @ApiModelProperty(value="[3: 图文html]",name="contentBody")
+    @OneToOne(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER, orphanRemoval = true)
     @JoinColumn(name = "article_Body3_Id")
     private ArticleBody3 articleBody3;
 
@@ -76,22 +76,22 @@ public class Article extends BaseTO {
     private List<ArticleBody4> articleBody4;
 
     @ApiModelProperty(value="文章图片",name="articleImages")
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "article", orphanRemoval = true)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "article", orphanRemoval = true)
     private List<ArticleImage> articleImages;
 
     @ApiModelProperty(value="作者(用户)",name="author")
-    @ManyToOne(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "author_user_id")
     private User author;
 
     @ApiModelProperty(value="类别",name="category")
-    @ManyToMany(fetch= FetchType.EAGER)
+    @ManyToMany(fetch= FetchType.LAZY)
     @JoinTable(name = "articleCategory", joinColumns = { @JoinColumn(name = "articleId") }, inverseJoinColumns ={@JoinColumn(name = "categoryId") })
     private List<Category> categoryList;
 
     @ApiModelProperty(value="位置信息",name="location")
     //如果orphanRemoval = true 删除对象，false只删除关系
-    @OneToOne(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY, orphanRemoval = true)
+    @OneToOne(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER, orphanRemoval = true)
     @JoinColumn(name = "location_id")
     private Location location;
 
@@ -108,22 +108,22 @@ public class Article extends BaseTO {
     private List<ArticleThumbsDown> articleThumbsDowns;
 
     //阅读量表
-    @OneToOne(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY, orphanRemoval = true)
+    @OneToOne(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER, orphanRemoval = true)
     @JoinColumn(name = "viewCount_id")
     private ArticleViewCount articleViewCount;
 
     //赞数表
-    @OneToOne(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY, orphanRemoval = true)
+    @OneToOne(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER, orphanRemoval = true)
     @JoinColumn(name = "thumbsUpCount_id")
     private ArticleThumbsUpCount articleThumbsUpCount;
 
     //踩数表
-    @OneToOne(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY, orphanRemoval = true)
+    @OneToOne(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER, orphanRemoval = true)
     @JoinColumn(name = "thumbsDownCount_id")
     private ArticleThumbsDownCount articleThumbsDownCount;
 
     //评论数表
-    @OneToOne(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY, orphanRemoval = true)
+    @OneToOne(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER, orphanRemoval = true)
     @JoinColumn(name = "commentsCount_id")
     private CommentCount articleCommentCount;
 

@@ -44,7 +44,7 @@ public class FileUtils {
             byte[] bytes = file.getBytes();
             org.apache.commons.io.FileUtils.writeByteArrayToFile(
                     new File(baseFolderPath
-                            + (userId == null ? "" : userId + File.separator) + TEMP_PATH + File.separator
+                            + (userId == null ? "" : userId + File.separator)
                             + (StringUtils.isEmpty(newFileName)?fileName:newFileName)
                             + fileType), bytes);
         }catch(Exception e){
