@@ -81,7 +81,10 @@ public class ArticleController {
         return Result.success(list);
     }
 
-    @ApiOperation(value="添加文章", notes="添加文章")
+
+
+    @ApiIgnore
+    @ApiOperation(value="添加文章（支持postmanc测试）", notes="添加文章（支持postmanc测试）")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "Authorization", value = "令牌", required = true, dataType = "String", paramType = "header"),
             @ApiImplicitParam(name = "files", value = "图片文件list", required = true, dataType = "file", paramType = "form")
@@ -155,28 +158,6 @@ public class ArticleController {
     }
 
     @ApiIgnore
-    @ApiOperation(value="获取最热文章", notes="根据id获取文章")
-    @GetMapping("/hot")
-    @FastJsonView(include = {@FastJsonFilter(clazz = Article.class, props = {"id", "title"})})
-    @LogAnnotation(module = "文章", operation = "获取最热文章")
-    public Result listHotArticles() {
-        int limit = 6;
-        List<Article> articles = articleService.listHotArticles(limit);
-        return Result.success(articles);
-    }
-
-    @ApiIgnore
-    @GetMapping("/new")
-    @FastJsonView(include = {@FastJsonFilter(clazz = Article.class, props = {"id", "title"})})
-    @LogAnnotation(module = "文章", operation = "获取最新文章")
-    public Result listNewArticles() {
-        int limit = 6;
-        List<Article> articles = articleService.listNewArticles(limit);
-
-        return Result.success(articles);
-    }
-
-    @ApiIgnore
     @ApiOperation(value="获取一篇文章", notes="根据id获取文章")
     @GetMapping("/{id}")
     @ApiImplicitParams({
@@ -184,8 +165,9 @@ public class ArticleController {
             @ApiImplicitParam(name = "Authorization", value = "令牌", required = true, dataType = "String", paramType = "header")
     })
     @FastJsonView(
-            exclude = {
-                    @FastJsonFilter(clazz = Article.class, props = {"comments","location","tags","author"})
+            include = {
+                    @FastJsonFilter(clazz = Article.class, props = {"articleType","title","articleBody3", "articleImages"}),
+                    @FastJsonFilter(clazz = Location.class, props = {"location","latitude","longitude"})
             })
     @LogAnnotation(module = "文章", operation = "根据id获取文章")
     public Result getArticleById(@PathVariable("id") Long id) {
