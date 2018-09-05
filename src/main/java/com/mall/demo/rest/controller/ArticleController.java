@@ -200,7 +200,7 @@ public class ArticleController {
     })
     @FastJsonView(
             include = {
-                    @FastJsonFilter(clazz = Article.class, props = {"articleType","title","articleBody3", "articleImages", "author","viewCount", "commentCount", "thumbsUpCount", "thumbsDownCount"}),
+                    @FastJsonFilter(clazz = Article.class, props = {"articleType","title","articleBody3", "categoryList", "articleImages", "author","viewCount", "commentCount", "thumbsUpCount", "thumbsDownCount"}),
                     @FastJsonFilter(clazz = Location.class, props = {"location","latitude","longitude"}),
                     @FastJsonFilter(clazz = User.class, props = {"nickname"})
             })
