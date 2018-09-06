@@ -26,17 +26,15 @@ public class FileUtils {
 
     private static final String TEMP_PATH = "temp";
 
+    public static final String UPLOAD_FILE_VIDEO = "video";
+
+    public static final String UPLOAD_FILE_IMAGE = "image";
+
     @Value("${me.upload.path}")
     private static String baseFolderPath;
 
     public static boolean singleFileUpload(MultipartFile file, Long userId, String newFileName){
-        String fileType = "";
         String fileName = file.getOriginalFilename();
-        if(!StringUtils.isEmpty(file.getName()) && file.getName().contains(".")){
-            String[] ss = fileName.split(".");
-            fileName = ss[0];
-            fileType = "."+ss[1];
-        }
         if(BooleanUtils.and(new boolean[]{userId !=null, !new File(baseFolderPath + userId).exists()}) ){
             new File(baseFolderPath + userId).mkdirs();
         }
@@ -45,8 +43,7 @@ public class FileUtils {
             org.apache.commons.io.FileUtils.writeByteArrayToFile(
                     new File(baseFolderPath
                             + (userId == null ? "" : userId + File.separator)
-                            + (StringUtils.isEmpty(newFileName)?fileName:newFileName)
-                            + fileType), bytes);
+                            + (StringUtils.isEmpty(newFileName)?fileName:newFileName)), bytes);
         }catch(Exception e){
             log.error(fileName + "file upload error", e);
             return false;
@@ -54,8 +51,8 @@ public class FileUtils {
         return true;
     }
 
-    public static void deleteArticleTempFolder(Long userId){
-        File file = new File(baseFolderPath + userId + File.separator + TEMP_PATH );
+    public static void deleteArticleTempFolder(Long userId, String fileName){
+        File file = new File(baseFolderPath + userId + File.separator + fileName );
         if(file.exists()){
             file.delete();
         }

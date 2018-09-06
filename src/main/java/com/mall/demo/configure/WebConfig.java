@@ -4,6 +4,7 @@ import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.alibaba.fastjson.support.config.FastJsonConfig;
 import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter;
 import com.alibaba.fastjson.support.spring.FastJsonViewResponseBodyAdvice;
+import com.mall.demo.common.utils.FileUtils;
 import org.apache.catalina.filters.RemoteIpFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,13 +45,13 @@ public class WebConfig extends WebMvcConfigurationSupport  {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        File image = new File(baseUploadPath + "image/");
+        File image = new File(baseUploadPath + FileUtils.UPLOAD_FILE_IMAGE + File.separator);
         if(!image.exists()){
             image.mkdirs();
         }
-        File vedio = new File(baseUploadPath + "vedio/");
-        if(!vedio.exists()){
-            vedio.mkdirs();
+        File video = new File(baseUploadPath + FileUtils.UPLOAD_FILE_VIDEO + File.separator);
+        if(!video.exists()){
+            video.mkdirs();
         }
         registry.addResourceHandler("/**").addResourceLocations(
                 "classpath:/static/");
