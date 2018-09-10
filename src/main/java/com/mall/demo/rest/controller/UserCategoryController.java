@@ -34,7 +34,7 @@ public class UserCategoryController {
 
     @ApiOperation(value="我的主题", notes="我的主题")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "Authorization", value = "令牌", required = true, dataType = "String", paramType = "header")
+            @ApiImplicitParam(name = "Oauth-Token", value = "令牌", required = true, dataType = "String", paramType = "header")
     })
     @FastJsonView(
             include = {
@@ -51,7 +51,7 @@ public class UserCategoryController {
     @ApiOperation(value="推荐主题", notes="推荐主题")
     @GetMapping("/recommend")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "Authorization", value = "令牌", required = true, dataType = "String", paramType = "header")
+            @ApiImplicitParam(name = "Oauth-Token", value = "令牌", required = true, dataType = "String", paramType = "header")
     })
     @FastJsonView(
             include = {
@@ -66,7 +66,7 @@ public class UserCategoryController {
     @ApiOperation(value="添加到我的主题", notes="添加到我的主题")
     @GetMapping("/addToMine")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "Authorization", value = "令牌", required = true, dataType = "String", paramType = "header"),
+            @ApiImplicitParam(name = "Oauth-Token", value = "令牌", required = true, dataType = "String", paramType = "header"),
             @ApiImplicitParam(name = "categoryId", value = "主题主键", required = true, dataType = "Long", paramType = "query")
     })
     @LogAnnotation(module = "添加到我的主题", operation = "添加到我的主题")
@@ -84,7 +84,7 @@ public class UserCategoryController {
     @ApiOperation(value="删除我的主题", notes="删除我的主题")
     @GetMapping("/deleteFromMine")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "Authorization", value = "令牌", required = true, dataType = "String", paramType = "header"),
+            @ApiImplicitParam(name = "Oauth-Token", value = "令牌", required = true, dataType = "String", paramType = "header"),
             @ApiImplicitParam(name = "categoryId", value = "主题主键", required = true, dataType = "Long", paramType = "query")
     })
     @LogAnnotation(module = "删除我的主题", operation = "删除我的主题")

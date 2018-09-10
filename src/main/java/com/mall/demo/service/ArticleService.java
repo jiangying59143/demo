@@ -22,7 +22,7 @@ public interface ArticleService {
 
     void deleteArticleById(Long id);
 
-    List<Article> listArticlesByCategory(Long id);
+    List<Article> listArticlesByCategory(Long id, String title);
 
     Article getArticleAndAddViews(Long id);
 

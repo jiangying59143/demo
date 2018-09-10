@@ -80,7 +80,7 @@ public class LoginController {
 
     @ApiOperation(value="用户退出系统", notes="用户登出")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "Authorization", value = "令牌", required = true, dataType = "String", paramType = "header")
+            @ApiImplicitParam(name = "Oauth-Token", value = "令牌", required = true, dataType = "String", paramType = "header")
     })
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "20001:用户未登录"),

@@ -32,7 +32,7 @@ public class UserController {
 
     @ApiOperation(value="获取所有用户", notes="获取所有用户")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "Authorization", value = "令牌", required = true, dataType = "String", paramType = "header")
+            @ApiImplicitParam(name = "Oauth-Token", value = "令牌", required = true, dataType = "String", paramType = "header")
     })
     @FastJsonView(
             exclude = {
@@ -52,7 +52,7 @@ public class UserController {
     @ApiOperation(value="获取一个用户", notes="根据id获取用户")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id", value = "主键", required = true, dataType = "Long", paramType = "path"),
-            @ApiImplicitParam(name = "Authorization", value = "令牌", required = true, dataType = "String", paramType = "header")
+            @ApiImplicitParam(name = "Oauth-Token", value = "令牌", required = true, dataType = "String", paramType = "header")
     })
     @GetMapping("/{id}")
     @LogAnnotation(module = "用户", operation = "根据id获取用户")
@@ -80,7 +80,7 @@ public class UserController {
 
     @ApiOperation(value="获取当前用户", notes="根据token获取用户")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "Authorization", value = "令牌", required = true, dataType = "String", paramType = "header")
+            @ApiImplicitParam(name = "Oauth-Token", value = "令牌", required = true, dataType = "String", paramType = "header")
     })
     @GetMapping("/currentUser")
     @FastJsonView(

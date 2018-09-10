@@ -82,11 +82,8 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    public List<Article> listArticlesByCategory(Long id) {
-        Category c = new Category();
-        c.setId(id);
-
-        return articleRepository.findByCategoryList(Arrays.asList(c));
+    public List<Article> listArticlesByCategory(Long id, String title) {
+        return articleRepository.findByTitleLike(title);
     }
 
     @Override

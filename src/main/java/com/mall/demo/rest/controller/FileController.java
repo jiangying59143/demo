@@ -41,7 +41,7 @@ public class FileController {
             @ApiResponse(code = 204, message = "80000:上传文件为空", response=Result.class),
             @ApiResponse(code = 500, message = "1:失败")})
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "Authorization", value = "令牌", required = true, dataType = "String", paramType = "header")
+            @ApiImplicitParam(name = "Oauth-Token", value = "令牌", required = true, dataType = "String", paramType = "header")
     })
     @PostMapping
     public ResponseEntity<Result> fileUpload(MultipartFile file) {
@@ -74,7 +74,7 @@ public class FileController {
 
     @ApiOperation("多文件上传")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "Authorization", value = "令牌", required = true, dataType = "String", paramType = "header"),
+            @ApiImplicitParam(name = "Oauth-Token", value = "令牌", required = true, dataType = "String", paramType = "header"),
             @ApiImplicitParam(name = "files", value = "文件", required = true, dataType = "file[]", allowMultiple = true, paramType = "form")
     })
     @ApiResponses(value = {
@@ -107,7 +107,7 @@ public class FileController {
     @ApiIgnore
     @ApiOperation("文件下载")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "Authorization", value = "令牌", required = true, dataType = "String", paramType = "header")
+            @ApiImplicitParam(name = "Oauth-Token", value = "令牌", required = true, dataType = "String", paramType = "header")
     })
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "0:成功"),

@@ -51,7 +51,7 @@ public class CategoryController {
 
     @ApiOperation(value="根据id获取分类", notes="根据id获取分类")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "Authorization", value = "令牌", required = true, dataType = "String", paramType = "header")
+            @ApiImplicitParam(name = "Oauth-Token", value = "令牌", required = true, dataType = "String", paramType = "header")
     })
     @GetMapping("/{id}")
     @LogAnnotation(module = "文章分类", operation = "根据id获取文章分类")
@@ -69,7 +69,7 @@ public class CategoryController {
 
     @ApiOperation(value="创建分类(admin)", notes="创建分类(admin)")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "Authorization", value = "令牌", required = true, dataType = "String", paramType = "header")
+            @ApiImplicitParam(name = "Oauth-Token", value = "令牌", required = true, dataType = "String", paramType = "header")
     })
     @PostMapping("/create")
     @RequiresRoles(Base.ROLE_ADMIN)
@@ -103,7 +103,7 @@ public class CategoryController {
 
     @ApiOperation(value="删除分类(admin)", notes="删除分类(admin)")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "Authorization", value = "令牌", required = true, dataType = "String", paramType = "header")
+            @ApiImplicitParam(name = "Oauth-Token", value = "令牌", required = true, dataType = "String", paramType = "header")
     })
     @GetMapping("/delete/{id}")
     @RequiresRoles(Base.ROLE_ADMIN)
