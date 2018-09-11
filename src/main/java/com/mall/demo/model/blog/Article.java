@@ -11,6 +11,13 @@ import java.util.List;
 @Entity
 public class Article extends BaseTO {
 
+    public Article() {
+    }
+
+    public Article(Long id) {
+        this.id = id;
+    }
+
     //置顶
     public static final short Article_TOP = 1;
 
@@ -76,7 +83,7 @@ public class Article extends BaseTO {
     private List<ArticleBody4> articleBody4;
 
     @ApiModelProperty(value="文章图片",name="articleImages")
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "article", orphanRemoval = true)
+    @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER, mappedBy = "article", orphanRemoval = true)
     private List<ArticleImage> articleImages;
 
     @ApiModelProperty(value="作者(用户)",name="author")

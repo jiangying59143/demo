@@ -2,6 +2,7 @@ package com.mall.demo.model.blog;
 
 import com.mall.demo.model.base.BaseEntity;
 import org.hibernate.annotations.Type;
+import org.springframework.data.annotation.Transient;
 
 import javax.persistence.Basic;
 import javax.persistence.Entity;
@@ -10,22 +11,34 @@ import javax.persistence.Lob;
 
 @Entity
 public class ArticleVideoBody extends BaseEntity<Long> {
-    public ArticleVideoBody(String url) {
-        this.url = url;
+    public ArticleVideoBody(String fileName) {
+        this.fileName = fileName;
     }
 
     public ArticleVideoBody() {
     }
 
+
     @Lob
     @Basic(fetch = FetchType.LAZY)
-    private String url;
+    private String fileName;
 
-    public String getUrl() {
-        return url;
+    @Transient
+    private String path;
+
+    public String getFileName() {
+        return fileName;
     }
 
-    public void setUrl(String url) {
-        this.url = url;
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
     }
 }

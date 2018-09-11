@@ -1,6 +1,7 @@
 package com.mall.demo.model.blog;
 
 import com.mall.demo.model.base.BaseEntity;
+import org.springframework.data.annotation.Transient;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -14,7 +15,10 @@ public class ArticleImage extends BaseEntity<Long> {
     @JoinColumn(name = "article_id")
     private Article article;
 
-    private String url;
+    private String fileName;
+
+    @Transient
+    private String path;
 
     //排序号
     private int orderCount;
@@ -28,12 +32,20 @@ public class ArticleImage extends BaseEntity<Long> {
         this.article = article;
     }
 
-    public String getUrl() {
-        return url;
+    public String getFileName() {
+        return fileName;
     }
 
-    public void setUrl(String url) {
-        this.url = url;
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
     }
 
     public int getOrderCount() {

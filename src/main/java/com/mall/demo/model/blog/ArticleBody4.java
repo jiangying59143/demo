@@ -17,6 +17,8 @@ public class ArticleBody4 extends BaseEntity<Long> {
     @Type(type = "text")
     private String content;
 
+    private Integer orderCount;
+
     @OneToOne(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY, orphanRemoval = true)
     @JoinColumn(name = "article_image_Id")
     private ArticleImage articleImage;
@@ -43,5 +45,13 @@ public class ArticleBody4 extends BaseEntity<Long> {
 
     public void setArticleImage(ArticleImage articleImage) {
         this.articleImage = articleImage;
+    }
+
+    public Integer getOrderCount() {
+        return orderCount;
+    }
+
+    public void setOrderCount(Integer orderCount) {
+        this.orderCount = orderCount;
     }
 }

@@ -13,6 +13,7 @@ import com.mall.demo.common.utils.StringUtils;
 import com.mall.demo.common.utils.UserUtils;
 import com.mall.demo.model.blog.*;
 import com.mall.demo.model.privilege.User;
+import com.mall.demo.service.ArticleBody4Service;
 import com.mall.demo.service.ArticleService;
 import com.mall.demo.vo.ArticleAddTO;
 import io.swagger.annotations.Api;
@@ -24,6 +25,7 @@ import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.apache.shiro.util.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -45,7 +47,13 @@ public class ArticleController {
     private ArticleService articleService;
 
     @Autowired
+    private ArticleBody4Service articleBody4Service;
+
+    @Autowired
     private HttpServletRequest request;
+
+    @Value("${me.upload.path}")
+    private String baseFolderPath;
 
     @ApiOperation(value="添加搜索历史", notes="添加搜索历史")
     @ApiImplicitParams({
@@ -111,9 +119,9 @@ public class ArticleController {
                 MultipartFile file = fileList.get(i);
                 if(file != null) {
                     String fileName = UUID.randomUUID().toString();
-                    boolean flag = FileUtils.singleFileUpload(file, currentUser.getId(), fileName);
+                    boolean flag = FileUtils.singleFileUpload(file, baseFolderPath, FileUtils.UPLOAD_FILE_IMAGE, currentUser.getId(), fileName);
                     if (!flag) {
-                        FileUtils.deleteArticleTempFolder(currentUser.getId(), fileName);
+                        FileUtils.deleteArticleTempFolder(baseFolderPath, FileUtils.UPLOAD_FILE_IMAGE,currentUser.getId(), fileName);
                         r.setMsg(file.getOriginalFilename());
                         r.setResultCode(ResultCode.UPLOAD_ERROR);
                         return r;
@@ -123,7 +131,7 @@ public class ArticleController {
                         ArticleImage articleImage = new ArticleImage();
                         articleImage.setArticle(article);
                         articleImage.setOrderCount(i);
-                        articleImage.setUrl(fileName);
+                        articleImage.setFileName(fileName);
                         articleImages.add(articleImage);
                     }else if(article.getArticleType() == Article.ARTICLE_TYPE_VEDIO){
                         ArticleVideoBody articleVideoBody = new ArticleVideoBody(fileName);
@@ -134,7 +142,7 @@ public class ArticleController {
                             ArticleImage articleImage = new ArticleImage();
                             articleImage.setArticle(article);
                             articleImage.setOrderCount(i);
-                            articleImage.setUrl(fileName);
+                            articleImage.setFileName(fileName);
                             articleBody4.setArticleImage(articleImage);
                             articleBody4.setContent(StringUtils.isEmpty(articleAddTO.getContentList().get(i)) ? "" : articleAddTO.getContentList().get(i));
                             articleBody4.setArticle(article);
@@ -152,11 +160,11 @@ public class ArticleController {
         article.setAuthor(currentUser);
         Long articleId = articleService.saveArticle(article);
 
-        if(!FileUtils.renameArticleTempFolder(currentUser.getId(), articleId)){
-            articleService.deleteArticleById(articleId);
-            r.setResultCode(ResultCode.UPLOAD_ERROR);
-            return r;
-        }
+//        if(!FileUtils.renameArticleTempFolder(currentUser.getId(), articleId)){
+//            articleService.deleteArticleById(articleId);
+//            r.setResultCode(ResultCode.UPLOAD_ERROR);
+//            return r;
+//        }
         return Result.success();
     }
 
@@ -168,9 +176,11 @@ public class ArticleController {
         article.setArticleType(contentType);
         article.setCategoryList(Arrays.asList(new Category(categoryId)));
         if(Article.ARTICLE_TYPE_IMAGE_ARTICLE == contentType) {
-            article.setArticleBody3(new ArticleBody3(content));
+            article.setArticleBody1(new ArticleBody1(content));
         }else if(Article.ARTICLE_TYPE_VEDIO== contentType){
             article.setArticleVideoBody(new ArticleVideoBody(content));
+        }else if(Article.ARTICLE_TYPE_HTML==contentType){
+            article.setArticleBody3(new ArticleBody3(content));
         }
         article.setArticleViewCount(new ArticleViewCount(0L));
         article.setArticleThumbsUpCount(new ArticleThumbsUpCount(0L));
@@ -197,15 +207,15 @@ public class ArticleController {
             return r;
         }
         User currentUser = UserUtils.getCurrentUser();
-        List<MultipartFile> fileList = Arrays.asList(files);
         Article article = getArticle(currentUser, categoryId, title, null, Article.ARTICLE_TYPE_IMAGE_ARTICLE);
+        List<MultipartFile> fileList = Arrays.asList(files);
         if(!CollectionUtils.isEmpty(fileList)) {
             List<ArticleImage> articleImages = null;
             for (int i=0; i< fileList.size(); i++) {
                 MultipartFile file = fileList.get(i);
                 if(file != null) {
                     String fileName = String.valueOf(System.currentTimeMillis()) + "." + file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf(".")+1);
-                    boolean flag = FileUtils.singleFileUpload(file, currentUser.getId(), fileName);
+                    boolean flag = FileUtils.singleFileUpload(file,baseFolderPath, FileUtils.UPLOAD_FILE_IMAGE, currentUser.getId(), fileName);
                     if (!flag) {
                         r.setResultCode(ResultCode.UPLOAD_ERROR);
                         return r;
@@ -214,7 +224,7 @@ public class ArticleController {
                     ArticleImage articleImage = new ArticleImage();
                     articleImage.setArticle(article);
                     articleImage.setOrderCount(i);
-                    articleImage.setUrl(fileName);
+                    articleImage.setFileName(fileName);
                     articleImages.add(articleImage);
                 }
             }
@@ -241,7 +251,7 @@ public class ArticleController {
         }
         User currentUser = UserUtils.getCurrentUser();
         String fileName = String.valueOf(System.currentTimeMillis()) + "." + file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf(".")+1);
-        boolean flag = FileUtils.singleFileUpload(file, currentUser.getId(), fileName);
+        boolean flag = FileUtils.singleFileUpload(file,baseFolderPath, FileUtils.UPLOAD_FILE_VIDEO, currentUser.getId(), fileName);
         if(flag) {
             Article article = getArticle(currentUser, categoryId, title, fileName, Article.ARTICLE_TYPE_VEDIO);
             Long articleId = articleService.saveArticle(article);
@@ -259,49 +269,57 @@ public class ArticleController {
     })
     @PostMapping("/createCarousel")
     @LogAnnotation(module = "添加轮播文章", operation = "添加轮播文章")
-    public Result addCarousel(Long categoryId, String title, String[] contents, MultipartFile[] files){
+    public Result addCarousel(Long categoryId, String title){
         Result r = new Result();
-        if(contents == null || files==null){
-            r.setResultCode(ResultCode.PARAM_IS_BLANK);
-            return r;
-        }
-        if (BooleanUtils.isTrue(StringUtils.isEmpty(title)) || contents.length != files.length) {
+        if (BooleanUtils.isTrue(StringUtils.isEmpty(title))) {
             r.setResultCode(ResultCode.PARAM_IS_INVALID);
             return r;
         }
         User currentUser = UserUtils.getCurrentUser();
-        List<MultipartFile> fileList = Arrays.asList(files);
         Article article = getArticle(currentUser, categoryId, title, null, Article.ARTICLE_TYPE_IMAG_CONTENT_LIST);
-        if(!CollectionUtils.isEmpty(fileList)) {
-            List<ArticleImage> articleImages = null;
-            List<ArticleBody4> articleBody4s = null;
-            for (int i=0; i< fileList.size(); i++) {
-                MultipartFile file = fileList.get(i);
-                if(file != null) {
-                    String fileName = String.valueOf(System.currentTimeMillis()) + "." + file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf(".")+1);
-                    boolean flag = FileUtils.singleFileUpload(file, currentUser.getId(), fileName);
-                    if (!flag) {
-                        r.setResultCode(ResultCode.UPLOAD_ERROR);
-                        return r;
-                    }
-                    if(articleImages==null){articleImages = new ArrayList<>();}
-                    ArticleImage articleImage = new ArticleImage();
-                    articleImage.setArticle(article);
-                    articleImage.setOrderCount(i);
-                    articleImage.setUrl(fileName);
-                    articleImages.add(articleImage);
-                    if(articleBody4s == null){articleBody4s = new ArrayList<>();}
-                    ArticleBody4 articleBody4 = new ArticleBody4();
-                    articleBody4.setArticle(article);
-                    articleBody4.setArticleImage(articleImage);
-                    articleBody4s.add(articleBody4);
-                }
-            }
-            article.setArticleImages(articleImages);
-            article.setArticleBody4(articleBody4s);
-        }
         Long articleId = articleService.saveArticle(article);
         return Result.success(articleId);
+    }
+
+    @ApiOperation(value="添加轮播文章单片", notes="添加轮播文章单片")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Oauth-Token", value = "令牌", required = true, dataType = "String", paramType = "header"),
+            @ApiImplicitParam(name = "articleId", value = "文章ID", required = true, dataType = "Long", paramType = "form"),
+            @ApiImplicitParam(name = "content", value = "文章内容", required = true, dataType = "String", paramType = "form"),
+            @ApiImplicitParam(name = "file", value = "图片文件", required = true, dataType = "file", paramType = "form")
+    })
+    @PostMapping("/createCarouselPiece")
+    @LogAnnotation(module = "添加轮播文章单片", operation = "添加轮播文章单片")
+    public Result addCarouselPiece(Long articleId, String content, MultipartFile file){
+        Result r = new Result();
+        if(articleId == null || content == null || file==null){
+            r.setResultCode(ResultCode.PARAM_IS_INVALID);
+            return r;
+        }
+
+        if(articleService.getArticleById(articleId) == null){
+            r.setResultCode(ResultCode.DATA_NOT_EXIST);
+            return r;
+        }
+        User currentUser = UserUtils.getCurrentUser();
+        String fileName = String.valueOf(System.currentTimeMillis()) + "." + file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf(".") + 1);
+        boolean flag = FileUtils.singleFileUpload(file, baseFolderPath, FileUtils.UPLOAD_FILE_IMAGE, currentUser.getId(), fileName);
+        if (!flag) {
+            r.setResultCode(ResultCode.UPLOAD_ERROR);
+            return r;
+        }
+        ArticleImage articleImage = new ArticleImage();
+        articleImage.setArticle(new Article(articleId));
+        Integer orderCount = articleBody4Service.findMaxOrderArticleId(articleId);
+        articleImage.setOrderCount(orderCount==null ? 0: orderCount+1);
+        articleImage.setFileName(fileName);
+        ArticleBody4 articleBody4 = new ArticleBody4();
+        articleBody4.setArticle(new Article(articleId));
+        articleBody4.setOrderCount(articleImage.getOrderCount());
+        articleBody4.setArticleImage(articleImage);
+        articleBody4.setContent(content);
+        articleBody4 = articleBody4Service.save(articleBody4);
+        return Result.success(articleBody4.getId());
     }
 
     @ApiOperation(value="添加HTML文章", notes="添加HTML文章")
@@ -336,16 +354,16 @@ public class ArticleController {
 
     private void operateUrlOfFile(Article article){
         if(article.getArticleVideoBody() != null){
-            article.getArticleVideoBody().setUrl(HttpUtils.getSystemUrl(request, FileUtils.UPLOAD_FILE_VIDEO, article.getArticleVideoBody().getUrl()));
+            article.getArticleVideoBody().setPath(HttpUtils.getSystemUrl(request, FileUtils.UPLOAD_FILE_VIDEO, article.getArticleVideoBody().getFileName()));
         }
         if(BooleanUtils.and(new boolean[]{article.getArticleImages() != null, article.getArticleImages().size() > 0})){
             for (ArticleImage articleImage : article.getArticleImages()) {
-                articleImage.setUrl(HttpUtils.getSystemUrl(request, FileUtils.UPLOAD_FILE_IMAGE, articleImage.getUrl()));
+                articleImage.setPath(HttpUtils.getSystemUrl(request, FileUtils.UPLOAD_FILE_IMAGE, articleImage.getFileName()));
             }
         }
     }
 
-    @ApiOperation(value="获取一篇文章", notes="根据id获取文章")
+    @ApiOperation(value="获取一篇文章", notes="根据id获取文章-文章类型 [1:内容+图片 articleBody1][2. 标题+视频地址 articleVideoBody][3: 图文html articleBody3][4: 图+内容 list articleBody4]")
     @GetMapping("/item/{id}")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id", value = "主键", required = true, dataType = "Long", paramType = "path"),
@@ -357,6 +375,10 @@ public class ArticleController {
                             "categoryList", "articleImages", "author","viewCount", "commentCount", "thumbsUpCount", "thumbsDownCount"}),
                     @FastJsonFilter(clazz = Location.class, props = {"location","latitude","longitude"}),
                     @FastJsonFilter(clazz = User.class, props = {"id", "nickname"})
+            },
+            exclude = {
+                    @FastJsonFilter(clazz = ArticleImage.class, props = {"article"}),
+                    @FastJsonFilter(clazz = ArticleBody4.class, props = {"article"})
             })
     @LogAnnotation(module = "文章", operation = "根据id获取文章")
     public Result getArticleById(@PathVariable("id") Long id) {
@@ -376,7 +398,7 @@ public class ArticleController {
         return r;
     }
 
-    @ApiOperation(value="获取特定标题的文章", notes="获取特定标题的文章")
+    @ApiOperation(value="获取特定标题的文章", notes="获取特定标题的文章-文章类型 [1:内容+图片 articleBody1][2. 标题+视频地址 articleVideoBody][3: 图文html articleBody3][4: 图+内容 list articleBody4]")
     @GetMapping("/searchByCategory")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "Oauth-Token", value = "令牌", dataType = "String", paramType = "header")
@@ -387,6 +409,10 @@ public class ArticleController {
                             "categoryList", "articleImages", "author","viewCount", "commentCount", "thumbsUpCount", "thumbsDownCount"}),
                     @FastJsonFilter(clazz = Location.class, props = {"location","latitude","longitude"}),
                     @FastJsonFilter(clazz = User.class, props = {"id", "nickname"})
+            },
+            exclude = {
+                    @FastJsonFilter(clazz = ArticleImage.class, props = {"article"}),
+                    @FastJsonFilter(clazz = ArticleBody4.class, props = {"article"})
             })
     @LogAnnotation(module = "获取特定标题的文章", operation = "获取特定标题的文章")
     public Result getSpecialTypeArticles(Long id, String title) {
@@ -398,7 +424,7 @@ public class ArticleController {
         return r;
     }
 
-    @ApiOperation(value="获取所有文章", notes="获取所有文章-文章类型 [1:内容+图片][2. 标题+视频地址][3: 图文html][4: 图+内容 list]")
+    @ApiOperation(value="获取所有文章", notes="获取所有文章-文章类型 [1:内容+图片 articleBody1][2. 标题+视频地址 articleVideoBody][3: 图文html articleBody3][4: 图+内容 list articleBody4]")
     @GetMapping("/all")
     @FastJsonView(
             include = {
@@ -406,6 +432,10 @@ public class ArticleController {
                             "categoryList", "articleImages", "author","viewCount", "commentCount", "thumbsUpCount", "thumbsDownCount"}),
                     @FastJsonFilter(clazz = Location.class, props = {"location","latitude","longitude"}),
                     @FastJsonFilter(clazz = User.class, props = {"id", "nickname"})
+            },
+            exclude = {
+                    @FastJsonFilter(clazz = ArticleImage.class, props = {"article"}),
+                    @FastJsonFilter(clazz = ArticleBody4.class, props = {"article"})
             })
     @LogAnnotation(module = "获取所有文章", operation = "获取所有文章")
     public Result getAllArticles() {

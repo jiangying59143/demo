@@ -30,20 +30,16 @@ public class FileUtils {
 
     public static final String UPLOAD_FILE_IMAGE = "image";
 
-    @Value("${me.upload.path}")
-    private static String baseFolderPath;
-
-    public static boolean singleFileUpload(MultipartFile file, Long userId, String newFileName){
+    public static boolean singleFileUpload(MultipartFile file, String baseFolderPath, String type, Long userId, String newFileName){
         String fileName = file.getOriginalFilename();
-        System.out.println(!new File(baseFolderPath + userId).exists());
-        System.out.println(BooleanUtils.and(new boolean[]{userId !=null, !new File(baseFolderPath + userId).exists()}));
-        if(BooleanUtils.and(new boolean[]{userId !=null, !new File(baseFolderPath + userId).exists()}) ){
-            new File(baseFolderPath + userId).mkdirs();
+        File userFile = new File(baseFolderPath + type + File.separator + userId);
+        if(BooleanUtils.and(new boolean[]{userId !=null, !userFile.exists()}) ){
+            userFile.mkdirs();
         }
         try {
             byte[] bytes = file.getBytes();
             org.apache.commons.io.FileUtils.writeByteArrayToFile(
-                    new File(baseFolderPath
+                    new File(baseFolderPath + (StringUtils.isEmpty(type) ? "":type + File.separator)
                             + (userId == null ? "" : userId + File.separator)
                             + (StringUtils.isEmpty(newFileName)?fileName:newFileName)), bytes);
         }catch(Exception e){
@@ -53,20 +49,11 @@ public class FileUtils {
         return true;
     }
 
-    public static void deleteArticleTempFolder(Long userId, String fileName){
-        File file = new File(baseFolderPath + userId + File.separator + fileName );
+    public static void deleteArticleTempFolder(String baseFolderPath, String type, Long userId, String fileName){
+        File file = new File(baseFolderPath + type + File.separator + userId + File.separator + fileName );
         if(file.exists()){
             file.delete();
         }
-    }
-
-    public static boolean renameArticleTempFolder(Long userId, Long articleId){
-        File file = new File(baseFolderPath + userId + File.separator + TEMP_PATH );
-        if(file.exists()){
-            file.renameTo(new File(baseFolderPath + userId + File.separator + articleId));
-            return true;
-        }
-        return false;
     }
 
 }
