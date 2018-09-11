@@ -354,11 +354,11 @@ public class ArticleController {
 
     private void operateUrlOfFile(Article article){
         if(article.getArticleVideoBody() != null){
-            article.getArticleVideoBody().setPath(HttpUtils.getSystemUrl(request, FileUtils.UPLOAD_FILE_VIDEO, article.getArticleVideoBody().getFileName()));
+            article.getArticleVideoBody().setPath(HttpUtils.getSystemUrl(request,  FileUtils.UPLOAD_FILE_VIDEO, article.getAuthor(), article.getArticleVideoBody().getFileName()));
         }
         if(BooleanUtils.and(new boolean[]{article.getArticleImages() != null, article.getArticleImages().size() > 0})){
             for (ArticleImage articleImage : article.getArticleImages()) {
-                articleImage.setPath(HttpUtils.getSystemUrl(request, FileUtils.UPLOAD_FILE_IMAGE, articleImage.getFileName()));
+                articleImage.setPath(HttpUtils.getSystemUrl(request, FileUtils.UPLOAD_FILE_IMAGE, article.getAuthor(), articleImage.getFileName()));
             }
         }
     }
@@ -401,7 +401,8 @@ public class ArticleController {
     @ApiOperation(value="获取特定标题的文章", notes="获取特定标题的文章-文章类型 [1:内容+图片 articleBody1][2. 标题+视频地址 articleVideoBody][3: 图文html articleBody3][4: 图+内容 list articleBody4]")
     @GetMapping("/searchByCategory")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "Oauth-Token", value = "令牌", dataType = "String", paramType = "header")
+            @ApiImplicitParam(name = "Oauth-Token", value = "令牌", dataType = "String", paramType = "header"),
+            @ApiImplicitParam(name = "id", value = "主题主键", dataType = "Long", paramType = "query")
     })
     @FastJsonView(
             include = {

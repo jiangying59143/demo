@@ -6,14 +6,13 @@ import javax.servlet.http.HttpServletRequest;
 
 public class HttpUtils {
 
-    public static String getSystemUrl(HttpServletRequest request, String filePath, String fileName) {
+    public static String getSystemUrl(HttpServletRequest request, String filePath, User user, String fileName) {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
-        User currentUser = UserUtils.getCurrentUser();
         String strBackUrl = "http://" + request.getServerName() + ":"
                 + request.getServerPort()
                 + httpRequest.getContextPath() + "/"
                 + filePath + "/"
-                + currentUser.getId() + "/"
+                + user.getId() + "/"
                 + fileName;
         return strBackUrl;
     }

@@ -88,7 +88,7 @@ public class ArticleServiceImpl implements ArticleService {
             if(currentUser != null) {
                 return articleRepository.findArticlesByUserIdAndTitle(currentUser.getId(), title);
             }else {
-                return articleRepository.findAll();
+                return articleRepository.findArticlesByTitleContaining(title);
             }
         }
         return articleRepository.findByCategoryAndTitle(id, title);

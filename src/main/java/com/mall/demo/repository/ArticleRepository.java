@@ -27,4 +27,6 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
     @Query(value = "select * from me_article order by create_date desc limit :limit", nativeQuery = true)
     List<Article> findOrderByCreateDateAndLimit(@Param("limit") int limit);
 
+    List<Article> findArticlesByTitleContaining(String title);
+
 }
