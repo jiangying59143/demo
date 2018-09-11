@@ -83,7 +83,15 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public List<Article> listArticlesByCategory(Long id, String title) {
-        return articleRepository.findByTitleLike(title);
+        if(id==1){
+            User currentUser = UserUtils.getCurrentUser();
+            if(currentUser != null) {
+                return articleRepository.findArticlesByUserIdAndTitle(currentUser.getId(), title);
+            }else {
+                return articleRepository.findAll();
+            }
+        }
+        return articleRepository.findByCategoryAndTitle(id, title);
     }
 
     @Override

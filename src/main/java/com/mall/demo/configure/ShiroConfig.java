@@ -44,6 +44,8 @@ public class ShiroConfig {
         filterChainDefinitionMap.put("/register", "anon");
         filterChainDefinitionMap.put("/article/searchGuess", "anon");
         filterChainDefinitionMap.put("/article/all", "anon");
+        filterChainDefinitionMap.put("/article/item/**", "anon");
+        filterChainDefinitionMap.put("/article/searchByCategory", "anon");
         // 配置不会被拦截的链接 顺序判断
         filterChainDefinitionMap.put("/static/**", "anon");
         filterChainDefinitionMap.put("/image/**", "anon");

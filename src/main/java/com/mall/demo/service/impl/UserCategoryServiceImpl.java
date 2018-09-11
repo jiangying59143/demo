@@ -54,4 +54,9 @@ public class UserCategoryServiceImpl implements UserCategoryService {
         List<UserCategory> results = userCategoryRepository.getUserCategoriesByUserOrderByCreateDateAsc(new User(userId));
         return results;
     }
+
+    @Override
+    public UserCategory findByUserAndCategory(User user, Category category) {
+        return userCategoryRepository.findByUserAndCategory(user, category);
+    }
 }

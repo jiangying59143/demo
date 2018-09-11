@@ -1,6 +1,8 @@
 package com.mall.demo.service;
 
+import com.mall.demo.model.blog.Category;
 import com.mall.demo.model.blog.UserCategory;
+import com.mall.demo.model.privilege.User;
 
 import java.util.List;
 
@@ -13,4 +15,6 @@ public interface UserCategoryService {
     List<UserCategory> listUserCategory(long userId);
 
     public List<UserCategory> listRecommendCategory(long userId);
+
+    public UserCategory findByUserAndCategory(User user, Category category);
 }

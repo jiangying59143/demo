@@ -251,6 +251,59 @@ public class ArticleController {
         return Result.error(ResultCode.ERROR);
     }
 
+    @ApiOperation(value="添加轮播文章", notes="添加轮播文章")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Oauth-Token", value = "令牌", required = true, dataType = "String", paramType = "header"),
+            @ApiImplicitParam(name = "categoryId", value = "主题ID", required = true, dataType = "String", paramType = "form"),
+            @ApiImplicitParam(name = "title", value = "文章标题", required = true, dataType = "String", paramType = "form"),
+    })
+    @PostMapping("/createCarousel")
+    @LogAnnotation(module = "添加轮播文章", operation = "添加轮播文章")
+    public Result addCarousel(Long categoryId, String title, String[] contents, MultipartFile[] files){
+        Result r = new Result();
+        if(contents == null || files==null){
+            r.setResultCode(ResultCode.PARAM_IS_BLANK);
+            return r;
+        }
+        if (BooleanUtils.isTrue(StringUtils.isEmpty(title)) || contents.length != files.length) {
+            r.setResultCode(ResultCode.PARAM_IS_INVALID);
+            return r;
+        }
+        User currentUser = UserUtils.getCurrentUser();
+        List<MultipartFile> fileList = Arrays.asList(files);
+        Article article = getArticle(currentUser, categoryId, title, null, Article.ARTICLE_TYPE_IMAG_CONTENT_LIST);
+        if(!CollectionUtils.isEmpty(fileList)) {
+            List<ArticleImage> articleImages = null;
+            List<ArticleBody4> articleBody4s = null;
+            for (int i=0; i< fileList.size(); i++) {
+                MultipartFile file = fileList.get(i);
+                if(file != null) {
+                    String fileName = String.valueOf(System.currentTimeMillis()) + "." + file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf(".")+1);
+                    boolean flag = FileUtils.singleFileUpload(file, currentUser.getId(), fileName);
+                    if (!flag) {
+                        r.setResultCode(ResultCode.UPLOAD_ERROR);
+                        return r;
+                    }
+                    if(articleImages==null){articleImages = new ArrayList<>();}
+                    ArticleImage articleImage = new ArticleImage();
+                    articleImage.setArticle(article);
+                    articleImage.setOrderCount(i);
+                    articleImage.setUrl(fileName);
+                    articleImages.add(articleImage);
+                    if(articleBody4s == null){articleBody4s = new ArrayList<>();}
+                    ArticleBody4 articleBody4 = new ArticleBody4();
+                    articleBody4.setArticle(article);
+                    articleBody4.setArticleImage(articleImage);
+                    articleBody4s.add(articleBody4);
+                }
+            }
+            article.setArticleImages(articleImages);
+            article.setArticleBody4(articleBody4s);
+        }
+        Long articleId = articleService.saveArticle(article);
+        return Result.success(articleId);
+    }
+
     @ApiOperation(value="添加HTML文章", notes="添加HTML文章")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "Oauth-Token", value = "令牌", required = true, dataType = "String", paramType = "header"),
@@ -293,10 +346,10 @@ public class ArticleController {
     }
 
     @ApiOperation(value="获取一篇文章", notes="根据id获取文章")
-    @GetMapping("/{id}")
+    @GetMapping("/item/{id}")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id", value = "主键", required = true, dataType = "Long", paramType = "path"),
-            @ApiImplicitParam(name = "Oauth-Token", value = "令牌", required = true, dataType = "String", paramType = "header")
+            @ApiImplicitParam(name = "Oauth-Token", value = "令牌", dataType = "String", paramType = "header")
     })
     @FastJsonView(
             include = {
@@ -326,8 +379,7 @@ public class ArticleController {
     @ApiOperation(value="获取特定标题的文章", notes="获取特定标题的文章")
     @GetMapping("/searchByCategory")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "id", value = "标题主键", required = true, dataType = "Long", paramType = "form"),
-            @ApiImplicitParam(name = "Oauth-Token", value = "令牌", required = true, dataType = "String", paramType = "header")
+            @ApiImplicitParam(name = "Oauth-Token", value = "令牌", dataType = "String", paramType = "header")
     })
     @FastJsonView(
             include = {
@@ -339,7 +391,7 @@ public class ArticleController {
     @LogAnnotation(module = "获取特定标题的文章", operation = "获取特定标题的文章")
     public Result getSpecialTypeArticles(Long id, String title) {
         Result r = new Result();
-        List<Article> articles = articleService.listArticlesByCategory(id, title);
+        List<Article> articles = articleService.listArticlesByCategory(id, title==null ? "":title );
         operateUrlOfFile(articles);
         r.setResultCode(ResultCode.SUCCESS);
         r.setData(articles);

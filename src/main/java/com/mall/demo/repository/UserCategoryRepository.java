@@ -11,4 +11,6 @@ public interface UserCategoryRepository extends JpaRepository<UserCategory, Long
     List<UserCategory> getUserCategoriesByUserOrderByCreateDateAsc(User user);
 
     void deleteUserCategorysByUserAndCategory(User user, Category category);
+
+    UserCategory findByUserAndCategory(User user, Category category);
 }

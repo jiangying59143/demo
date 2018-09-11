@@ -77,6 +77,10 @@ public class UserCategoryController {
             return r;
         }
         User currentUser = UserUtils.getCurrentUser();
+        if(null != userCategoryService.findByUserAndCategory(currentUser, new Category(categoryId))){
+            r.setResultCode(ResultCode.DATA_ALREADY_EXISTED);
+            return r;
+        }
         Long id = userCategoryService.save(currentUser.getId(), categoryId);
         return Result.success();
     }

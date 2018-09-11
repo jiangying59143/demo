@@ -35,6 +35,8 @@ public class FileUtils {
 
     public static boolean singleFileUpload(MultipartFile file, Long userId, String newFileName){
         String fileName = file.getOriginalFilename();
+        System.out.println(!new File(baseFolderPath + userId).exists());
+        System.out.println(BooleanUtils.and(new boolean[]{userId !=null, !new File(baseFolderPath + userId).exists()}));
         if(BooleanUtils.and(new boolean[]{userId !=null, !new File(baseFolderPath + userId).exists()}) ){
             new File(baseFolderPath + userId).mkdirs();
         }

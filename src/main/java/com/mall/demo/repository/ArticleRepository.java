@@ -10,9 +10,16 @@ import java.util.List;
 
 public interface ArticleRepository extends JpaRepository<Article, Long> {
 
-    List<Article> findByCategoryListContainsAndTitleLike(Long id, String title);
+    @Query(value = "select a.* from article a " +
+            "left join article_category ac on a.id=ac.article_id " +
+            "where ac.category_id=:id and UPPER(a.title) like CONCAT('%',UPPER(:title),'%')", nativeQuery = true)
+    List<Article> findByCategoryAndTitle(@Param("id")Long id, @Param("title")String title);
 
-    List<Article> findByTitleLike(String title);
+    @Query(value = "select distinct a.* from article a " +
+            "left join article_category ac on a.id=ac.article_id " +
+            "left join user_category uc on uc.category_id=ac.category_id "+
+            "where uc.user_id=:id and UPPER(a.title) like CONCAT('%',UPPER(:title),'%')", nativeQuery = true)
+    List<Article> findArticlesByUserIdAndTitle(@Param("id")Long id, @Param("title")String title);
 
     @Query(value = "select * from me_article order by view_counts desc limit :limit", nativeQuery = true)
     List<Article> findOrderByViewsAndLimit(@Param("limit") int limit);
