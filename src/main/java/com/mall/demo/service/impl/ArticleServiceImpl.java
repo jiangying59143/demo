@@ -2,6 +2,7 @@ package com.mall.demo.service.impl;
 
 import com.google.common.collect.Lists;
 import com.mall.demo.common.utils.IKAnalyzerUtil;
+import com.mall.demo.common.utils.StringUtils;
 import com.mall.demo.common.utils.UserUtils;
 import com.mall.demo.model.blog.Article;
 import com.mall.demo.model.blog.Category;
@@ -123,6 +124,9 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     @Transactional
     public void addSearchHistory(User user, String searchContent){
+        if(StringUtils.isEmpty(searchContent)){
+            return;
+        }
         UserSearchHistory userSearchHistory = userSearchHisRepository.getUserSearchHistoryByUserAndContent(user, searchContent);
         if(userSearchHistory == null) {
             userSearchHistory = new UserSearchHistory();
