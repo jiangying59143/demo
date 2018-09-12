@@ -13,6 +13,7 @@ import com.mall.demo.common.utils.StringUtils;
 import com.mall.demo.common.utils.UserUtils;
 import com.mall.demo.model.blog.*;
 import com.mall.demo.model.privilege.User;
+import com.mall.demo.service.ArticleBlackService;
 import com.mall.demo.service.ArticleBody4Service;
 import com.mall.demo.service.ArticleService;
 import com.mall.demo.vo.ArticleAddTO;
@@ -50,6 +51,9 @@ public class ArticleController {
     private ArticleBody4Service articleBody4Service;
 
     @Autowired
+    private ArticleBlackService articleBlackService;
+
+    @Autowired
     private HttpServletRequest request;
 
     @Value("${me.upload.path}")
@@ -59,7 +63,7 @@ public class ArticleController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "Oauth-Token", value = "令牌", required = true, dataType = "String", paramType = "header")
     })
-    @GetMapping("/addHistory")
+    @PostMapping("/addHistory")
     @LogAnnotation(module = "添加搜索历史", operation = "添加搜索历史")
     public Result addSearchHistory(@RequestParam String content){
         User currentUser = UserUtils.getCurrentUser();
@@ -239,21 +243,34 @@ public class ArticleController {
             @ApiImplicitParam(name = "Oauth-Token", value = "令牌", required = true, dataType = "String", paramType = "header"),
             @ApiImplicitParam(name = "categoryId", value = "主题ID", required = true, dataType = "String", paramType = "form"),
             @ApiImplicitParam(name = "title", value = "文章标题", required = true, dataType = "String", paramType = "form"),
-            @ApiImplicitParam(name = "file", value = "视频文件", required = true, dataType = "file", paramType = "form")
+            @ApiImplicitParam(name = "videoFile", value = "视频文件", required = true, dataType = "file", paramType = "form"),
+            @ApiImplicitParam(name = "imageFile", value = "视频图片", required = true, dataType = "file", paramType = "form")
     })
     @PostMapping("/createVideo")
     @LogAnnotation(module = "添加VIDEO文章", operation = "添加VIDEO文章")
-    public Result addVideo(Long categoryId, String title, MultipartFile file){
+    public Result addVideo(Long categoryId, String title, MultipartFile videoFile, MultipartFile imageFile){
         Result r = new Result();
         if (BooleanUtils.isTrue(StringUtils.isEmpty(title))) {
             r.setResultCode(ResultCode.PARAM_IS_INVALID);
             return r;
         }
         User currentUser = UserUtils.getCurrentUser();
-        String fileName = String.valueOf(System.currentTimeMillis()) + "." + file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf(".")+1);
-        boolean flag = FileUtils.singleFileUpload(file,baseFolderPath, FileUtils.UPLOAD_FILE_VIDEO, currentUser.getId(), fileName);
+        String fileName = String.valueOf(System.currentTimeMillis()) + "." + videoFile.getOriginalFilename().substring(videoFile.getOriginalFilename().lastIndexOf(".")+1);
+        boolean flag = FileUtils.singleFileUpload(videoFile,baseFolderPath, FileUtils.UPLOAD_FILE_VIDEO, currentUser.getId(), fileName);
+        Article article = getArticle(currentUser, categoryId, title, fileName, Article.ARTICLE_TYPE_VEDIO);
+
+        String fileName1 = String.valueOf(System.currentTimeMillis()) + "." + imageFile.getOriginalFilename().substring(imageFile.getOriginalFilename().lastIndexOf(".")+1);
+        boolean flag1 = FileUtils.singleFileUpload(imageFile,baseFolderPath, FileUtils.UPLOAD_FILE_IMAGE, currentUser.getId(), fileName);
+        if (!flag) {
+            r.setResultCode(ResultCode.UPLOAD_ERROR);
+            return r;
+        }
+        ArticleImage articleImage = new ArticleImage();
+        articleImage.setArticle(article);
+        articleImage.setOrderCount(0);
+        articleImage.setFileName(fileName1);
+        article.setArticleImages(Arrays.asList(articleImage));
         if(flag) {
-            Article article = getArticle(currentUser, categoryId, title, fileName, Article.ARTICLE_TYPE_VEDIO);
             Long articleId = articleService.saveArticle(article);
             return Result.success(articleId);
         }
@@ -363,6 +380,22 @@ public class ArticleController {
         }
     }
 
+    @ApiOperation(value="添加文章到黑名单", notes="添加文章到黑名单")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Oauth-Token", value = "令牌", required = true, dataType = "String", paramType = "header"),
+            @ApiImplicitParam(name = "articleId", value = "文章ID", required = true, dataType = "String", paramType = "form"),
+    })
+    @PostMapping("/addIntoBlack")
+    @LogAnnotation(module = "添加文章到黑名单", operation = "添加文章到黑名单")
+    public Result addIntoBlack(Long articleId){
+        User currentUser = UserUtils.getCurrentUser();
+        ArticleBlackList articleBlackList = new ArticleBlackList();
+        articleBlackList.setArticle(new Article(articleId));
+        articleBlackList.setUser(currentUser);
+        articleBlackList = articleBlackService.save(articleBlackList);
+        return Result.success(articleBlackList.getId());
+    }
+
     @ApiOperation(value="获取一篇文章", notes="根据id获取文章-文章类型 [1:内容+图片 articleBody1][2. 标题+视频地址 articleVideoBody][3: 图文html articleBody3][4: 图+内容 list articleBody4]")
     @GetMapping("/item/{id}")
     @ApiImplicitParams({
@@ -371,7 +404,7 @@ public class ArticleController {
     })
     @FastJsonView(
             include = {
-                    @FastJsonFilter(clazz = Article.class, props = {"articleType","title","articleBody1", "articleVideoBody", "articleBody3", "articleBody4",
+                    @FastJsonFilter(clazz = Article.class, props = {"articleType","title","articleBody1", "articleVideoBody", "articleBody3", "articleBody4", "time",
                             "categoryList", "articleImages", "author","viewCount", "commentCount", "thumbsUpCount", "thumbsDownCount"}),
                     @FastJsonFilter(clazz = Location.class, props = {"location","latitude","longitude"}),
                     @FastJsonFilter(clazz = User.class, props = {"id", "nickname"})
@@ -406,7 +439,7 @@ public class ArticleController {
     })
     @FastJsonView(
             include = {
-                    @FastJsonFilter(clazz = Article.class, props = {"id", "articleType","title",
+                    @FastJsonFilter(clazz = Article.class, props = {"id", "articleType","title", "time",
                             "categoryList", "articleImages", "author","viewCount", "commentCount", "thumbsUpCount", "thumbsDownCount"}),
                     @FastJsonFilter(clazz = Location.class, props = {"location","latitude","longitude"}),
                     @FastJsonFilter(clazz = User.class, props = {"id", "nickname"})
@@ -429,7 +462,7 @@ public class ArticleController {
     @GetMapping("/all")
     @FastJsonView(
             include = {
-                    @FastJsonFilter(clazz = Article.class, props = {"id", "articleType","title",
+                    @FastJsonFilter(clazz = Article.class, props = {"id", "articleType","title", "time",
                             "categoryList", "articleImages", "author","viewCount", "commentCount", "thumbsUpCount", "thumbsDownCount"}),
                     @FastJsonFilter(clazz = Location.class, props = {"location","latitude","longitude"}),
                     @FastJsonFilter(clazz = User.class, props = {"id", "nickname"})
@@ -447,6 +480,8 @@ public class ArticleController {
         r.setData(articles);
         return r;
     }
+
+
 
     @ApiIgnore
     @GetMapping("/view/{id}")

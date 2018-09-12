@@ -1,13 +1,8 @@
 package com.mall.demo.model.blog;
 
 import com.mall.demo.model.base.BaseEntity;
-import org.hibernate.annotations.Type;
-import org.springframework.data.annotation.Transient;
 
-import javax.persistence.Basic;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Lob;
+import javax.persistence.*;
 
 @Entity
 public class ArticleVideoBody extends BaseEntity<Long> {

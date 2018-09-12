@@ -83,15 +83,21 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public List<Article> listArticlesByCategory(Long id, String title) {
+        User currentUser = UserUtils.getCurrentUser();
         if(id==1){
-            User currentUser = UserUtils.getCurrentUser();
             if(currentUser != null) {
+                this.addSearchHistory(currentUser,title);
                 return articleRepository.findArticlesByUserIdAndTitle(currentUser.getId(), title);
             }else {
                 return articleRepository.findArticlesByTitleContaining(title);
             }
         }
-        return articleRepository.findByCategoryAndTitle(id, title);
+        if(currentUser != null) {
+            this.addSearchHistory(currentUser,title);
+            return articleRepository.findByCategoryAndTitle(currentUser.getId(), id, title);
+        }else{
+            return articleRepository.findByCategoryAndTitle(id, title);
+        }
     }
 
     @Override

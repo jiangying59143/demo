@@ -3,9 +3,11 @@ package com.mall.demo.model.blog;
 import com.mall.demo.model.base.BaseTO;
 import com.mall.demo.model.privilege.User;
 import io.swagger.annotations.ApiModelProperty;
+import org.apache.commons.lang3.time.DateFormatUtils;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -149,6 +151,13 @@ public class Article extends BaseTO {
     @ApiModelProperty(value="踩数",name="ThumbsDownCount")
     @Transient
     private long thumbsDownCount;
+
+    @ApiModelProperty(value="黑名单",name="comments")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "article", orphanRemoval = true)
+    private List<ArticleBlackList> articleBlackLists;
+
+    @Transient
+    private String time;
 
     public ArticleBody1 getArticleBody1() {
         return articleBody1;
@@ -330,5 +339,16 @@ public class Article extends BaseTO {
         return thumbsDownCount;
     }
 
+    public List<ArticleBlackList> getArticleBlackLists() {
+        return articleBlackLists;
+    }
 
+    public void setArticleBlackLists(List<ArticleBlackList> articleBlackLists) {
+        this.articleBlackLists = articleBlackLists;
+    }
+
+    public String getTime() {
+        time = DateFormatUtils.format(this.createDate, DateFormatUtils.SMTP_DATETIME_FORMAT.getPattern());
+        return time;
+    }
 }

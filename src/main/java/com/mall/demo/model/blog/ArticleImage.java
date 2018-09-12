@@ -1,12 +1,8 @@
 package com.mall.demo.model.blog;
 
 import com.mall.demo.model.base.BaseEntity;
-import org.springframework.data.annotation.Transient;
 
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 
 @Entity
 public class ArticleImage extends BaseEntity<Long> {
