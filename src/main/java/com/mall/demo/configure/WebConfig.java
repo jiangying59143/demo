@@ -53,7 +53,7 @@ public class WebConfig extends WebMvcConfigurationSupport  {
         if(!video.exists()){
             video.mkdirs();
         }
-        registry.addResourceHandler("/**").addResourceLocations(
+        registry.addResourceHandler("/static/**").addResourceLocations(
                 "classpath:/static/");
         registry.addResourceHandler("swagger-ui.html")
                 .addResourceLocations("classpath:/META-INF/resources/");

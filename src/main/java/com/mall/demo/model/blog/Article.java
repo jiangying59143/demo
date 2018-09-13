@@ -1,5 +1,7 @@
 package com.mall.demo.model.blog;
 
+import com.mall.demo.common.utils.DateUtils;
+import com.mall.demo.common.utils.UserUtils;
 import com.mall.demo.model.base.BaseTO;
 import com.mall.demo.model.privilege.User;
 import io.swagger.annotations.ApiModelProperty;
@@ -93,7 +95,7 @@ public class Article extends BaseTO {
     @JoinColumn(name = "author_user_id")
     private User author;
 
-    @ApiModelProperty(value="类别",name="category")
+    @ApiModelProperty(value="类别",name="categoryList")
     @ManyToMany(fetch= FetchType.LAZY)
     @JoinTable(name = "articleCategory", joinColumns = { @JoinColumn(name = "articleId") }, inverseJoinColumns ={@JoinColumn(name = "categoryId") })
     private List<Category> categoryList;
@@ -348,7 +350,7 @@ public class Article extends BaseTO {
     }
 
     public String getTime() {
-        time = DateFormatUtils.format(this.createDate, DateFormatUtils.SMTP_DATETIME_FORMAT.getPattern());
+        time = DateFormatUtils.format(this.createDate, DateUtils.DATE_TIME_TO_MINUTE);
         return time;
     }
 }

@@ -1,8 +1,10 @@
 package com.mall.demo.model.blog;
 
 import com.alibaba.fastjson.annotation.JSONField;
+import com.mall.demo.common.utils.DateUtils;
 import com.mall.demo.model.base.BaseTO;
 import com.mall.demo.model.privilege.User;
+import org.apache.commons.lang3.time.DateFormatUtils;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
@@ -111,5 +113,9 @@ public class Comment extends BaseTO {
 
     public void setToUser(User toUser) {
         this.toUser = toUser;
+    }
+
+    public String getTime() {
+        return DateFormatUtils.format(this.createDate, DateUtils.DATE_TIME_TO_MINUTE);
     }
 }

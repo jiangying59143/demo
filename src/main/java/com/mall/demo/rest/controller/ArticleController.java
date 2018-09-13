@@ -204,14 +204,14 @@ public class ArticleController {
     })
     @PostMapping("/createPicture")
     @LogAnnotation(module = "添加图片文章", operation = "添加图片文章")
-    public Result addVideo(Long categoryId, String title, MultipartFile[] files){
+    public Result addVideo(Long categoryId, String title, String content, MultipartFile[] files){
         Result r = new Result();
         if (BooleanUtils.isTrue(StringUtils.isEmpty(title))) {
             r.setResultCode(ResultCode.PARAM_IS_INVALID);
             return r;
         }
         User currentUser = UserUtils.getCurrentUser();
-        Article article = getArticle(currentUser, categoryId, title, null, Article.ARTICLE_TYPE_IMAGE_ARTICLE);
+        Article article = getArticle(currentUser, categoryId, title, content, Article.ARTICLE_TYPE_IMAGE_ARTICLE);
         List<MultipartFile> fileList = Arrays.asList(files);
         if(!CollectionUtils.isEmpty(fileList)) {
             List<ArticleImage> articleImages = null;
@@ -405,9 +405,10 @@ public class ArticleController {
     @FastJsonView(
             include = {
                     @FastJsonFilter(clazz = Article.class, props = {"articleType","title","articleBody1", "articleVideoBody", "articleBody3", "articleBody4", "time",
-                            "categoryList", "articleImages", "author","viewCount", "commentCount", "thumbsUpCount", "thumbsDownCount"}),
+                            "categoryList", "articleImages", "author","viewCount", "commentCount", "thumbsUpCount", "thumbsDownCount", "comments"}),
                     @FastJsonFilter(clazz = Location.class, props = {"location","latitude","longitude"}),
-                    @FastJsonFilter(clazz = User.class, props = {"id", "nickname"})
+                    @FastJsonFilter(clazz = Comment.class, props = {"id", "content", "author", "time"}),
+                    @FastJsonFilter(clazz = User.class, props = {"id","avatar", "nickname", "attentionFlag"})
             },
             exclude = {
                     @FastJsonFilter(clazz = ArticleImage.class, props = {"article"}),

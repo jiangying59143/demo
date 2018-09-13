@@ -5,6 +5,8 @@ import com.alibaba.fastjson.support.spring.annotation.FastJsonView;
 import com.mall.demo.common.annotation.LogAnnotation;
 import com.mall.demo.common.constants.Base;
 import com.mall.demo.common.constants.ResultCode;
+import com.mall.demo.common.utils.FileUtils;
+import com.mall.demo.common.utils.HttpUtils;
 import com.mall.demo.common.utils.UserUtils;
 import com.mall.demo.model.privilege.User;
 import com.mall.demo.common.result.Result;
@@ -29,6 +31,9 @@ public class UserController {
 
     @Autowired
     private UserInfoService userInfoService;
+
+    @Autowired
+    private HttpServletRequest request;
 
     @ApiOperation(value="获取所有用户", notes="获取所有用户")
     @ApiImplicitParams({
@@ -84,12 +89,13 @@ public class UserController {
     })
     @GetMapping("/currentUser")
     @FastJsonView(
-            include = {@FastJsonFilter(clazz = User.class, props = {"id", "account", "nickname", "avatar"})})
+            include = {@FastJsonFilter(clazz = User.class, props = {"id", "account", "nickname", "avatar", "avatarPath"})})
     @LogAnnotation(module = "用户", operation = "获取当前登录用户")
-    public Result getCurrentUser(HttpServletRequest request) {
+    public Result getCurrentUser() {
 
         Result r = new Result();
         User currentUser = UserUtils.getCurrentUser();
+        currentUser.setAvatarPath(HttpUtils.getSystemUrl(request, null, null, currentUser.getAvatar()));
         r.setResultCode(ResultCode.SUCCESS);
         r.setResultCode(ResultCode.SUCCESS);
         r.setData(currentUser);

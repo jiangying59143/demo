@@ -1,11 +1,13 @@
 package com.mall.demo.model.privilege;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.mall.demo.common.utils.UserUtils;
 import com.mall.demo.model.base.BaseTO;
+import io.swagger.annotations.ApiModelProperty;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 public class User extends BaseTO implements Serializable {
@@ -19,6 +21,8 @@ public class User extends BaseTO implements Serializable {
     private String password; //密码;
     private String salt;//加密密码的盐
     private String avatar;
+    @Transient
+    private String avatarPath;
     /**
      * 是否是管理员
      */
@@ -80,11 +84,19 @@ public class User extends BaseTO implements Serializable {
         this.roleList = roleList;
     }
 
-    /**
-     * 密码盐.
-     * 重新对盐重新进行了定义，用户名+salt，这样就更加不容易被破解
-     * @return
-     */
+    @ApiModelProperty(value="关注",name="attentionUsers")
+    @ManyToMany(fetch= FetchType.LAZY)
+    @JoinTable(name = "UserAttention", joinColumns = { @JoinColumn(name = "userId") }, inverseJoinColumns ={@JoinColumn(name = "attentionUserId") })
+    private List<User> attentionUsers;
+
+    @ApiModelProperty(value="被关注",name="beAttentionUsers")
+    @ManyToMany(fetch= FetchType.EAGER)
+    @JoinTable(name = "UserAttention", joinColumns = { @JoinColumn(name = "attentionUserId") }, inverseJoinColumns ={@JoinColumn(name = "userId") })
+    private List<User> beAttentionUsers;
+
+    @Transient
+    private boolean AttentionFlag;
+
     public String getCredentialsSalt(){
         return this.account+this.salt;
     }
@@ -120,4 +132,47 @@ public class User extends BaseTO implements Serializable {
     public void setAccount(String account) {
         this.account = account;
     }
+
+
+    public String getAvatarPath() {
+        return avatarPath;
+    }
+
+    public void setAvatarPath(String avatarPath) {
+        this.avatarPath = avatarPath;
+    }
+
+    public List<User> getAttentionUsers() {
+        return attentionUsers;
+    }
+
+    public void setAttentionUsers(List<User> attentionUsers) {
+        this.attentionUsers = attentionUsers;
+    }
+
+    public List<User> getBeAttentionUsers() {
+        return beAttentionUsers;
+    }
+
+    public void setBeAttentionUsers(List<User> beAttentionUsers) {
+        this.beAttentionUsers = beAttentionUsers;
+    }
+
+    public void setAttentionFlag(boolean attentionFlag) {
+        AttentionFlag = attentionFlag;
+    }
+
+    public boolean isAttentionFlag() {
+        User user = UserUtils.getCurrentUser();
+        if(user != null && beAttentionUsers != null){
+            for (User beAttentionUser : beAttentionUsers) {
+                if(beAttentionUser.getId().longValue() == user.getId().longValue()){
+                    return true;
+                }
+            }
+
+        }
+        return AttentionFlag;
+    }
+
 }
