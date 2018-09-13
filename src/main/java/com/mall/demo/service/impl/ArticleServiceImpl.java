@@ -13,6 +13,7 @@ import com.mall.demo.repository.ArticleRepository;
 import com.mall.demo.repository.SearchKeyWordsRepository;
 import com.mall.demo.repository.UserSearchHisRepository;
 import com.mall.demo.service.ArticleService;
+import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -43,7 +44,35 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public Article getArticleById(Long id) {
-        return articleRepository.getOne(id);
+        Article article = articleRepository.getOne(id);
+        if(article != null){
+            List<UserSearchHistory> userSearchHistories = listReleventSearch(article.getTitle(), 6);
+            if(BooleanUtils.and(new boolean[]{userSearchHistories != null, userSearchHistories.size() > 0})){
+                List<String> list = userSearchHistories.stream().map(ush-> {return ush.getContent();}).collect(Collectors.toList());
+                article.setRelevantSearchList(list);
+            }
+        }
+        return article;
+    }
+
+    /**
+     *
+     * @param title
+     * @param limit
+     * @return
+     */
+    private List<UserSearchHistory> listReleventSearch(String title, int limit) {
+        List<SearchKeyWord> list = searchKeyWordsRepository.findAll();
+        List<UserSearchHistory> userSearchHistories = new ArrayList<>();
+        if(list != null && list.size() > 0){
+            for (SearchKeyWord skw : list) {
+                if(skw.getUserSearchHistoryList() != null && skw.getUserSearchHistoryList().size() > 0 && title.contains(skw.getWord())){
+                    userSearchHistories.addAll(skw.getUserSearchHistoryList());
+                }
+            }
+        }
+        userSearchHistories = userSearchHistories.stream().filter(ush-> ush != null).distinct().limit(limit).collect(Collectors.toList());
+        return userSearchHistories;
     }
 
     @Override
@@ -112,7 +141,6 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public List<Article> listHotArticles(int limit) {
-
         return articleRepository.findOrderByViewsAndLimit(limit);
     }
 

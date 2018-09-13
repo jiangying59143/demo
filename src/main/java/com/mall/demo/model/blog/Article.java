@@ -159,6 +159,9 @@ public class Article extends BaseTO {
     private List<ArticleBlackList> articleBlackLists;
 
     @Transient
+    private List<String> relevantSearchList;
+
+    @Transient
     private String time;
 
     public ArticleBody1 getArticleBody1() {
@@ -352,5 +355,13 @@ public class Article extends BaseTO {
     public String getTime() {
         time = DateFormatUtils.format(this.createDate, DateUtils.DATE_TIME_TO_MINUTE);
         return time;
+    }
+
+    public List<String> getRelevantSearchList() {
+        return relevantSearchList;
+    }
+
+    public void setRelevantSearchList(List<String> relevantSearchList) {
+        this.relevantSearchList = relevantSearchList;
     }
 }
