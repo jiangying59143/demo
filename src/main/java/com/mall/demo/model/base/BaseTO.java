@@ -1,6 +1,7 @@
 package com.mall.demo.model.base;
 
 import com.alibaba.fastjson.annotation.JSONField;
+import io.swagger.annotations.ApiModelProperty;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -11,25 +12,31 @@ import java.util.Date;
  */
 @MappedSuperclass
 public class BaseTO implements Serializable {
+    @ApiModelProperty(hidden = true)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     protected Long id;
 
+    @ApiModelProperty(hidden = true)
     @JSONField(format = "yyyy.MM.dd HH:mm")
     @Temporal(TemporalType.TIMESTAMP)
     @Column(updatable = false)
     @org.hibernate.annotations.CreationTimestamp
     protected Date createDate;
 
+    @ApiModelProperty(hidden = true)
     @JSONField(format = "yyyy.MM.dd HH:mm")
     @Temporal(TemporalType.TIMESTAMP)
     @org.hibernate.annotations.UpdateTimestamp
     protected Date updateDate;
 
+    @ApiModelProperty(hidden = true)
     protected Long createBy;
 
+    @ApiModelProperty(hidden = true)
     protected Long updateBy;
 
+    @ApiModelProperty(hidden = true)
     @Column(insertable = false)
     @org.hibernate.annotations.ColumnDefault("1")
     @org.hibernate.annotations.Generated(

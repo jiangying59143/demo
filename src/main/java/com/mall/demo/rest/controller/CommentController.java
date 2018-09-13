@@ -94,14 +94,15 @@ public class CommentController {
         return r;
     }
 
-    @ApiIgnore
+    @ApiOperation(value="添加评论", notes="添加评论")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Oauth-Token", value = "令牌", required = true, dataType = "String", paramType = "header")
+    })
     @PostMapping("/create")
     @RequiresAuthentication
     @LogAnnotation(module = "评论", operation = "添加评论")
     public Result saveComment(@Validated @RequestBody Comment comment) {
-
         Long commentId = commentService.saveComment(comment);
-
         Result r = Result.success();
         r.simple().put("commentId", commentId);
         return r;
