@@ -160,11 +160,11 @@
 
 		<!--该模块在完整的打包环境下运行的时候会被禁用。如果你使用java -jar启动应用或者用一个特定的classloader启动，它会认为这是一个“生产环境”-->
 		<!--热部署-->
-		<!--<dependency>
+		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>
 			<optional>true</optional>
-		</dependency>-->
+		</dependency>
 
 
 	</dependencies>
@@ -176,7 +176,7 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
 					<!--热部署 因为影响redis-shiro的集成，报user can not cast user，所以去掉-->
-					<!--<fork>true</fork>-->
+					<fork>true</fork>
 					<!--<mainClass>com.mall.demo.DemoApplication</mainClass>-->
 				</configuration>
 				<!--<executions>

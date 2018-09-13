@@ -27,6 +27,10 @@ import java.util.Properties;
 
 @Configuration
 public class ShiroConfig {
+
+    @Value("${redis.flag}")
+    private Boolean REDIS_FLAG;
+
     @Bean(name = "shiroFilter")
     public ShiroFilterFactoryBean shirFilter(SecurityManager securityManager,RedisTemplate redisTemplate) {
         System.out.println("ShiroConfiguration.shirFilter()");
@@ -82,7 +86,7 @@ public class ShiroConfig {
     }
 
     @Bean
-    public MyShiroRealm myShiroRealm(RedisTemplate redisTemplate){
+    public MyShiroRealm myShiroRealm(){
         MyShiroRealm myShiroRealm = new MyShiroRealm();
         myShiroRealm.setCredentialsMatcher(hashedCredentialsMatcher());
         return myShiroRealm;
@@ -91,8 +95,10 @@ public class ShiroConfig {
     @Bean(name = "securityManager")
     public SecurityManager securityManager(RedisTemplate redisTemplate){
         DefaultWebSecurityManager securityManager =  new DefaultWebSecurityManager();
-        securityManager.setRealm(myShiroRealm(redisTemplate));
-        securityManager.setSessionManager(sessionManager(redisTemplate));
+        securityManager.setRealm(myShiroRealm());
+        if(REDIS_FLAG) {
+            securityManager.setSessionManager(sessionManager(redisTemplate));
+        }
 //        securityManager.setCacheManager(cacheManager());
         return securityManager;
     }
