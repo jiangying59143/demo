@@ -40,7 +40,21 @@ public class CommentServiceImpl implements CommentService {
     @Override
     @Transactional
     public Long saveComment(Comment comment) {
+        //设置level
+        setLevel(comment);
         return commentRepository.save(comment).getId();
+    }
+
+    private void setLevel(Comment comment){
+        if(null == comment.getParent()){
+            comment.setLevel("0");
+        }else{
+            if(null == comment.getToUser()){
+                comment.setLevel("1");
+            }else{
+                comment.setLevel("2");
+            }
+        }
     }
 
 
@@ -67,15 +81,7 @@ public class CommentServiceImpl implements CommentService {
         comment.setCreateDate(new Date());
 
         //设置level
-        if(null == comment.getParent()){
-            comment.setLevel("0");
-        }else{
-            if(null == comment.getToUser()){
-                comment.setLevel("1");
-            }else{
-                comment.setLevel("2");
-            }
-        }
+        setLevel(comment);
 
         return commentRepository.save(comment);
 

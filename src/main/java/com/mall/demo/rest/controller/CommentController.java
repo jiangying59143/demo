@@ -14,6 +14,8 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +23,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Api(value = "评论", description = "评论")
@@ -94,7 +97,12 @@ public class CommentController {
         return r;
     }
 
-    @ApiOperation(value="添加评论", notes="添加评论")
+    @ApiOperation(value="添加评论", notes="content必填\n" +
+            "articleId parentId toUid有三种情况\n" +
+            "   articleId 不为null, 另两个是null 表示文章评论\n" +
+            "   articleId 为null, parentId 不为null, toUid 为null 表示评论的评论\n" +
+            "   articleId 为null, 其他两个不为null， 表示评论的回复" +
+            "toUid 是被评论的用户ID")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "Oauth-Token", value = "令牌", required = true, dataType = "String", paramType = "header")
     })
@@ -102,26 +110,32 @@ public class CommentController {
     @RequiresAuthentication
     @LogAnnotation(module = "评论", operation = "添加评论")
     public Result saveComment(@Validated @RequestBody Comment comment) {
+        if(!BooleanUtils.or(new boolean[]{comment.getArticleId()!=null && comment.getParentId()==null && comment.getToUid() == null,
+                comment.getArticleId()==null && comment.getParentId()!=null && comment.getToUid() == null,
+                comment.getArticleId()==null && comment.getParentId()!=null && comment.getToUid() != null})){
+            return Result.error(ResultCode.PARAM_IS_BLANK);
+        }
         Long commentId = commentService.saveComment(comment);
         Result r = Result.success();
         r.simple().put("commentId", commentId);
         return r;
     }
 
-    @ApiIgnore
+    @ApiOperation(value="删除评论", notes="删除评论")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Oauth-Token", value = "令牌", required = true, dataType = "String", paramType = "header"),
+            @ApiImplicitParam(name = "id", value = "文章主键", required = true, dataType = "Long", paramType = "path")
+    })
     @GetMapping("/delete/{id}")
     @RequiresAuthentication
     @LogAnnotation(module = "评论", operation = "删除评论")
     public Result deleteCommentById(@PathVariable("id") Long id) {
         Result r = new Result();
-
         if (null == id) {
             r.setResultCode(ResultCode.PARAM_IS_BLANK);
             return r;
         }
-
         commentService.deleteCommentById(id);
-
         r.setResultCode(ResultCode.SUCCESS);
         return r;
     }

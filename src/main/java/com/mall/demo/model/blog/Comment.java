@@ -36,7 +36,7 @@ public class Comment extends BaseTO {
      * 类型 0 文章的评论 1 评论的评论 2 评论的回复 @
      */
 
-    @ApiModelProperty(required = true, example = "0 文章的评论 1 评论的评论 2 评论的回复 @")
+    @ApiModelProperty(hidden = true)
     @Column(name = "level",length = 1)
     private String level;
 
@@ -76,6 +76,7 @@ public class Comment extends BaseTO {
 
     @ApiModelProperty(notes = "被评论的用户主键", example = "2")
     @Transient
+    @NotBlank(message="被评论用户必填")
     private Long toUid;
 
     public String getContent() {
