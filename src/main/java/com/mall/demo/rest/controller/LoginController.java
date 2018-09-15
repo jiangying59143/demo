@@ -88,7 +88,7 @@ public class LoginController {
     }
 
     @ApiOperation(value="发送邮箱图片验证码", notes="发送邮箱图片验证码")
-    @PostMapping("/getImageVerification")
+    @GetMapping("/getImageVerification")
     @LogAnnotation(module = "发送邮箱图片验证码", operation = "发送邮箱图片验证码")
     public Result getImageVerification() {
         String uuid = UUID.randomUUID().toString();
