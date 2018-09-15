@@ -45,6 +45,8 @@ public class ShiroConfig {
         //如果不配下面的favicon，登录后会跳转到下面的url
         filterChainDefinitionMap.put("/favicon.ico", "anon");
         filterChainDefinitionMap.put("/login", "anon");
+        filterChainDefinitionMap.put("/emailLogin", "anon");
+        filterChainDefinitionMap.put("/phoneLogin", "anon");
         filterChainDefinitionMap.put("/register", "anon");
         filterChainDefinitionMap.put("/article/searchGuess", "anon");
         filterChainDefinitionMap.put("/article/all", "anon");
