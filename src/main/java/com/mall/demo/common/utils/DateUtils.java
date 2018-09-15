@@ -7,6 +7,7 @@ import java.util.Date;
 public class DateUtils {
 
     public static final String DATE_TIME_TO_MINUTE="yyyy-MM-dd hh:mm";
+    public static final String DATE_TIME_TO_SECOND="yyyy-MM-dd hh:mm:ss";
 
     public static void main(String[] args) {
         System.out.println(DateFormatUtils.format(new Date(), DateFormatUtils.ISO_8601_EXTENDED_DATETIME_FORMAT.getPattern()));

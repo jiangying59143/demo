@@ -24,11 +24,21 @@ public class FileUtils {
 
     private static final Logger log = LoggerFactory.getLogger(FileController.class);
 
-    private static final String TEMP_PATH = "temp";
-
     public static final String UPLOAD_FILE_VIDEO = "video";
 
     public static final String UPLOAD_FILE_IMAGE = "image";
+
+    public static boolean uploadVerificationCodeImage(byte[] b, String baseFolderPath, String type, String newFileName){
+        try {
+            File file = new File(baseFolderPath +  type + "/"  + newFileName);
+            org.apache.commons.io.FileUtils.writeByteArrayToFile(file
+                    , b);
+        }catch(Exception e){
+            log.error(newFileName + "file upload error", e);
+            return false;
+        }
+        return true;
+    }
 
     public static boolean singleFileUpload(MultipartFile file, String baseFolderPath, String type, Long userId, String newFileName){
         String fileName = file.getOriginalFilename();
@@ -50,7 +60,9 @@ public class FileUtils {
     }
 
     public static void deleteArticleTempFolder(String baseFolderPath, String type, Long userId, String fileName){
-        File file = new File(baseFolderPath + type + File.separator + userId + File.separator + fileName );
+        File file = new File(baseFolderPath + type + File.separator
+                + (userId == null ? "":userId + File.separator)
+                + fileName );
         if(file.exists()){
             file.delete();
         }

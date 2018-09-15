@@ -1,5 +1,6 @@
 package com.mall.demo.model.privilege;
 
+import com.mall.demo.common.utils.StringUtils;
 import com.mall.demo.common.utils.UserUtils;
 import com.mall.demo.model.base.BaseTO;
 import io.swagger.annotations.ApiModelProperty;
@@ -14,6 +15,7 @@ public class User extends BaseTO implements Serializable {
 
     public static final byte USER_STATE_COMMON = 1;
     public static final byte USER_STATE_LOCKED = 2;
+    public static final byte USER_STATE_DEACTIVE = 3;
 
     @Column(unique =true)
     private String account;//帐号
@@ -23,6 +25,10 @@ public class User extends BaseTO implements Serializable {
     private String avatar;
     @Transient
     private String avatarPath;
+
+    private String phoneNumber;
+
+    private String email;
     /**
      * 是否是管理员
      */
@@ -31,7 +37,7 @@ public class User extends BaseTO implements Serializable {
      * 逻辑删除flag
      */
     private Boolean deleted = Boolean.FALSE;
-    private byte state = USER_STATE_COMMON;//1:正常状态,2：用户被锁定.
+    private byte state = USER_STATE_COMMON;//1:正常状态,2：用户被锁定. 3:用户未激活
 
     @ManyToMany(fetch= FetchType.EAGER)//立即从数据库中进行加载数据;
     @JoinTable(name = "SysUserRole", joinColumns = { @JoinColumn(name = "id") }, inverseJoinColumns ={@JoinColumn(name = "roleId") })
@@ -98,6 +104,11 @@ public class User extends BaseTO implements Serializable {
     private boolean AttentionFlag;
 
     public String getCredentialsSalt(){
+        if(!StringUtils.isEmpty(email)){
+            return this.email+this.salt;
+        }else if(!StringUtils.isEmpty(phoneNumber)){
+            return this.phoneNumber + this.salt;
+        }
         return this.account+this.salt;
     }
 
@@ -175,4 +186,19 @@ public class User extends BaseTO implements Serializable {
         return AttentionFlag;
     }
 
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
 }

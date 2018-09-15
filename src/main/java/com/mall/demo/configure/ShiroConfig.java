@@ -50,6 +50,9 @@ public class ShiroConfig {
         filterChainDefinitionMap.put("/article/all", "anon");
         filterChainDefinitionMap.put("/article/item/**", "anon");
         filterChainDefinitionMap.put("/article/searchByCategory", "anon");
+        filterChainDefinitionMap.put("/getSMSVerification", "anon");
+        filterChainDefinitionMap.put("/getImageVerification", "anon");
+        filterChainDefinitionMap.put("/email/verify", "anon");
         // 配置不会被拦截的链接 顺序判断
         filterChainDefinitionMap.put("/static/**", "anon");
         filterChainDefinitionMap.put("/image/**", "anon");

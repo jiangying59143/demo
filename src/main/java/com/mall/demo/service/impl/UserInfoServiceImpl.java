@@ -25,6 +25,18 @@ public class UserInfoServiceImpl implements UserInfoService {
     }
 
     @Override
+    public User findByEmail(String email) {
+        System.out.println("UserInfoServiceImpl.findByEmail()");
+        return userRepository.findByEmail(email);
+    }
+
+    @Override
+    public User findByPhone(String phone) {
+        System.out.println("UserInfoServiceImpl.findByPhone()");
+        return userRepository.findByPhoneNumber(phone);
+    }
+
+    @Override
     public Iterable<User> findAll() {
         return userRepository.findAll();
     }

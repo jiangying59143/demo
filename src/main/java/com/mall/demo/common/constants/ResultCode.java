@@ -23,6 +23,7 @@ public enum ResultCode {
     USER_HAS_EXISTED(20005, "用户已存在"),
     USER_Register_ERROR(20006, "用户注册错误"),
     USER_NO_PRIVI(20007, "用户无权限访问"),
+    USER_NOT_ACTIVE(20008, "账户未激活"),
 
     /* 业务错误：30001-39999 */
     SPECIFIED_QUESTIONED_USER_NOT_EXIST(30001, "某业务出现问题"),
@@ -34,6 +35,8 @@ public enum ResultCode {
     RESULE_DATA_NONE(50001, "数据未找到"),
     DATA_IS_WRONG(50002, "数据有误"),
     DATA_ALREADY_EXISTED(50003, "数据已存在"),
+    DATA_VERIFY_CODE_ERROR(50004, "验证码错误"),
+    DATA_VERIFY_EXP_ERROR(50005, "验证码已过期"),
 
     /* 接口错误：60001-69999 */
     INTERFACE_INNER_INVOKE_ERROR(60001, "内部系统接口调用异常"),
@@ -49,6 +52,8 @@ public enum ResultCode {
     /* 文件上传 */
     UPLOAD_FILE_NULL(80000, "上传文件为空"),
     UPLOAD_ERROR(80001, "上传失败"),
+
+    /*通知*/
 
     SESSION_TIME_OUT(90001, "Session超时");
 
