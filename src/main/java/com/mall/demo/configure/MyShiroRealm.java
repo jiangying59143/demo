@@ -1,5 +1,6 @@
 package com.mall.demo.configure;
 
+import com.mall.demo.common.utils.PasswordHelper;
 import com.mall.demo.model.privilege.SysPermission;
 import com.mall.demo.model.privilege.SysRole;
 import com.mall.demo.model.privilege.User;
@@ -42,12 +43,20 @@ public class MyShiroRealm extends AuthorizingRealm {
         String type_account = (String)token.getPrincipal();
         User user=null;
         String[] typeAccArr = type_account.split("===");
-        if("C".equals(typeAccArr[0])) {
+        String type=typeAccArr[0];
+        if("C".equals(type)) {
             user = userInfoService.findByAccount(typeAccArr[1]);
-        }else if("E".equals(typeAccArr[0])) {
+        }else if("E".equals(type)) {
             user = userInfoService.findByEmail(typeAccArr[1]);
-        }else if("P".equals(typeAccArr[0])) {
+        }else if("P".equals(type) || "PC".equals(type)) {
             user = userInfoService.findByPhone(typeAccArr[1]);
+        }else if("T".equals(type)){
+            user = userInfoService.findByOpenIdAndThirdType(typeAccArr[1], typeAccArr[2]);
+        }
+        user.setRegisterType(type);
+        if("PC".equals(type)) {
+            user.setPassword("123456");
+            PasswordHelper.encryptPassword(user);
         }
         System.out.println("----->>user="+ user);
         if (user == null) {

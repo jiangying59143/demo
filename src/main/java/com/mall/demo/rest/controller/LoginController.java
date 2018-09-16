@@ -63,6 +63,9 @@ public class LoginController {
     @Value("${me.upload.path}")
     private String baseFolderPath;
 
+    @Value("${phone.flag}")
+    private boolean phoneFlag;
+
     private int smsVerificationCodeExpireTime=120;
 
     private int emailVerificationCodeExpireTime=5*60;
@@ -75,7 +78,10 @@ public class LoginController {
     @LogAnnotation(module = "发送短信验证码", operation = "发送短信验证码")
     public Result getSMSVerification(@RequestParam String phoneNumber) {
         String code = StringUtils.getRandomNumCode(4);
-        Result r = SmsUtils.sendSMS(phoneNumber, code);
+        Result r = Result.success();
+        if(phoneFlag) {
+            r = SmsUtils.sendSMS(phoneNumber, code);
+        }
         Map map = r.simple();
         map.put("code", code);
         map.put("expire", smsVerificationCodeExpireTime);
@@ -164,10 +170,62 @@ public class LoginController {
             @ApiResponse(code = 404, message = "20004:用户不存在", response=Result.class),
             @ApiResponse(code = 201, message = "1:失败")})
     @PostMapping("/phoneLogin")
-    @LogAnnotation(module = "登录", operation = "邮箱登录")
+    @LogAnnotation(module = "登录", operation = "手机登录")
     public ResponseEntity<Result> phoneLogin(@RequestParam String phone, @RequestParam String password) {
         Result r = new Result();
         return executeLogin("P", phone, password, r);
+    }
+
+    @ApiOperation(value="根据手机验证码登录", notes="根据手机验证码登录")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "phone", value = "电话号码", required = true, dataType = "String", paramType = "query"),
+            @ApiImplicitParam(name = "code", value = "验证码", required = true, dataType = "String", paramType = "query")
+    })
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "0:成功"),
+            @ApiResponse(code = 401, message = "20002:账号或密码错误", response=Result.class),
+            @ApiResponse(code = 403, message = "20003:账号已被禁用", response=Result.class),
+            @ApiResponse(code = 404, message = "20004:用户不存在", response=Result.class),
+            @ApiResponse(code = 201, message = "1:失败")})
+    @PostMapping("/phoneCodeLogin")
+    @LogAnnotation(module = "登录", operation = "手机验证码登录")
+    public ResponseEntity<Result> phoneCodeLogin(@RequestParam String phone, @RequestParam String code) {
+        Result r = new Result();
+        if(StringUtils.isEmpty(phone)|| StringUtils.isEmpty(code)){
+            r.setResultCode(ResultCode.PARAM_IS_INVALID);
+            return ResponseEntity.status(HttpStatus.MULTI_STATUS.FORBIDDEN).body(r);
+        }
+
+        if(!StringUtils.isEmpty(phone)){
+            String code1 = redisTemplate.opsForValue().get("getSMSVerification" + phone);
+            if(StringUtils.isEmpty(code1)){
+                r.setResultCode(ResultCode.DATA_VERIFY_EXP_ERROR);
+                return ResponseEntity.status(HttpStatus.MULTI_STATUS.FORBIDDEN).body(r);
+            }
+            if(!code1.equalsIgnoreCase(code)){
+                r.setResultCode(ResultCode.DATA_VERIFY_CODE_ERROR);
+                return ResponseEntity.status(HttpStatus.MULTI_STATUS.FORBIDDEN).body(r);
+            }
+        }
+
+        User user1 = userInfoService.findByPhone(phone);
+        if(user1 != null){
+            userInfoService.updateUser(user1);
+        }else {
+            user1 = new User();
+            user1.setAccount(phone);
+            user1.setState(User.USER_STATE_COMMON);
+            user1.setPhoneNumber(phone);
+            String password = StringUtils.getRandomNumCode(6);
+            user1.setPassword(password);
+            Long userId = userInfoService.saveUser(user1);
+            if(phoneFlag) {
+                //@todo 模板待修改
+                r = SmsUtils.sendSMS(phone,"(初始密码)" + password);
+            }
+        }
+        executeLogin("PC", phone, "123456", r);
+        return ResponseEntity.ok(r);
     }
 
     @ApiOperation(value="用户邮箱注册", notes="用户邮箱注册")
@@ -184,7 +242,7 @@ public class LoginController {
             return ResponseEntity.status(HttpStatus.MULTI_STATUS.FORBIDDEN).body(r);
         }
 
-        User temp = userInfoService.findByEmail(email);
+        User temp = userInfoService.findByEmailAndState(email, User.USER_STATE_COMMON);
         if (null != temp) {
             r.setResultCode(ResultCode.USER_HAS_EXISTED);
             return ResponseEntity.status(HttpStatus.MULTI_STATUS.FORBIDDEN).body(r);
@@ -201,11 +259,22 @@ public class LoginController {
                 return ResponseEntity.status(HttpStatus.MULTI_STATUS.FORBIDDEN).body(r);
             }
         }
-        User user1 = new User();
-        user1.setState(User.USER_STATE_DEACTIVE);
-        user1.setEmail(email);
-        user1.setPassword(password);
-        Long userId = userInfoService.saveUser(user1);
+        User user1 = userInfoService.findByEmailAndState(email, User.USER_STATE_DEACTIVE);
+        if(user1 != null){
+            user1.setAccount(email);
+            user1.setPassword(password);
+            user1.setRegisterType("E");
+            PasswordHelper.encryptPassword(user1);
+            userInfoService.updateUser(user1);
+        }else {
+            user1 = new User();
+            user1.setAccount(email);
+            user1.setRegisterType("E");
+            user1.setState(User.USER_STATE_DEACTIVE);
+            user1.setEmail(email);
+            user1.setPassword(password);
+            Long userId = userInfoService.saveUser(user1);
+        }
 
         executeLogin("E", email, password, r);
 
@@ -252,11 +321,48 @@ public class LoginController {
             }
         }
         User user1 = new User();
+        user1.setAccount(phone);
+        user1.setRegisterType("P");
         user1.setState(User.USER_STATE_COMMON);
         user1.setPhoneNumber(phone);
         user1.setPassword(password);
         Long userId = userInfoService.saveUser(user1);
         executeLogin("P", phone, password, r);
+        return ResponseEntity.ok(r);
+    }
+
+    @ApiOperation(value="第三方登录", notes="第三方登录")
+    @PostMapping("/thirdLogin")
+    @LogAnnotation(module = "第三方登录", operation = "第三方登录")
+    public ResponseEntity<Result> thirdLogin(String type, String openId, String sex, String headerIcon, String nickName) {
+        Result r = new Result();
+        if(StringUtils.isEmpty(type)|| StringUtils.isEmpty(openId)|| StringUtils.isEmpty(headerIcon) || StringUtils.isEmpty(nickName)){
+            r.setResultCode(ResultCode.PARAM_IS_INVALID);
+            return ResponseEntity.status(HttpStatus.MULTI_STATUS.FORBIDDEN).body(r);
+        }
+
+        User user1 = userInfoService.findByOpenIdAndThirdType(openId, type);
+        String password=openId+type;
+        String account = openId + "===" + type;
+        if(user1 != null){
+            user1.setSex(sex);
+            user1.setAvatar(headerIcon);
+            user1.setNickname(nickName);
+            userInfoService.updateUser(user1);
+        }else {
+            user1 = new User();
+            user1.setAccount(account);
+            user1.setOpenId(openId);
+            user1.setPassword(password);
+            user1.setSex(sex);
+            user1.setAvatar(headerIcon);
+            user1.setNickname(nickName);
+            user1.setRegisterType("T");
+            user1.setThirdType(type);
+            user1.setState(User.USER_STATE_COMMON);
+            Long userId = userInfoService.saveUser(user1);
+        }
+        executeLogin("T", account, password, r);
         return ResponseEntity.ok(r);
     }
 
@@ -294,7 +400,7 @@ public class LoginController {
         if(!StringUtils.isEmpty(account)){
             temp = userInfoService.findByAccount(account);
         }else if(!StringUtils.isEmpty(email)){
-            temp = userInfoService.findByEmail(email);
+            temp = userInfoService.findByEmailAndState(email, User.USER_STATE_COMMON);
             if(StringUtils.isEmpty(user.getVerificationCode()) || StringUtils.isEmpty(user.getEmailCodeKey())){
                 r.setResultCode(ResultCode.PARAM_IS_INVALID);
                 return ResponseEntity.status(HttpStatus.MULTI_STATUS.FORBIDDEN).body(r);
@@ -417,7 +523,8 @@ public class LoginController {
         UsernamePasswordToken token = new UsernamePasswordToken(type+"==="+account, password);
         try {
             subject.login(token);
-            r.simple().put(MySessionManager.AUTHORIZATION, subject.getSession().getId());
+            Map map = r.simple();
+            map.put(MySessionManager.AUTHORIZATION, subject.getSession().getId());
             SecurityUtils.getSubject().getSession().setAttribute(Base.CURRENT_USER, subject.getPrincipal());
         }catch (UnknownAccountException e) {
             r.setResultCode(ResultCode.USER_NOT_EXIST);

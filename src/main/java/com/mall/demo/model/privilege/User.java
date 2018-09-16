@@ -43,6 +43,9 @@ public class User extends BaseTO implements Serializable {
     @JoinTable(name = "SysUserRole", joinColumns = { @JoinColumn(name = "id") }, inverseJoinColumns ={@JoinColumn(name = "roleId") })
     private List<SysRole> roleList;// 一个用户具有多个角色
 
+    @Transient
+    private String registerType;
+
     public User() {
     }
 
@@ -104,13 +107,21 @@ public class User extends BaseTO implements Serializable {
     private boolean AttentionFlag;
 
     public String getCredentialsSalt(){
-        if(!StringUtils.isEmpty(email)){
-            return this.email+this.salt;
-        }else if(!StringUtils.isEmpty(phoneNumber)){
-            return this.phoneNumber + this.salt;
-        }
+//        if("C".equals(registerType)) {
+//            return this.account+this.salt;
+//        }else if("E".equals(registerType)) {
+//            return this.email+this.salt;
+//        }else if("P".equals(registerType) || "PC".equals(registerType)) {
+//            return this.phoneNumber+this.salt;
+//        }
         return this.account+this.salt;
     }
+
+    private String openId;
+
+    private String sex;
+
+    private String thirdType;
 
     public String getAvatar() {
         return avatar;
@@ -200,5 +211,37 @@ public class User extends BaseTO implements Serializable {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getRegisterType() {
+        return registerType;
+    }
+
+    public void setRegisterType(String registerType) {
+        this.registerType = registerType;
+    }
+
+    public String getOpenId() {
+        return openId;
+    }
+
+    public void setOpenId(String openId) {
+        this.openId = openId;
+    }
+
+    public String getSex() {
+        return sex;
+    }
+
+    public void setSex(String sex) {
+        this.sex = sex;
+    }
+
+    public String getThirdType() {
+        return thirdType;
+    }
+
+    public void setThirdType(String thirdType) {
+        this.thirdType = thirdType;
     }
 }

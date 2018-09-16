@@ -34,7 +34,7 @@ public class EmailActiveUserController {
             emailTime = EncryptUtil.decodeDES(emailTime);
             if (emailTime.contains("===")) {
                 String[] ss = emailTime.split("===");
-                User user = userInfoService.findByEmail(ss[0]);
+                User user = userInfoService.findByEmailAndState(ss[0], User.USER_STATE_DEACTIVE);
                 if(user != null){
                     try{
                         Date date = DateUtils.parseDate(ss[1], com.mall.demo.common.utils.DateUtils.DATE_TIME_TO_SECOND);

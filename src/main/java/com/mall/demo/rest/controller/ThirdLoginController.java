@@ -8,6 +8,7 @@ import com.mall.demo.common.constants.ResultCode;
 import com.mall.demo.common.result.Result;
 import com.mall.demo.common.utils.SmsUtils;
 import com.mall.demo.common.utils.StringUtils;
+import com.mall.demo.model.privilege.User;
 import com.mall.demo.service.UserInfoService;
 import io.swagger.annotations.*;
 import org.slf4j.Logger;
@@ -15,6 +16,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.imageio.ImageIO;
@@ -34,5 +37,7 @@ public class ThirdLoginController {
 
     @Autowired
     private UserInfoService userInfoService;
+
+
 
 }

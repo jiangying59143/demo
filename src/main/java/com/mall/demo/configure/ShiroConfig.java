@@ -47,6 +47,8 @@ public class ShiroConfig {
         filterChainDefinitionMap.put("/login", "anon");
         filterChainDefinitionMap.put("/emailLogin", "anon");
         filterChainDefinitionMap.put("/phoneLogin", "anon");
+        filterChainDefinitionMap.put("/thirdLogin", "anon");
+        filterChainDefinitionMap.put("/phoneCodeLogin", "anon");
         filterChainDefinitionMap.put("/register", "anon");
         filterChainDefinitionMap.put("/emailRegister", "anon");
         filterChainDefinitionMap.put("/phoneRegister", "anon");

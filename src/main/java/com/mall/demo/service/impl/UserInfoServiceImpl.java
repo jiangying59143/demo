@@ -25,6 +25,12 @@ public class UserInfoServiceImpl implements UserInfoService {
     }
 
     @Override
+    public User findByEmailAndState(String email, byte state) {
+        System.out.println("UserInfoServiceImpl.findByEmail()");
+        return userRepository.findByEmailAndState(email, state);
+    }
+
+    @Override
     public User findByEmail(String email) {
         System.out.println("UserInfoServiceImpl.findByEmail()");
         return userRepository.findByEmail(email);
@@ -34,6 +40,11 @@ public class UserInfoServiceImpl implements UserInfoService {
     public User findByPhone(String phone) {
         System.out.println("UserInfoServiceImpl.findByPhone()");
         return userRepository.findByPhoneNumber(phone);
+    }
+
+    @Override
+    public User findByOpenIdAndThirdType(String openId, String type){
+        return userRepository.findByOpenIdAndThirdType(openId, type);
     }
 
     @Override

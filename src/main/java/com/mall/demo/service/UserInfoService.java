@@ -9,9 +9,13 @@ public interface UserInfoService {
     /**通过username查找用户信息;*/
     public User findByAccount(String account);
 
+    public User findByEmailAndState(String email, byte stat);
+
     public User findByEmail(String email);
 
     public User findByPhone(String phone);
+
+    public User findByOpenIdAndThirdType(String openId, String type);
 
     Iterable<User> findAll();
 
