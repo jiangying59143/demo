@@ -107,8 +107,8 @@ public class LoginController {
             map.put("expire", emailVerificationCodeExpireTime);
             byte[] b = bao.toByteArray();
             map.put("imageVerification", b);
-            FileUtils.uploadVerificationCodeImage(b, baseFolderPath, FileUtils.UPLOAD_FILE_IMAGE, uuid + ".png");
-            map.put("imageUrl", HttpUtils.getSystemUrl(request, FileUtils.UPLOAD_FILE_IMAGE, null, uuid+ ".png"));
+//            FileUtils.uploadVerificationCodeImage(b, baseFolderPath, FileUtils.UPLOAD_FILE_IMAGE, uuid + ".png");
+//            map.put("imageUrl", HttpUtils.getSystemUrl(request, FileUtils.UPLOAD_FILE_IMAGE, null, uuid+ ".png"));
             return r;
         } catch (IOException e) {
             e.printStackTrace();
@@ -168,6 +168,96 @@ public class LoginController {
     public ResponseEntity<Result> phoneLogin(@RequestParam String phone, @RequestParam String password) {
         Result r = new Result();
         return executeLogin("P", phone, password, r);
+    }
+
+    @ApiOperation(value="用户邮箱注册", notes="用户邮箱注册")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "0:成功"),
+            @ApiResponse(code = 403, message = "20005:用户已存在", response=Result.class),
+            @ApiResponse(code = 201, message = "1:失败")})
+    @PostMapping("/emailRegister")
+    @LogAnnotation(module = "用户邮箱注册", operation = "用户邮箱注册")
+    public ResponseEntity<Result> register(String email, String password, String key, String code) {
+        Result r = new Result();
+        if(StringUtils.isEmpty(email)|| StringUtils.isEmpty(password) || StringUtils.isEmpty(key) || StringUtils.isEmpty(code)){
+            r.setResultCode(ResultCode.PARAM_IS_INVALID);
+            return ResponseEntity.status(HttpStatus.MULTI_STATUS.FORBIDDEN).body(r);
+        }
+
+        User temp = userInfoService.findByEmail(email);
+        if (null != temp) {
+            r.setResultCode(ResultCode.USER_HAS_EXISTED);
+            return ResponseEntity.status(HttpStatus.MULTI_STATUS.FORBIDDEN).body(r);
+        }
+
+        if(!StringUtils.isEmpty(email)){
+            String code1 = redisTemplate.opsForValue().get(key);
+            if(StringUtils.isEmpty(code1)){
+                r.setResultCode(ResultCode.DATA_VERIFY_EXP_ERROR);
+                return ResponseEntity.status(HttpStatus.MULTI_STATUS.FORBIDDEN).body(r);
+            }
+            if(!code1.equalsIgnoreCase(code)){
+                r.setResultCode(ResultCode.DATA_VERIFY_CODE_ERROR);
+                return ResponseEntity.status(HttpStatus.MULTI_STATUS.FORBIDDEN).body(r);
+            }
+        }
+        User user1 = new User();
+        user1.setState(User.USER_STATE_DEACTIVE);
+        user1.setEmail(email);
+        user1.setPassword(password);
+        Long userId = userInfoService.saveUser(user1);
+
+        executeLogin("E", email, password, r);
+
+        r.setData(Note.EMAIL_ACTIVE_USER_NOTIFICATION);
+        String token = EncryptUtil.encodeDES(email + "===" + DateFormatUtils.format(new Date(), DateUtils.DATE_TIME_TO_SECOND));
+        String url = HttpUtils.getSystemUrl(request, "email", null, "verify") + "?emailTime=" + encodeURIComponent(null, token).toString();;
+        String html = "<a href='"+ url + "'><h1>请点击我激活您的账户<h1></a>";
+        System.out.println(html);
+        mailService.sendHtmlMail(email, Note.EMAIL_ACTIVE_USER_SUBJECT,
+                html);
+
+        return ResponseEntity.ok(r);
+    }
+
+    @ApiOperation(value="用户手机号注册", notes="用户邮箱注册")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "0:成功"),
+            @ApiResponse(code = 403, message = "20005:用户已存在", response=Result.class),
+            @ApiResponse(code = 201, message = "1:失败")})
+    @PostMapping("/phoneRegister")
+    @LogAnnotation(module = "用户手机号注册", operation = "用户手机号注册")
+    public ResponseEntity<Result> register(String phone, String password, String code) {
+        Result r = new Result();
+        if(StringUtils.isEmpty(phone)|| StringUtils.isEmpty(password)|| StringUtils.isEmpty(code)){
+            r.setResultCode(ResultCode.PARAM_IS_INVALID);
+            return ResponseEntity.status(HttpStatus.MULTI_STATUS.FORBIDDEN).body(r);
+        }
+
+        User temp = userInfoService.findByPhone(phone);
+        if (null != temp) {
+            r.setResultCode(ResultCode.USER_HAS_EXISTED);
+            return ResponseEntity.status(HttpStatus.MULTI_STATUS.FORBIDDEN).body(r);
+        }
+
+        if(!StringUtils.isEmpty(phone)){
+            String code1 = redisTemplate.opsForValue().get("getSMSVerification" + phone);
+            if(StringUtils.isEmpty(code1)){
+                r.setResultCode(ResultCode.DATA_VERIFY_EXP_ERROR);
+                return ResponseEntity.status(HttpStatus.MULTI_STATUS.FORBIDDEN).body(r);
+            }
+            if(!code1.equalsIgnoreCase(code)){
+                r.setResultCode(ResultCode.DATA_VERIFY_CODE_ERROR);
+                return ResponseEntity.status(HttpStatus.MULTI_STATUS.FORBIDDEN).body(r);
+            }
+        }
+        User user1 = new User();
+        user1.setState(User.USER_STATE_COMMON);
+        user1.setPhoneNumber(phone);
+        user1.setPassword(password);
+        Long userId = userInfoService.saveUser(user1);
+        executeLogin("P", phone, password, r);
+        return ResponseEntity.ok(r);
     }
 
     @ApiOperation(value="用户注册", notes="用户注册并返回令牌\n" +
