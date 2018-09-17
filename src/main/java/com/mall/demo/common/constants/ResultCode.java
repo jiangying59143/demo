@@ -23,7 +23,7 @@ public enum ResultCode {
     USER_HAS_EXISTED(20005, "用户已存在"),
     USER_Register_ERROR(20006, "用户注册错误"),
     USER_NO_PRIVI(20007, "用户无权限访问"),
-    USER_NOT_ACTIVE(20008, "账户未激活"),
+    USER_NOT_ACTIVE(20008, "邮箱未激活，请前往邮箱点击激活后使用该邮箱。"),
 
     /* 业务错误：30001-39999 */
     SPECIFIED_QUESTIONED_USER_NOT_EXIST(30001, "某业务出现问题"),
