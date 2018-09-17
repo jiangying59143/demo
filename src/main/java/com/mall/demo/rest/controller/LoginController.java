@@ -80,7 +80,7 @@ public class LoginController {
         String code = StringUtils.getRandomNumCode(4);
         Result r = Result.success();
         if(phoneFlag) {
-            r = SmsUtils.sendSMS(phoneNumber, code);
+            r = SmsUtils.sendSMS(phoneNumber, code, SmsUtils.VERIFICTION_CODE_TEMPLATE);
         }
         Map map = r.simple();
         map.put("code", code);
@@ -221,7 +221,7 @@ public class LoginController {
             Long userId = userInfoService.saveUser(user1);
             if(phoneFlag) {
                 //@todo 模板待修改
-                r = SmsUtils.sendSMS(phone,"(初始密码)" + password);
+                r = SmsUtils.sendSMS(phone,password, SmsUtils.NOTE_PASSWORD_TEMPLATE);
             }
         }
         executeLogin("PC", phone, "123456", r);

@@ -23,8 +23,13 @@ import java.util.Map;
 
 public class SmsUtils {
 
+    public static final String VERIFICTION_CODE_TEMPLATE = "TP18091728";
+
+    public static final String NOTE_PASSWORD_TEMPLATE = "TP18091730";
+
     public static void main(String[] args) throws ClientException {
-        sendSMS("13814959143", "1234");
+        sendSMS("13814959143", "1234", VERIFICTION_CODE_TEMPLATE);
+        sendSMS("13814959143", "JIANGYING", NOTE_PASSWORD_TEMPLATE);
     }
 
      //产品名称:云通信短信API产品,开发者无需替换
@@ -55,7 +60,7 @@ public class SmsUtils {
      * @param code
      * @return
      */
-    public static Result sendSMS(String phoneNumber, String code){
+    public static Result sendSMS(String phoneNumber, String code, String templetaeId){
         String host = "http://dingxin.market.alicloudapi.com";
         String path = "/dx/sendSms";
         String appcode = appCode;
@@ -65,7 +70,7 @@ public class SmsUtils {
         Map<String, String> querys = new HashMap<String, String>();
         querys.put("mobile", phoneNumber);
         querys.put("param", "code:" + code);
-        querys.put("tpl_id", "TP1711063");
+        querys.put("tpl_id", templetaeId);
         Map<String, String> bodys = new HashMap<String, String>();
         String returnCode;
         try {
