@@ -6,6 +6,7 @@ import com.mall.demo.model.privilege.User;
 import com.mall.demo.repository.CategoryRepository;
 import com.mall.demo.repository.UserCategoryRepository;
 import com.mall.demo.repository.UserRepository;
+import com.mall.demo.service.CategoryService;
 import com.mall.demo.service.UserCategoryService;
 import org.hibernate.criterion.Example;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,15 @@ public class UserCategoryServiceImpl implements UserCategoryService {
 
     @Autowired
     private CategoryRepository categoryRepository;
+
+
+    @Override
+    public void addRegistrationCategories(long userId) {
+        List<Category> list = categoryRepository.findAll();
+        for (Category category : list) {
+            userCategoryRepository.save(new UserCategory(new User(userId), new Category(category.getId())));
+        }
+    }
 
     @Override
     public Long save(long userId, long categoryId) {

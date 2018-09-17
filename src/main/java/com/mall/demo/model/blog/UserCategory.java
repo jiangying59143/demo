@@ -8,6 +8,15 @@ import javax.persistence.*;
 
 @Entity
 public class UserCategory extends BaseTO {
+
+    public UserCategory() {
+    }
+
+    public UserCategory(User user, Category category) {
+        this.user = user;
+        this.category = category;
+    }
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;

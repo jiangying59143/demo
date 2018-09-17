@@ -14,8 +14,7 @@ import com.mall.demo.common.result.Result;
 import com.mall.demo.common.utils.*;
 import com.mall.demo.configure.MySessionManager;
 import com.mall.demo.model.privilege.User;
-import com.mall.demo.service.MailService;
-import com.mall.demo.service.UserInfoService;
+import com.mall.demo.service.*;
 import com.mall.demo.vo.UserTO;
 import io.swagger.annotations.*;
 import org.apache.commons.lang3.time.DateFormatUtils;
@@ -53,6 +52,9 @@ public class LoginController {
 
     @Autowired
     private UserInfoService userInfoService;
+
+    @Autowired
+    private UserCategoryService userCategoryService;
 
     @Autowired
     private MailService mailService;
@@ -219,6 +221,7 @@ public class LoginController {
             String password = StringUtils.getRandomNumCode(6);
             user1.setPassword(password);
             Long userId = userInfoService.saveUser(user1);
+            userCategoryService.addRegistrationCategories(userId);
             if(phoneFlag) {
                 //@todo 模板待修改
                 r = SmsUtils.sendSMS(phone,password, SmsUtils.NOTE_PASSWORD_TEMPLATE);
@@ -274,6 +277,7 @@ public class LoginController {
             user1.setEmail(email);
             user1.setPassword(password);
             Long userId = userInfoService.saveUser(user1);
+            userCategoryService.addRegistrationCategories(userId);
         }
 
         executeLogin("E", email, password, r);
@@ -327,6 +331,7 @@ public class LoginController {
         user1.setPhoneNumber(phone);
         user1.setPassword(password);
         Long userId = userInfoService.saveUser(user1);
+        userCategoryService.addRegistrationCategories(userId);
         executeLogin("P", phone, password, r);
         return ResponseEntity.ok(r);
     }
@@ -361,6 +366,7 @@ public class LoginController {
             user1.setThirdType(type);
             user1.setState(User.USER_STATE_COMMON);
             Long userId = userInfoService.saveUser(user1);
+            userCategoryService.addRegistrationCategories(userId);
         }
         executeLogin("T", account, password, r);
         return ResponseEntity.ok(r);

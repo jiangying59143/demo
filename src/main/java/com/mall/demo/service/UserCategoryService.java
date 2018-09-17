@@ -8,6 +8,8 @@ import java.util.List;
 
 public interface UserCategoryService {
 
+    void addRegistrationCategories(long userId);
+
     Long save(long userId, long categoryId);
 
     void delete(Long userId, Long categoryId);
