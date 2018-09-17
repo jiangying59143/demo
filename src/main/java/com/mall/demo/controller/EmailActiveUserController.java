@@ -38,7 +38,10 @@ public class EmailActiveUserController {
                 if(user != null){
                     try{
                         Date date = DateUtils.parseDate(ss[1], com.mall.demo.common.utils.DateUtils.DATE_TIME_TO_SECOND);
-                        if(DateUtils.addMinutes(date, 5).after(new Date())){
+                        Date currentDate = new Date();
+                        date = DateUtils.addMinutes(date, 5);
+                        boolean timeValid = date.after(currentDate);
+                        if(timeValid){
                             user.setState(User.USER_STATE_COMMON);
                             userInfoService.updateUser(user);
                             return "emailSuccessTemplate";
